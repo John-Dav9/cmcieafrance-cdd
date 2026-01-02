@@ -465,6 +465,11 @@
 
 
 @media (max-width: 768px) {
+
+  h1, h2, h3 {
+    word-break: keep-all;
+    hyphens: none;
+  }
   /* HERO */
   .hero {
     padding: 0 1.2rem;
@@ -473,8 +478,9 @@
   }
 
   .hero-title {
-    font-size: 2.05rem;
+    font-size: 2.0rem;
     line-height: 1.08;
+    max-width: 22ch;       /* contrôle la largeur du texte */
   }
 
   .hero-text {
@@ -505,7 +511,9 @@
   }
 
   .vision-heading {
-    font-size: 2.05rem;
+    font-size: 2rem;        /* ↓ évite les cassures */
+    line-height: 1.12;     /* plus compact */
+    max-width: 22ch;       /* contrôle la largeur du texte */
   }
 
   /* MEDIA */
@@ -514,8 +522,9 @@
   }
 
   .media-title {
-    font-size: 1.25rem;
-    letter-spacing: 0.12em;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    letter-spacing: 0.08em; /* ↓ moins de coupures */
   }
 
   .media-btn {
@@ -549,6 +558,15 @@
     padding: 2.2rem 1.2rem 3.2rem;
   }
 
+  .events-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+  }
+
+  .card-title {
+    font-size: 1.45rem;
+    line-height: 1.15;
+  }
 
 }
 

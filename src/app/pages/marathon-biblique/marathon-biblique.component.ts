@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+
 
 interface ReadingDay {
   day: number;
@@ -33,6 +34,29 @@ export class MarathonBibliqueComponent implements OnInit {
 
   private readonly STORAGE_KEY = 'marathon-biblique-progress-v1';
   progress: Record<number, boolean> = {};
+
+  @ViewChild('calendarShell') calendarShell?: ElementRef<HTMLElement>;
+
+scrollToToday(): void {
+  const shell = this.calendarShell?.nativeElement;
+  if (!shell) return;
+
+  // Trouve la cellule du jour actuel
+  const todayCell = shell.querySelector('.calendar-cell.is-today') as HTMLElement | null;
+  if (!todayCell) return;
+
+  // Scroll doux vers la cellule
+  todayCell.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+    inline: 'nearest'
+  });
+
+  // Petit effet de focus (optionnel)
+  todayCell.classList.add('pulse');
+  window.setTimeout(() => todayCell.classList.remove('pulse'), 800);
+}
+
 
   ngOnInit(): void {
     try {

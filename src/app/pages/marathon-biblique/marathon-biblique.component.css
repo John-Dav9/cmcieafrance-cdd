@@ -64,6 +64,39 @@
   border: 1px solid #e2e8f0;
 }
 
+.today-btn {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 900;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  white-space: nowrap;
+}
+
+.today-btn:hover {
+  background: #eef2ff;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.today-btn:active {
+  transform: translateY(0px);
+}
+
+/* Petit effet visuel quand on scroll vers aujourd’hui */
+.pulse {
+  animation: pulseRing 0.8s ease;
+}
+
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.25); }
+  100% { box-shadow: 0 0 0 14px rgba(15, 23, 42, 0); }
+}
+
+
 /* ===== Calendrier ===== */
 .calendar-shell {
   border-radius: 18px;
@@ -334,60 +367,64 @@
 }
 
 @media (max-width: 760px) {
-  /* On garde un vrai calendrier lisible en "cartes" scrollables */
+  /* 1 colonne : calendrier puis vidéo */
+  .marathon-container {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .marathon-calendar { order: 1; }
+  .marathon-media {
+    order: 2;
+    position: static; /* désactive sticky sur mobile */
+  }
+
+  .media-spacer { display: none; } /* plus besoin */
+
+  /* --- CALENDRIER MOBILE : 2 colonnes + scroll vertical --- */
   .calendar-shell {
     padding: 0.75rem;
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: hidden;
+    max-height: 72vh;      /* ✅ env. 6 lignes visibles selon la hauteur écran */
+    overflow-y: auto;      /* ✅ scroll vertical */
+    overflow-x: hidden;
+    max-height: min(72vh, 620px);
   }
+
+  .calendar-weekday { display: none; } /* pas utile en mobile */
 
   .calendar-grid {
-    /* au lieu de 2 colonnes empilées => scroll horizontal */
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 220px; /* largeur d’une carte (lisible) */
-    gap: 0.75rem;
-
-    /* scroll smooth + snapping */
-    scroll-snap-type: x mandatory;
-    padding-bottom: 0.25rem;
-  }
-
-  .calendar-weekday {
-    display: none; /* comme avant */
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* ✅ 2 colonnes */
+    gap: 0.6rem;
   }
 
   .calendar-cell {
-    min-height: 150px; /* un peu + haut pour lire */
-    scroll-snap-align: start;
+    min-height: 118px;   /* ✅ carte plus petite mais lisible */
+    padding: 0.7rem;
+    border-radius: 14px;
+  }
+
+  .cell-date {
+    font-size: 0.95rem;
+  }
+
+  .cell-day {
+    font-size: 0.78rem;
   }
 
   .cell-reading {
-    font-size: 0.98rem;
-    -webkit-line-clamp: 4; /* + de lignes sur mobile */
+    font-size: 0.92rem;       /* ✅ lisible */
+    line-height: 1.2;
+    -webkit-line-clamp: 3;    /* ✅ évite débordement */
   }
 
+  /* vidéo pleine largeur sous le calendrier */
   .youtube-card {
-    height: 260px;
+    height: 240px;
   }
 
-  .marathon-container {
-    grid-template-columns: 1fr; /* 1 colonne */
-  }
-
-  .marathon-calendar {
-    order: 1; /* calendrier d'abord */
-  }
-
-  .marathon-media {
-    order: 2; /* vidéo ensuite */
-    position: static; /* désactive le sticky sur mobile */
-    margin-top: 1.5rem;
-  }
-
-  .media-spacer {
-    display: none; /* plus besoin sur mobile */
+  .youtube-overlay {
+    font-size: 1.2rem;
   }
 }
+
 

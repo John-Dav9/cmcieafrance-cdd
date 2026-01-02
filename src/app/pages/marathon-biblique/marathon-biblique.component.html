@@ -12,11 +12,15 @@
           {{ completedCount }}/{{ totalDays }} jours terminés
         </span>
       </div>
+      <button type="button" class="today-btn" (click)="scrollToToday()">
+        Aujourd’hui
+      </button>
+
       <div class="progress-pill">{{ progressPercent }}%</div>
     </div>
 
     <!-- Calendrier -->
-    <div class="calendar-shell">
+    <div class="calendar-shell" #calendarShell>
       <div class="calendar-grid">
         <div class="calendar-weekday" *ngFor="let w of weekdays">
           {{ w }}
