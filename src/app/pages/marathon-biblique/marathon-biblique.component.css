@@ -332,3 +332,62 @@
   font-weight: 800;
   line-height: 1.6;
 }
+
+@media (max-width: 760px) {
+  /* On garde un vrai calendrier lisible en "cartes" scrollables */
+  .calendar-shell {
+    padding: 0.75rem;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .calendar-grid {
+    /* au lieu de 2 colonnes empilées => scroll horizontal */
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 220px; /* largeur d’une carte (lisible) */
+    gap: 0.75rem;
+
+    /* scroll smooth + snapping */
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.25rem;
+  }
+
+  .calendar-weekday {
+    display: none; /* comme avant */
+  }
+
+  .calendar-cell {
+    min-height: 150px; /* un peu + haut pour lire */
+    scroll-snap-align: start;
+  }
+
+  .cell-reading {
+    font-size: 0.98rem;
+    -webkit-line-clamp: 4; /* + de lignes sur mobile */
+  }
+
+  .youtube-card {
+    height: 260px;
+  }
+
+  .marathon-container {
+    grid-template-columns: 1fr; /* 1 colonne */
+  }
+
+  .marathon-calendar {
+    order: 1; /* calendrier d'abord */
+  }
+
+  .marathon-media {
+    order: 2; /* vidéo ensuite */
+    position: static; /* désactive le sticky sur mobile */
+    margin-top: 1.5rem;
+  }
+
+  .media-spacer {
+    display: none; /* plus besoin sur mobile */
+  }
+}
+

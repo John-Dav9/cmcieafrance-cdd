@@ -136,13 +136,13 @@
   text-decoration:none;
 }
 
-/* ===== MOBILE ===== */
 @media (max-width: 900px){
   .slide{
     flex-direction: column;
   }
 
   .page-img{
-    width: min(520px, 92vw);
+    width: 100%;
+    max-width: 92vw;
   }
 }

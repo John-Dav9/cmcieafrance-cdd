@@ -14,10 +14,12 @@ export class RessourcesDecouvrirComponent implements AfterViewInit, OnDestroy {
 
   isAnimating = false;
 
-  private resizeTimer: any;
   private unlockTimer: any;
 
-  // ✅ IMPORTANT: pas de "/" au début (safe avec base href / routes)
+  // ✅ stable pour mobile
+  private mediaQuery = window.matchMedia('(max-width: 900px)');
+  private isMobile = this.mediaQuery.matches;
+
   private pages: string[] = [
     'assets/flipbook/page-01.png',
     'assets/flipbook/page-02.png',
@@ -35,30 +37,41 @@ export class RessourcesDecouvrirComponent implements AfterViewInit, OnDestroy {
   async ngAfterViewInit(): Promise<void> {
     await this.preloadImages(this.pages);
 
-    this.buildSlides();
+    // build initial
+    this.buildSlides(this.isMobile);
     this.ready = true;
 
-    window.addEventListener('resize', this.onResize);
+    // ✅ on écoute UNIQUEMENT le vrai passage mobile/desktop
+    this.mediaQuery.addEventListener('change', this.onMediaChange);
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('resize', this.onResize);
-    if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    this.mediaQuery.removeEventListener('change', this.onMediaChange);
     if (this.unlockTimer) clearTimeout(this.unlockTimer);
   }
 
-  private onResize = () => {
-    if (this.resizeTimer) clearTimeout(this.resizeTimer);
-    this.resizeTimer = setTimeout(() => this.buildSlides(), 120);
+  private onMediaChange = (e: MediaQueryListEvent) => {
+    const nextIsMobile = e.matches;
+    if (nextIsMobile === this.isMobile) return;
+
+    this.isMobile = nextIsMobile;
+
+    // ✅ reset index pour éviter le “saut” et les pages manquantes
+    this.currentIndex = 0;
+    this.isAnimating = false;
+    this.clearUnlockTimer();
+
+    this.buildSlides(this.isMobile);
   };
 
-  private buildSlides() {
-    const isMobile = window.innerWidth <= 900;
+  private buildSlides(isMobile: boolean) {
     const newSlides: string[][] = [];
 
     if (isMobile) {
-      for (const p of this.pages) newSlides.push([p]); // 1 page/slide
+      // ✅ 1 page = 1 slide
+      for (const p of this.pages) newSlides.push([p]);
     } else {
+      // ✅ 2 pages = 1 slide
       for (let i = 0; i < this.pages.length; i += 2) {
         newSlides.push([this.pages[i], this.pages[i + 1]].filter(Boolean) as string[]);
       }
@@ -67,12 +80,8 @@ export class RessourcesDecouvrirComponent implements AfterViewInit, OnDestroy {
     this.slides = newSlides;
     this.maxIndex = this.slides.length - 1;
 
-    // clamp index
+    // clamp (au cas où)
     this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
-
-    // reset animation lock
-    this.isAnimating = false;
-    this.clearUnlockTimer();
   }
 
   private preloadImages(urls: string[]) {
@@ -107,16 +116,15 @@ export class RessourcesDecouvrirComponent implements AfterViewInit, OnDestroy {
     this.isAnimating = true;
     this.currentIndex = target;
 
-    // ✅ fallback si transitionend ne fire pas
+    // fallback si transitionend ne fire pas
     this.clearUnlockTimer();
     this.unlockTimer = setTimeout(() => {
       this.isAnimating = false;
       this.unlockTimer = null;
-    }, 600); // > 450ms (durée CSS)
+    }, 600);
   }
 
   onTransitionEnd() {
-    // quand la transition se termine, on libère
     this.isAnimating = false;
     this.clearUnlockTimer();
   }
