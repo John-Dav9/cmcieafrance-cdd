@@ -24,29 +24,19 @@
         <div
           class="track"
           [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'"
-          (transitionend)="onTransitionEnd($event)">
+          (transitionend)="onTransitionEnd()">
 
-          <div class="slide" *ngFor="let pair of slidePairs; let i = index; trackBy: trackByIndex">
-
-            <!-- Page gauche -->
+          <!-- ✅ 1 slide = 1 tableau de pages (1 ou 2 images selon mobile/desktop) -->
+          <div class="slide" *ngFor="let pages of slides; trackBy: trackByIndex">
             <img
+              *ngFor="let src of pages; trackBy: trackBySrc"
               class="page-img"
-              [src]="pair[0]"
-              [alt]="'Page ' + (i * 2 + 1)"
+              [src]="src"
+              alt="Page"
               loading="eager"
               decoding="async"
-              (error)="onImgError($event)" />
-
-            <!-- Page droite (seulement si existe) -->
-            <img
-              *ngIf="pair[1]"
-              class="page-img"
-              [src]="pair[1]"
-              [alt]="'Page ' + (i * 2 + 2)"
-              loading="eager"
-              decoding="async"
-              (error)="onImgError($event)" />
-
+              (error)="onImgError($event)"
+            />
           </div>
 
         </div>
@@ -68,11 +58,10 @@
       <button
         type="button"
         class="dot"
-        *ngFor="let _ of slidePairs; let i = index; trackBy: trackByIndex"
+        *ngFor="let _ of slides; let i = index"
         [class.active]="currentIndex === i"
         (click)="goTo(i)"
-        [disabled]="isAnimating"
-        [attr.aria-label]="'Aller au groupe ' + (i + 1)">
+        [disabled]="isAnimating">
       </button>
     </div>
 

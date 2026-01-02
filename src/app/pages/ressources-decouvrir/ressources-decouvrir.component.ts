@@ -1,11 +1,11 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-ressources-decouvrir',
   templateUrl: './ressources-decouvrir.component.html',
   styleUrls: ['./ressources-decouvrir.component.css'],
 })
-export class RessourcesDecouvrirComponent implements AfterViewInit {
+export class RessourcesDecouvrirComponent implements AfterViewInit, OnDestroy {
 
   ready = false;
 
@@ -13,11 +13,11 @@ export class RessourcesDecouvrirComponent implements AfterViewInit {
   maxIndex = 0;
 
   isAnimating = false;
-  private unlockTimer: any = null;
 
-  trackByIndex = (i: number) => i;
+  private resizeTimer: any;
+  private unlockTimer: any;
 
-  // ✅ IMPORTANT: pas de / au début (sinon casse en prod si baseHref != "/")
+  // ✅ IMPORTANT: pas de "/" au début (safe avec base href / routes)
   private pages: string[] = [
     'assets/flipbook/page-01.png',
     'assets/flipbook/page-02.png',
@@ -27,21 +27,52 @@ export class RessourcesDecouvrirComponent implements AfterViewInit {
     'assets/flipbook/page-06.png',
   ];
 
-  slidePairs: string[][] = [];
+  slides: string[][] = [];
+
+  trackByIndex = (i: number) => i;
+  trackBySrc = (_: number, src: string) => src;
 
   async ngAfterViewInit(): Promise<void> {
-    // 1) Paires (1-2, 3-4, 5-6)
-    this.slidePairs = [];
-    for (let i = 0; i < this.pages.length; i += 2) {
-      this.slidePairs.push([this.pages[i], this.pages[i + 1]]);
-    }
-    this.maxIndex = this.slidePairs.length - 1;
-
-    // 2) Preload
     await this.preloadImages(this.pages);
 
-    // 3) Ready
+    this.buildSlides();
     this.ready = true;
+
+    window.addEventListener('resize', this.onResize);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.onResize);
+    if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    if (this.unlockTimer) clearTimeout(this.unlockTimer);
+  }
+
+  private onResize = () => {
+    if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    this.resizeTimer = setTimeout(() => this.buildSlides(), 120);
+  };
+
+  private buildSlides() {
+    const isMobile = window.innerWidth <= 900;
+    const newSlides: string[][] = [];
+
+    if (isMobile) {
+      for (const p of this.pages) newSlides.push([p]); // 1 page/slide
+    } else {
+      for (let i = 0; i < this.pages.length; i += 2) {
+        newSlides.push([this.pages[i], this.pages[i + 1]].filter(Boolean) as string[]);
+      }
+    }
+
+    this.slides = newSlides;
+    this.maxIndex = this.slides.length - 1;
+
+    // clamp index
+    this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
+
+    // reset animation lock
+    this.isAnimating = false;
+    this.clearUnlockTimer();
   }
 
   private preloadImages(urls: string[]) {
@@ -60,23 +91,13 @@ export class RessourcesDecouvrirComponent implements AfterViewInit {
 
   onImgError(e: Event) {
     const el = e.target as HTMLImageElement;
-    // ✅ pareil: pas de / au début
     el.src = 'assets/flipbook/fallback.png';
   }
 
-  // ==== NAV ====
-
-  next() {
-    this.moveTo(this.currentIndex + 1);
-  }
-
-  prev() {
-    this.moveTo(this.currentIndex - 1);
-  }
-
-  goTo(i: number) {
-    this.moveTo(i);
-  }
+  // ===== Navigation =====
+  next() { this.moveTo(this.currentIndex + 1); }
+  prev() { this.moveTo(this.currentIndex - 1); }
+  goTo(i: number) { this.moveTo(i); }
 
   private moveTo(target: number) {
     if (this.isAnimating) return;
@@ -86,25 +107,18 @@ export class RessourcesDecouvrirComponent implements AfterViewInit {
     this.isAnimating = true;
     this.currentIndex = target;
 
-    // ✅ Fallback: on déverrouille même si transitionend ne se déclenche pas
+    // ✅ fallback si transitionend ne fire pas
     this.clearUnlockTimer();
     this.unlockTimer = setTimeout(() => {
       this.isAnimating = false;
       this.unlockTimer = null;
-    }, 650); // un peu > 450ms (durée CSS)
+    }, 600); // > 450ms (durée CSS)
   }
 
-  // IMPORTANT: reçoit $event depuis le HTML
-  onTransitionEnd(event: TransitionEvent) {
-    // ✅ on veut uniquement la fin de transition du transform sur .track
-    if (!event) return;
-    if (event.propertyName !== 'transform') return;
-
-    const target = event.target as HTMLElement;
-    if (!target || !target.classList.contains('track')) return;
-
-    this.clearUnlockTimer();
+  onTransitionEnd() {
+    // quand la transition se termine, on libère
     this.isAnimating = false;
+    this.clearUnlockTimer();
   }
 
   private clearUnlockTimer() {

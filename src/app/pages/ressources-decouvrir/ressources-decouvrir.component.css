@@ -1,4 +1,4 @@
-/* Page */
+/* ===== PAGE ===== */
 .ressources-stack{
   background:#0f172a;
   min-height:100vh;
@@ -9,102 +9,64 @@
   gap: 28px;
 }
 
-/* ===== CAROUSEL ===== */
+/* ===== LIVRET ===== */
 .livret-block{
   width: min(1100px, 100%);
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap: 14px;
+  gap: 16px;
 }
 
+/* ===== CAROUSEL ===== */
 .carousel{
   width: 100%;
   position: relative;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .viewport{
   width: 100%;
-  overflow:hidden;
+  overflow: hidden;
 }
 
-/* track glisse horizontalement */
+/* ⚠️ PAS DE WIDTH ICI */
 .track{
-  display:flex;
-  width: 300%;            /* 3 slides */
-  transition: transform .45s ease;
-}
-
-/* une slide = 2 pages */
-.slide{
-  width: 100%;
-  flex: 0 0 100%;
-  display:flex;
-  grid-template-columns: auto auto;
-  gap: 8px;
-  align-items:center;
-  justify-content:center;
-  column-gap: 10px;  /* mets 6px si tu veux encore plus collé */
-  padding: 0;
-}
-
-/* track glisse horizontalement */
-.track{
-  display:flex;
-  flex-wrap: nowrap;
-  width: 100%;                 /* ✅ plus de 300% en dur */
+  display: flex;
   transition: transform .45s ease;
   will-change: transform;
 }
 
+/* ===== SLIDE ===== */
+.slide{
+  flex: 0 0 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-/* ✅ images */
+  /* 🔥 rapprochement réel */
+  gap: 6px;
+  padding: 0;
+}
+
+/* ===== IMAGES ===== */
 .page-img{
-  width: 280px;
-  max-width: 42vw;            /* 900/2 */
+  width: 280px;              /* desktop */
+  max-width: 42vw;
   height: auto;
 
-  /* ✅ pour éviter scroll vertical si l’écran est bas */
   max-height: min(72vh, 720px);
   object-fit: contain;
 
-  /* border-radius: 18px;
-  background: transparent;
-  box-shadow: 0 22px 50px rgba(0,0,0,.45);
-  display:block; */
+  background: transparent;  /* PAS de fond blanc */
+  display: block;
 }
 
-/* ===== MOBILE =====
-   ✅ on ne passe en 1 page que VRAIMENT sur petit écran */
-@media (max-width: 640px){
-  .slide{
-    grid-template-columns: 1fr;
-  }
-
-  /* si tu gardes 2 images dans la slide, on cache la 2e en mobile */
-  .slide .page-img:nth-child(2){
-    display:none;
-  }
-
-  .page-img{
-    max-width: 520px;
-  }
-}
-
-
-.loading{
-  color: rgba(255,255,255,.8);
-  font-weight: 700;
-  padding: 18px 0;
-  text-align: center;
-}
-
-
-/* NAV BUTTONS */
+/* ===== NAVIGATION ===== */
 .nav-btn{
   border: 1px solid rgba(255,255,255,.18);
   background: rgba(255,255,255,.10);
@@ -122,9 +84,18 @@
   transition: transform .15s ease, background .2s ease;
 }
 
-.nav-btn:hover{ background: rgba(255,255,255,.22); transform: translateY(-1px); }
-.nav-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+.nav-btn:hover{
+  background: rgba(255,255,255,.22);
+  transform: translateY(-1px);
+}
 
+.nav-btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* ===== DOTS ===== */
 .dots{
   display:flex;
   gap: 10px;
@@ -140,16 +111,13 @@
   background: rgba(255,255,255,.25);
   cursor:pointer;
 }
+
 .dot.active{ background: #facc15; }
 .dot:disabled{ cursor:not-allowed; }
 
 /* ===== VIDEO ===== */
 .video-block{
   width: min(1100px, 100%);
-}
-
-.video-card{
-  width: 100%;
 }
 
 .video-card img{
@@ -166,4 +134,15 @@
   font-weight: 800;
   color:#facc15;
   text-decoration:none;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px){
+  .slide{
+    flex-direction: column;
+  }
+
+  .page-img{
+    width: min(520px, 92vw);
+  }
 }
