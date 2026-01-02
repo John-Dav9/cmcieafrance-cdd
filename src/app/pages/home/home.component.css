@@ -501,10 +501,6 @@
     min-height: auto;
   }
 
-  .card-title {
-    font-size: 1.6rem;
-  }
-
   /* VISION */
   .vision-section {
     padding: 3.5rem 1.2rem 3rem;
@@ -568,6 +564,44 @@
     line-height: 1.15;
   }
 
+    /* ✅ Empêche tout débordement horizontal sur mobile */
+  .hero,
+  .cards-section,
+  .vision-section,
+  .media-section,
+  .events-contact-section {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* ✅ Grille et colonnes : 100% */
+  .events-contact-grid,
+  .events-column,
+  .contact-column {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  /* ✅ Texte : éviter qu’une ligne longue pousse la page */
+  .event-details,
+  .event-note,
+  .contact-intro,
+  .contact-extra,
+  .media-text {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* ✅ Inputs : ne dépassent jamais */
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
 }
 
 
@@ -599,4 +633,16 @@
   opacity: 0;
   animation: fadeInHero 1.6s ease-out forwards;
 }
+
+/* ✅ Stop scroll horizontal partout */
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ✅ Toutes les tailles incluent padding/border (évite les débordements) */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 
