@@ -1,0 +1,108 @@
+<section class="marathon-container">
+  <!-- COLONNE GAUCHE -->
+  <div class="marathon-calendar">
+    <h1 class="page-title">📖 {{ title }}</h1>
+    <p class="subtitle">{{ subtitle }}</p>
+
+    <!-- Barre de progression -->
+    <div class="progress-bar">
+      <div class="progress-left">
+        <span class="progress-title">Progression</span>
+        <span class="progress-value">
+          {{ completedCount }}/{{ totalDays }} jours terminés
+        </span>
+      </div>
+      <div class="progress-pill">{{ progressPercent }}%</div>
+    </div>
+
+    <!-- Calendrier -->
+    <div class="calendar-shell">
+      <div class="calendar-grid">
+        <div class="calendar-weekday" *ngFor="let w of weekdays">
+          {{ w }}
+        </div>
+
+        <div
+          class="calendar-cell"
+          *ngFor="let c of calendarCells"
+          [class.is-empty]="!c.date"
+          [class.is-today]="isToday(c.date)"
+          [class.is-done]="c.dayNumber && isChecked(c.dayNumber)"
+        >
+          <ng-container *ngIf="c.date">
+            <div class="cell-top">
+              <span class="cell-date">{{ c.label }}</span>
+
+              <label class="cell-check" title="Marquer comme lu">
+                <input
+                  type="checkbox"
+                  [checked]="isChecked(c.dayNumber)"
+                  (change)="toggleChecked(c.dayNumber, $event)"
+                />
+                <span class="check-ui"></span>
+              </label>
+            </div>
+
+            <div class="cell-content">
+              <div class="cell-day">Jour {{ c.dayNumber }}</div>
+              <div class="cell-reading" [title]="c.reading">
+                {{ c.reading }}
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLONNE DROITE -->
+  <div class="marathon-media">
+    <!-- ✅ Spacer pour aligner avec la barre de progression -->
+    <div class="media-spacer"></div>
+
+    <h2 class="media-title">🎧 Bible Audio – Playlist Officielle</h2>
+
+    <a
+      [href]="youtubePlaylistUrl"
+      target="_blank"
+      rel="noopener"
+      class="youtube-card"
+    >
+      <div class="youtube-overlay">
+        <!-- <img src="assets/images/marathon-thumbnail.png" alt="Playlist YouTube" /> -->
+        <span class="play-icon">▶</span>
+        <span>Écouter la Bible</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ✅ SECTION EN BAS (PLEINE LARGEUR) -->
+<section class="marathon-info">
+  <div class="info-card">
+    <div class="info-badge">✨ Objectif</div>
+    <h2>Pourquoi participer au Marathon Biblique ?</h2>
+
+    <p>
+      Le Marathon Biblique est une opportunité unique de parcourir toute la Bible en seulement
+      <strong>45 jours</strong>, de la Genèse à l’Apocalypse, avec une progression claire et structurée.
+    </p>
+
+    <ul class="info-list">
+      <li>
+        <strong>Discipline</strong> : un rendez-vous quotidien qui t’aide à rester constant.
+      </li>
+      <li>
+        <strong>Compréhension</strong> : une lecture continue pour mieux saisir le message biblique.
+      </li>
+      <li>
+        <strong>Foi</strong> : une expérience qui fortifie ton cœur et ta relation avec Dieu.
+      </li>
+    </ul>
+
+    <p class="info-quote">
+      “Prends ce temps comme un rendez-vous quotidien avec Dieu et laisse Sa Parole transformer ta vie.”
+    </p>
+  </div>
+</section>
+

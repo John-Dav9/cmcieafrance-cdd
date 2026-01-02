@@ -1,0 +1,51 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 60px;          /* ajuste si besoin (40–60px idéal navbar) */
+  width: auto;
+  display: block;
+}
+
+.logo-text {
+  font-family: 'Source Serif 4', serif;
+  font-size: 0.48rem;   /* plus petit */
+  font-weight: 500;     /* plus élégant */
+  line-height: 1.15;
+  color: #048848;
+  text-transform: uppercase;
+  max-width: 240px;
+}
+
+@media (max-width: 768px) {
+  .logo-text {
+    font-size: 0.6rem;
+    max-width: 170px;
+  }
+}
+
+
+.navbar-links a {
+  margin-left: 1rem;
+  text-decoration: none;
+  font-weight: 500;
+  color: #333;
+}
+
+.navbar-links a.active {
+  border-bottom: 2px solid #333;
+}

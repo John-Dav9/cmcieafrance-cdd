@@ -1,0 +1,169 @@
+/* Page */
+.ressources-stack{
+  background:#0f172a;
+  min-height:100vh;
+  padding: 48px 24px 70px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 28px;
+}
+
+/* ===== CAROUSEL ===== */
+.livret-block{
+  width: min(1100px, 100%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 14px;
+}
+
+.carousel{
+  width: 100%;
+  position: relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+}
+
+.viewport{
+  width: 100%;
+  overflow:hidden;
+}
+
+/* track glisse horizontalement */
+.track{
+  display:flex;
+  width: 300%;            /* 3 slides */
+  transition: transform .45s ease;
+}
+
+/* une slide = 2 pages */
+.slide{
+  width: 100%;
+  flex: 0 0 100%;
+  display:flex;
+  grid-template-columns: auto auto;
+  gap: 8px;
+  align-items:center;
+  justify-content:center;
+  column-gap: 10px;  /* mets 6px si tu veux encore plus collé */
+  padding: 0;
+}
+
+/* track glisse horizontalement */
+.track{
+  display:flex;
+  flex-wrap: nowrap;
+  width: 100%;                 /* ✅ plus de 300% en dur */
+  transition: transform .45s ease;
+  will-change: transform;
+}
+
+
+/* ✅ images */
+.page-img{
+  width: 280px;
+  max-width: 42vw;            /* 900/2 */
+  height: auto;
+
+  /* ✅ pour éviter scroll vertical si l’écran est bas */
+  max-height: min(72vh, 720px);
+  object-fit: contain;
+
+  /* border-radius: 18px;
+  background: transparent;
+  box-shadow: 0 22px 50px rgba(0,0,0,.45);
+  display:block; */
+}
+
+/* ===== MOBILE =====
+   ✅ on ne passe en 1 page que VRAIMENT sur petit écran */
+@media (max-width: 640px){
+  .slide{
+    grid-template-columns: 1fr;
+  }
+
+  /* si tu gardes 2 images dans la slide, on cache la 2e en mobile */
+  .slide .page-img:nth-child(2){
+    display:none;
+  }
+
+  .page-img{
+    max-width: 520px;
+  }
+}
+
+
+.loading{
+  color: rgba(255,255,255,.8);
+  font-weight: 700;
+  padding: 18px 0;
+  text-align: center;
+}
+
+
+/* NAV BUTTONS */
+.nav-btn{
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.10);
+  color:#fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 26px;
+  line-height: 1;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  backdrop-filter: blur(6px);
+  transition: transform .15s ease, background .2s ease;
+}
+
+.nav-btn:hover{ background: rgba(255,255,255,.22); transform: translateY(-1px); }
+.nav-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+
+.dots{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  justify-content:center;
+}
+
+.dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255,255,255,.25);
+  cursor:pointer;
+}
+.dot.active{ background: #facc15; }
+.dot:disabled{ cursor:not-allowed; }
+
+/* ===== VIDEO ===== */
+.video-block{
+  width: min(1100px, 100%);
+}
+
+.video-card{
+  width: 100%;
+}
+
+.video-card img{
+  width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 25px 50px rgba(0,0,0,.45);
+  display:block;
+}
+
+.video-cta{
+  display:block;
+  margin-top: 14px;
+  text-align:center;
+  font-weight: 800;
+  color:#facc15;
+  text-decoration:none;
+}

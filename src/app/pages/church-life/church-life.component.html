@@ -1,0 +1,55 @@
+<div *ngIf="data">
+  <section>
+    <h1>Nos actus</h1>
+    <p>{{ data.actusIntro }}</p>
+  </section>
+
+  <section>
+    <h2>Devenir membre</h2>
+    <p>{{ data.devenirMembre }}</p>
+  </section>
+
+  <section>
+    <h2>Nous contacter</h2>
+    <p>{{ data.contactIntro }}</p>
+
+    <form (ngSubmit)="onSubmit()" #contactForm="ngForm">
+      <div>
+        <label>Nom</label>
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="contact.name"
+          required
+        />
+      </div>
+
+      <div>
+        <label>Email</label>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="contact.email"
+          required
+        />
+      </div>
+
+      <div>
+        <label>Message</label>
+        <textarea
+          name="message"
+          rows="4"
+          [(ngModel)]="contact.message"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" [disabled]="!contactForm.form.valid">
+        Envoyer
+      </button>
+
+      <p *ngIf="submitted">Merci pour votre message !</p>
+      <p *ngIf="error" class="error">{{ error }}</p>
+    </form>
+  </section>
+</div>

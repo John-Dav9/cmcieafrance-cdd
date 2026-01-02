@@ -1,0 +1,51 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f6f7fb; /* ✅ thème clair */
+  color: #0f172a;      /* texte par défaut */
+}
+
+/* ⚠️ Ton container était trop étroit pour un calendrier 7 colonnes */
+.container {
+  max-width: 1300px;  /* ✅ plus large */
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+}
+
+app-root, app-home {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+}
+
+.footer {
+  text-align: center;
+  padding: 1.2rem;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+/* ✅ Liens : plus de bleu par défaut */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* ✅ Liens "texte" : underline élégant au survol */
+.pv-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+

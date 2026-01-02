@@ -1,0 +1,37 @@
+<section class="messages" *ngIf="messages.length">
+  <h1>Messages</h1>
+
+  <div class="carousel">
+    <button (click)="prev()">‹</button>
+
+    <div class="slide">
+      <h2>{{ messages[currentIndex].title }}</h2>
+      <p>
+        {{ messages[currentIndex].speaker }} –
+        {{ messages[currentIndex].date | date: 'longDate' }}
+      </p>
+
+      <div class="video-wrapper">
+        <iframe
+          [src]="messages[currentIndex].safeUrl"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <button (click)="next()">›</button>
+  </div>
+
+  <div class="thumbnails">
+    <button
+      *ngFor="let msg of messages; let i = index"
+      [class.active]="i === currentIndex"
+      (click)="currentIndex = i"
+    >
+      {{ msg.title }}
+    </button>
+  </div>
+</section>
+
+<p *ngIf="!messages.length">Aucun message pour le moment.</p>

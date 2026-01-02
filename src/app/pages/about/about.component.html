@@ -1,0 +1,21 @@
+<div *ngIf="data">
+  <section>
+    <h1>{{ data.histoire.title }}</h1>
+    <p>{{ data.histoire.content }}</p>
+  </section>
+
+  <section>
+    <h2>{{ data.vision.title }}</h2>
+    <p>{{ data.vision.content }}</p>
+  </section>
+
+  <section>
+    <h2>Valeurs</h2>
+    <ul>
+      <li *ngFor="let valeur of data.valeurs">
+        <h3>{{ valeur.title }}</h3>
+        <p>{{ valeur.description }}</p>
+      </li>
+    </ul>
+  </section>
+</div>

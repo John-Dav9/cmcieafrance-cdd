@@ -1,0 +1,26 @@
+section {
+  margin-bottom: 2rem;
+}
+
+form div {
+  margin-bottom: 0.75rem;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background: #333;
+  color: white;
+  font-weight: 600;
+}
+
+.error {
+  color: red;
+}

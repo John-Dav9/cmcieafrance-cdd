@@ -1,0 +1,95 @@
+<section class="ressources-stack">
+
+  <!-- ===== LIVRET ===== -->
+  <div class="livret-block">
+
+    <!-- Loading -->
+    <div class="loading" *ngIf="!ready">
+      Chargement du livret...
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel" *ngIf="ready">
+
+      <button
+        class="nav-btn nav-left"
+        type="button"
+        (click)="prev()"
+        [disabled]="isAnimating || currentIndex === 0"
+        aria-label="Page précédente">
+        ‹
+      </button>
+
+      <div class="viewport">
+        <div
+          class="track"
+          [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'"
+          (transitionend)="onTransitionEnd($event)">
+
+          <div class="slide" *ngFor="let pair of slidePairs; let i = index; trackBy: trackByIndex">
+
+            <!-- Page gauche -->
+            <img
+              class="page-img"
+              [src]="pair[0]"
+              [alt]="'Page ' + (i * 2 + 1)"
+              loading="eager"
+              decoding="async"
+              (error)="onImgError($event)" />
+
+            <!-- Page droite (seulement si existe) -->
+            <img
+              *ngIf="pair[1]"
+              class="page-img"
+              [src]="pair[1]"
+              [alt]="'Page ' + (i * 2 + 2)"
+              loading="eager"
+              decoding="async"
+              (error)="onImgError($event)" />
+
+          </div>
+
+        </div>
+      </div>
+
+      <button
+        class="nav-btn nav-right"
+        type="button"
+        (click)="next()"
+        [disabled]="isAnimating || currentIndex === maxIndex"
+        aria-label="Page suivante">
+        ›
+      </button>
+
+    </div>
+
+    <!-- Dots -->
+    <div class="dots" *ngIf="ready">
+      <button
+        type="button"
+        class="dot"
+        *ngFor="let _ of slidePairs; let i = index; trackBy: trackByIndex"
+        [class.active]="currentIndex === i"
+        (click)="goTo(i)"
+        [disabled]="isAnimating"
+        [attr.aria-label]="'Aller au groupe ' + (i + 1)">
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ===== VIDEO EN DESSOUS ===== -->
+  <div class="video-block">
+    <div class="video-card">
+      <img src="assets/images/youtube-thumbnail.png" alt="Playlist YouTube" />
+      <a
+        href="https://www.youtube.com/playlist?list=PLuiootrwkQ8a1aesqwRo1iuJSDkeGq2gn"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="video-cta">
+        ▶ Voir la playlist YouTube
+      </a>
+    </div>
+  </div>
+
+</section>
