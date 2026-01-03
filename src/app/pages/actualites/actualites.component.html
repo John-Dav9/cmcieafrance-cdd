@@ -1,0 +1,129 @@
+<!-- ================= HERO ================= -->
+<section class="news-hero">
+  <div class="container">
+    <h1>Actualités CMCIEA France</h1>
+    <p class="subtitle">
+      Découvrez les actualités de la CMCIEA France : 
+      messages, événements, Marathon Biblique, 
+      vie de l’église et ressources pour grandir dans la foi.
+    </p>
+  </div>
+</section>
+
+<!-- ================= CONTENU PRINCIPAL ================= -->
+<section class="news-layout container">
+
+  <!-- ===== COLONNE PRINCIPALE ===== -->
+  <main class="news-main">
+
+    <!-- ===== À LA UNE ===== -->
+    <article class="news-featured">
+      <header>
+        <p class="badge">À la une</p>
+        <h2>Message du Pasteur Joseph T. Mbafor</h2>
+        <p class="meta">Président de la CMCIEA · Janvier 2026</p>
+      </header>
+
+      <!-- Vidéo YouTube -->
+      <div class="video-container">
+        <iframe
+          [src]="videoUrl"
+          title="Message du Président Pasteur Joseph T. Mbafor de la CMCIEA"
+          loading="lazy"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div class="video-footer">
+        <h3 class="video-title">4 clés pour réussir son année 2026.</h3>
+
+        <a
+            class="btn-more"
+            href="https://www.facebook.com/share/1JcKDnRy5x/"
+            target="_blank"
+            rel="noopener"
+            aria-label="En savoir plus sur Facebook"
+        >
+            En savoir plus
+            <span class="arrow">→</span>
+        </a>
+        </div>
+
+    </article>
+
+    <!-- ===== LISTE DES ARTICLES ===== -->
+    <section class="news-list">
+
+      <!-- ARTICLE -->
+       <article class="news-card">
+        <header>
+            <p class="category">Vœux 2026</p>
+            <h2>2026 : Quelle voix dirigera ta vie ?</h2>
+            <p class="meta">Parole d’encouragement · Pasteur Fernand Taptué · 2 janvier 2026</p>
+        </header>
+
+        <p>
+            Une parole forte pour démarrer l’année : deux agendas, une décision,
+            et la clé d’un succès durable en Dieu.
+        </p>
+
+        <a routerLink="/actualites/voeux-2026-pasteur-fernand" class="read-more">
+            Lire l’article →
+        </a>
+        </article>
+
+      <article class="news-card">
+        <header>
+          <p class="category">Événement</p>
+          <h2>Marathon Biblique : 45 jours pour replacer la Parole au centre</h2>
+          <p class="meta">05 janvier – 18 février 2026</p>
+        </header>
+
+        <p>
+          Le Marathon Biblique est une invitation à prendre du temps chaque jour
+          pour lire toute la Bible, seul ou en groupe, avec un plan clair et accessible.
+        </p>
+
+        <a
+            routerLink="/actualites/marathon-biblique"
+            class="read-more"
+            >
+            Lire l’article →
+        </a>
+
+      </article>
+
+      <!-- AUTRE ARTICLE -->
+      
+    </section>
+  </main>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="news-sidebar">
+    <div class="sidebar-block">
+      <h3>Articles récents</h3>
+      <ul>
+        <li><a routerLink="/actualites/voeux-2026-pasteur-fernand">Message du Pasteur Fernand T.</a></li>
+        <li><a routerLink="/marathon-biblique">Marathon Biblique</a></li>
+        <!-- <li><a routerLink="/ministere-enfants">Ministère aux enfants</a></li> -->
+      </ul>
+    </div>
+
+    <div class="sidebar-block">
+      <h3>Liens utiles</h3>
+      <ul>
+        <li><a routerLink="/premiere-visite">Première visite</a></li>
+        <li><a routerLink="/ressources/decouvrir">Ressources</a></li>
+        <li><a routerLink="/marathon-biblique">Marathon Biblique</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-block cta">
+      <p>📖 Rejoignez le Marathon Biblique</p>
+      <a routerLink="/marathon-biblique" class="btn">
+        Voir le programme
+      </a>
+    </div>
+  </aside>
+
+</section>

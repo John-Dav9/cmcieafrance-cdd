@@ -1,8 +1,8 @@
 <section class="marathon-container">
   <!-- COLONNE GAUCHE -->
   <div class="marathon-calendar">
-    <h1 class="page-title">📖 {{ title }}</h1>
-    <p class="subtitle">{{ subtitle }}</p>
+    <h1 class="page-title">{{ title }}</h1>
+    <p class="subtitle" >{{ subtitle }}</p>
 
     <!-- Barre de progression -->
     <div class="progress-bar">
@@ -49,9 +49,11 @@
 
             <div class="cell-content">
               <div class="cell-day">Jour {{ c.dayNumber }}</div>
-              <div class="cell-reading" [title]="c.reading">
-                {{ c.reading }}
-              </div>
+              <div
+                class="cell-reading"
+                [innerHTML]="formatReading(c.reading)"
+              ></div>
+
             </div>
           </ng-container>
         </div>

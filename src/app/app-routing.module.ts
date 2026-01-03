@@ -18,6 +18,20 @@ const routes: Routes = [
   { path: 'premiere-visite', component: PremiereVisiteComponent },
   { path: 'ressources/decouvrir', component: RessourcesDecouvrirComponent},
   { path: 'ministere-enfants', component: MinistereEnfantsComponent },
+  { path: 'actualites', loadComponent: () => import('./pages/actualites/actualites.component').then(m => m.ActualitesComponent) },
+  {
+  path: 'actualites/marathon-biblique',
+  loadComponent: () =>
+    import('./pages/articles/marathon-biblique/marathon-biblique.component')
+      .then(m => m.MarathonBibliqueComponent),
+  },
+  {
+  path: 'actualites/voeux-2026-pasteur-fernand',
+  loadComponent: () =>
+    import('./pages/articles/voeux2026-pasteur-fernand/voeux2026-pasteur-fernand.component')
+      .then(m => m.Voeux2026PasteurFernandComponent),
+  },
+
   { path: '**', redirectTo: '' },
 ];
 
