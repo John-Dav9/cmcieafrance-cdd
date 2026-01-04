@@ -612,3 +612,158 @@
   line-height: 1.2;
   word-break: break-word;
 }
+
+/* ===== FAQ ===== */
+.faq-section {
+  max-width: 1100px;
+  margin: 3rem auto 4rem auto;
+  padding: 0 1.5rem;
+}
+
+.faq-container {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 2rem 2rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.faq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+.faq-title {
+  margin: 0.8rem 0 1.4rem 0;
+  font-size: 2rem;
+  font-weight: 950;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+/* Liste FAQ */
+.faq-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+/* Item */
+.faq-item {
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  padding: 0.9rem 1rem;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.faq-item[open] {
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 900;
+  font-size: 1.05rem;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "＋";
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #64748b;
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+}
+
+.faq-item p {
+  margin: 0.6rem 0 0 0;
+  color: #475569;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+/* === SECTION SEO / IDENTITÉ CMCIEA === */
+.seo-alias {
+  margin-top: 3.5rem;
+  padding: 2.6rem 2.4rem;
+  background: #d7f9eb;
+  border-radius: 18px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  box-shadow: 0 14px 38px rgba(17, 24, 39, 0.08);
+
+  max-width: 1100px;
+  margin: 3rem auto 4rem auto;
+}
+
+/* Titre */
+.seo-alias h2 {
+  margin: 0 0 1.1rem 0;
+  font-size: 1.7rem;
+  line-height: 1.25;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+/* Texte */
+.seo-alias p {
+  margin: 0;
+  max-width: 920px;
+  font-size: 1.06rem;
+  line-height: 1.85;
+  color: #374151;
+}
+
+/* Mots-clés mis en valeur */
+.seo-alias strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .faq-container {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .faq-title {
+    font-size: 1.6rem;
+  }
+
+  .faq-item summary {
+    font-size: 1rem;
+  }
+
+    .seo-alias {
+    padding: 2rem 1.4rem;
+    margin-top: 3rem;
+  }
+
+  .seo-alias h2 {
+    font-size: 1.35rem;
+  }
+
+  .seo-alias p {
+    font-size: 1rem;
+  }
+}

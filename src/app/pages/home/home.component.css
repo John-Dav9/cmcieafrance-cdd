@@ -149,6 +149,53 @@
   color: #111111;
 }
 
+/* Taille bouton petite (cartes) */
+.btn-sm {
+  padding: 0.65rem 1.2rem;
+  font-size: 0.92rem;
+}
+
+/* Variante outline plus “premium” */
+.btn-outline-light {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+}
+
+.btn-outline-light:hover {
+  background: #ffffff;
+  color: #111111;
+}
+
+/* Bouton outline plus sombre (fond clair) */
+.btn-outline-dark {
+  border: 2px solid rgba(0, 0, 0, 0.6);
+  color: #000000;
+}
+
+.btn-outline-dark:hover {
+  background: #000000;
+  color: #ffffff;
+}
+
+
+/* Si le bouton est dans une carte claire (ex: blanche/verte),
+   on passe automatiquement en contour noir pour la lisibilité */
+
+.info-card.card-ressources .btn-outline-light,
+.info-card.card-premiere-visite .btn-outline-light {
+  color: #111111;
+  border-color: rgba(17, 17, 17, 0.9);
+}
+
+.info-card.card-ressources .btn-outline-light,
+.info-card.card-premiere-visite .btn-outline-light:hover {
+  background: #111111;
+  color: #ffffff;
+}
+
+
 /* ---------- CARDS SECTION ---------- */
 
 .cards-section {
@@ -170,6 +217,11 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 250px;
+  position: relative;
+}
+
+.info-card .btn {
+  align-self: flex-start;
 }
 
 .card-premiere-visite {
