@@ -9,6 +9,8 @@ import { PremiereVisiteComponent } from './pages/premiere-visite/premiere-visite
 import { RessourcesDecouvrirComponent } from './pages/ressources-decouvrir/ressources-decouvrir.component';
 import { MinistereEnfantsComponent } from './pages/ministere-enfants/ministere-enfants.component';
 
+
+
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'nous-connaitre', component: AboutComponent },

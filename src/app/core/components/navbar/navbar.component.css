@@ -63,6 +63,35 @@
   color: #048848;
 }
 
+.navbar-links a.actualites {
+  position: relative;
+  background: #048848;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+}
+
+/* Petit point animé */
+.navbar-links a.actualites::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: #ff3b3b;
+  border-radius: 50%;
+  animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  70% { transform: scale(1.6); opacity: 0; }
+  100% { opacity: 0; }
+}
+
+
 /* Mobile */
 @media (max-width: 768px) {
   .navbar {
@@ -82,3 +111,19 @@
     padding: 0.5rem 0.75rem;
   }
 }
+
+/* ✅ Garantit que la navbar reçoit les clics */
+.navbar {
+  z-index: 9999;         /* au-dessus de tout */
+  position: sticky;
+  pointer-events: auto;
+}
+
+/* ✅ Garantit que les liens sont cliquables */
+.navbar a,
+.navbar button {
+  pointer-events: auto;
+  position: relative;
+  z-index: 10000;
+}
+

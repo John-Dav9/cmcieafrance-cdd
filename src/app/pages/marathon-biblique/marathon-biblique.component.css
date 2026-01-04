@@ -1,7 +1,29 @@
+:host {
+  /* Reprend ta charte */
+  --brand: #00bf63;
+  --brand-dark: #0e5f3a;
+  --brand-soft: #e6f7ef;
+
+  --accent: #8c2f39;
+  --highlight: #f4c430;
+
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+
+  --title: #111827;
+  --text: #374151;
+
+  display: block;
+  width: 100%;
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 /* ✅ Gauche plus grand, droite plus petit */
 .marathon-container {
   display: grid;
-  grid-template-columns: 1.6fr 0.6fr; /* ✅ left bigger / right smaller */
+  grid-template-columns: 1.6fr 0.6fr; /* left bigger / right smaller */
   gap: 2rem;
   padding: 2.5rem 1.5rem;
   max-width: 1300px;
@@ -22,7 +44,7 @@
   margin: 0 0 1.2rem 0;
   color: #475569;
   line-height: 1.5;
-  white-space: pre-line; /* 🔥 permet les retours à la ligne */
+  white-space: pre-line; /* permet les retours à la ligne */
 }
 
 /* ===== Compteur ===== */
@@ -93,10 +115,9 @@
 }
 
 @keyframes pulseRing {
-  0%   { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.25); }
+  0% { box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.25); }
   100% { box-shadow: 0 0 0 14px rgba(15, 23, 42, 0); }
 }
-
 
 /* ===== Calendrier ===== */
 .calendar-shell {
@@ -168,6 +189,22 @@
   color: #475569;
 }
 
+/* ✅ Par défaut */
+.calendar-shell{
+  max-height: 72vh;
+}
+
+/* ✅ Quand le formulaire est ouvert : on allonge le calendrier pour matcher la colonne droite */
+.marathon-container.join-open .calendar-shell{
+  max-height: 120vh;         /* ajuste si tu veux encore + */
+}
+
+/* ✅ (optionnel) si tu veux que le calendrier prenne exactement toute la hauteur visible */
+.marathon-container.join-open{
+  align-items: stretch;
+}
+
+
 /* Jour terminé */
 .calendar-cell.is-done {
   background: #f8fafc;
@@ -201,19 +238,14 @@
   color: #64748b;
 }
 
-/* FIX superposition texte */
+/* ✅ Texte lecture : lisible et sans superposition */
 .cell-reading {
   font-weight: 900;
   color: #0f172a;
-  line-height: 1.2;
-  font-size: 0.65rem;
+  line-height: 1.25;
+  font-size: 0.92rem;
 
   white-space: normal;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: unset;
-  -webkit-box-orient: vertical;
-
   word-break: break-word;
   overflow-wrap: anywhere;
   hyphens: auto;
@@ -291,7 +323,146 @@
 
 .play-icon { font-size: 1.35rem; }
 
-/* Info sous la vidéo */
+/* ===== Bouton (même style que /actualites) ===== */
+.btn-prayer{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: 0.95rem 1.3rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 1rem;
+  text-decoration: none;
+
+  background: var(--brand);
+  color: #0b0b0b;
+  border: 2px solid transparent;
+  box-shadow: 0 14px 30px rgba(17,24,39,.14);
+
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+}
+
+.btn-prayer:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 18px 38px rgba(17,24,39,.22);
+  background: var(--brand-dark);
+  color: #95ea97;
+}
+
+/* ===== Participation inline (formulaire) ===== */
+.join-inline { margin-top: 1rem; }
+.join-btn, .join-submit { width: 100%; }
+
+.join-hint{
+  margin: .65rem 0 0;
+  text-align: center;
+  color: #64748b;
+  font-weight: 800;
+}
+
+.join-card{
+  margin-top: .9rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 1.05rem;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+}
+
+.join-head{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: .8rem;
+}
+
+.join-title{
+  margin: 0;
+  font-weight: 950;
+  font-size: 1.12rem;
+  color: #0f172a;
+}
+
+.join-subtitle{
+  margin: .25rem 0 0;
+  color: #475569;
+  line-height: 1.55;
+  font-weight: 700;
+}
+
+.join-close{
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  color: #0f172a;
+  cursor: pointer;
+  font-weight: 950;
+  font-size: 1.1rem;
+}
+
+.join-form{ display: grid; gap: .75rem; }
+
+.join-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .85rem;
+}
+
+.field{ display: grid; gap: .35rem; }
+
+.field-label{
+  font-weight: 900;
+  color: #0f172a;
+  font-size: .95rem;
+}
+
+.field-input{
+  width: 100%;
+  padding: .85rem .9rem;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  font-weight: 800;
+  color: #0f172a;
+  background: #fff;
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+
+.field-input::placeholder{
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.field-input:focus{
+  outline: none;
+  border-color: var(--brand-dark);
+  box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.25);
+}
+
+.form-error{
+  margin: 0;
+  color: #b91c1c;
+  font-weight: 900;
+}
+
+.form-success{
+  margin: 0;
+  color: #166534;
+  font-weight: 900;
+}
+
+.join-footnote{
+  margin: .2rem 0 0;
+  color: #64748b;
+  font-weight: 700;
+  line-height: 1.45;
+  font-size: .9rem;
+}
+
+/* ===== SECTION EN BAS (PLEINE LARGEUR) ===== */
 .marathon-info {
   max-width: 1100px;
   margin: 2.5rem auto 3.5rem auto;
@@ -352,9 +523,7 @@
   line-height: 1.55;
 }
 
-.info-list strong {
-  color: #0f172a;
-}
+.info-list strong { color: #0f172a; }
 
 .info-quote {
   margin: 1.1rem 0 0 0;
@@ -367,6 +536,7 @@
   line-height: 1.6;
 }
 
+/* ===== Responsive ===== */
 @media (max-width: 760px) {
   /* 1 colonne : calendrier puis vidéo */
   .marathon-container {
@@ -375,59 +545,70 @@
   }
 
   .marathon-calendar { order: 1; }
-  .marathon-media {
-    order: 2;
-    position: static; /* désactive sticky sur mobile */
-  }
+  .marathon-media { order: 2; position: static; }
+  .media-spacer { display: none; }
 
-  .media-spacer { display: none; } /* plus besoin */
-
-  /* --- CALENDRIER MOBILE : 2 colonnes + scroll vertical --- */
+  /* Calendrier mobile : 2 colonnes + scroll vertical */
   .calendar-shell {
     padding: 0.75rem;
-    max-height: 72vh;      /* ✅ env. 6 lignes visibles selon la hauteur écran */
-    overflow-y: auto;      /* ✅ scroll vertical */
+    overflow-y: auto;
     overflow-x: hidden;
     max-height: min(72vh, 620px);
   }
 
-  .calendar-weekday { display: none; } /* pas utile en mobile */
+  .calendar-weekday { display: none; }
 
   .calendar-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)); /* ✅ 2 colonnes */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.6rem;
   }
 
   .calendar-cell {
-    min-height: 118px;   /* ✅ carte plus petite mais lisible */
+    min-height: 118px;
     padding: 0.7rem;
     border-radius: 14px;
   }
 
-  .cell-date {
-    font-size: 0.95rem;
-  }
-
-  .cell-day {
-    font-size: 0.78rem;
-  }
+  .cell-date { font-size: 0.95rem; }
+  .cell-day { font-size: 0.78rem; }
 
   .cell-reading {
-    font-size: 0.72rem;       /* ✅ lisible */
+    font-size: 0.8rem;
     line-height: 1.2;
-    -webkit-line-clamp: unset;    /* ✅ évite débordement */
-    white-space: normal;
-    word-break: break-word;
   }
 
   /* vidéo pleine largeur sous le calendrier */
-  .youtube-card {
-    height: 240px;
-  }
+  .youtube-card { height: 240px; }
+  .youtube-overlay { font-size: 1.2rem; }
 
-  .youtube-overlay {
-    font-size: 1.2rem;
-  }
+  /* formulaire en 1 colonne */
+  .join-grid { grid-template-columns: 1fr; }
 }
 
+/* ✅ Anti-débordement global du formulaire */
+.join-card, .join-form, .join-grid, .field { min-width: 0; }
 
+.field-input, .join-submit {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.join-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* ✅ au lieu de 1fr 1fr */
+  gap: .85rem;
+}
+
+.field-input{
+  min-width: 0; /* ✅ empêche l’input de pousser la colonne */
+}
+
+@media (max-width: 520px){
+  .join-grid { grid-template-columns: 1fr; }
+}
+
+.field-label{
+  display: block;
+  line-height: 1.2;
+  word-break: break-word;
+}

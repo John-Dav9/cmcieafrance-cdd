@@ -1,4 +1,4 @@
-<section class="marathon-container">
+<section class="marathon-container" [class.join-open]="isJoinOpen">
   <!-- COLONNE GAUCHE -->
   <div class="marathon-calendar">
     <h1 class="page-title">{{ title }}</h1>
@@ -80,6 +80,108 @@
         <span>Écouter la Bible</span>
       </div>
     </a>
+    
+    <!-- ✅ CTA / FORMULAIRE INLINE (sous la vidéo) -->
+    <div class="join-inline">
+
+      <!-- ✅ Bouton "Je participe" (même style que /actualites) -->
+      <button
+        *ngIf="!isJoinOpen"
+        type="button"
+        class="btn-prayer join-btn"
+        (click)="openJoinInline()"
+      >
+        Je participe
+      </button>
+
+      <p *ngIf="!isJoinOpen" class="join-hint">Inscription rapide (gratuite)</p>
+
+      <!-- ✅ Formulaire inline (remplace le bouton) -->
+      <div *ngIf="isJoinOpen" class="join-card">
+        <div class="join-head">
+          <div>
+            <h3 class="join-title">Je participe au Marathon Biblique</h3>
+            <p class="join-subtitle">
+              Remplis ce formulaire pour confirmer ta participation.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="join-close"
+            (click)="closeJoinInline()"
+            aria-label="Fermer"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form (ngSubmit)="submitJoin()" #f="ngForm" class="join-form">
+
+          <div class="join-grid">
+            <label class="field">
+              <span class="field-label">Nom complet *</span>
+              <input
+                class="field-input"
+                name="fullName"
+                [(ngModel)]="joinForm.fullName"
+                required
+                placeholder="Ex : Jean Dupont"
+              />
+            </label>
+
+            <label class="field">
+              <span class="field-label">Email *</span>
+              <input
+                class="field-input"
+                name="email"
+                [(ngModel)]="joinForm.email"
+                required
+                type="email"
+                placeholder="exemple@mail.com"
+              />
+            </label>
+
+            <label class="field">
+              <span class="field-label">Téléphone</span>
+              <input
+                class="field-input"
+                name="phone"
+                [(ngModel)]="joinForm.phone"
+                placeholder="+33..."
+              />
+            </label>
+
+            <label class="field">
+              <span class="field-label">Ville</span>
+              <input
+                class="field-input"
+                name="city"
+                [(ngModel)]="joinForm.city"
+                placeholder="Paris"
+              />
+            </label>
+          </div>
+
+          <p class="form-error" *ngIf="submitError">{{ submitError }}</p>
+          <p class="form-success" *ngIf="submitSuccess">✅ Inscription enregistrée !</p>
+
+          <button
+            class="btn-prayer join-submit"
+            type="submit"
+            [disabled]="isSubmitting"
+          >
+            {{ isSubmitting ? 'Enregistrement…' : 'Confirmer ma participation' }}
+          </button>
+
+          <p class="join-footnote">
+            Aucune donnée n’est affichée publiquement.
+          </p>
+        </form>
+      </div>
+    </div>
+
+
   </div>
 </section>
 
