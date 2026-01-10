@@ -7,7 +7,7 @@
 /* HERO */
 .kids-hero{
   position:relative;
-  padding: clamp(80px, 10vw, 140px) 16px;
+  padding: clamp(80px, 10vw, 80px) 10px;
   background: radial-gradient(1200px 600px at 20% 10%, rgba(0,183,181,.2), transparent 60%),
               radial-gradient(900px 500px at 80% 0%, rgba(29,84,108,.25), transparent 60%),
               #1A3D64;
@@ -23,7 +23,7 @@
 .kids-kicker{
   letter-spacing: .18em;
   text-transform: uppercase;
-  font-size: .85rem;
+  font-size: 1.8rem;
   opacity: .85;
   margin: 0 0 12px;
 }
@@ -45,6 +45,8 @@
   font-size: 1.05rem;
   line-height: 1.7;
   color: rgba(255,255,255,.9);
+  font-style: italic;
+  text-transform: lowercase
 }
 
 .kids-cta{
@@ -155,8 +157,8 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr)); /* ✅ 2 colonnes */
-  column-gap: 1.8rem !important;
-  row-gap: 3.5rem !important; /* ✅ espace vertical */
+  column-gap: 1.4rem !important;
+  row-gap: 3.4rem !important; /* ✅ espace vertical */
   align-items: stretch;
 }
 
@@ -164,8 +166,8 @@
 .kids-box{
   height: 100%;
   border-radius: 22px;
-  padding: 24px;
-  padding-bottom: 32px;
+  padding: 18px 20px;
+  min-height: 280px;
   box-shadow: 0 16px 40px rgba(15,23,42,.08);
   border: 1px solid #005461;
   background: #fff; /* fallback */
@@ -248,4 +250,5 @@
     grid-template-columns: 1fr;
   }
 }
+
 

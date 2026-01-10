@@ -10,16 +10,63 @@
       & ÉGLISES ASSOCIÉES FRANCE
     </span>
   </a>
+  <button
+    class="nav-toggle"
+    type="button"
+    aria-label="Ouvrir le menu"
+    [attr.aria-expanded]="isMenuOpen"
+    aria-controls="nav-menu"
+    (click)="toggleMenu()"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 
-  <nav class="navbar-links">
-    <!-- ✅ BOUTON ACTUALITÉS -->
+  <nav id="nav-menu" class="navbar-links" [class.open]="isMenuOpen">
+    <a
+      routerLink="/premiere-visite"
+      routerLinkActive="active"
+      aria-label="Premiere visite"
+      (click)="closeMenu()"
+    >
+      Premiere visite
+    </a>
+    <a
+      routerLink="/ressources/decouvrir"
+      routerLinkActive="active"
+      aria-label="Ressources"
+      (click)="closeMenu()"
+    >
+      Ressources
+    </a>
+    <a
+      routerLink="/marathon-biblique"
+      routerLinkActive="active"
+      aria-label="Programmmes"
+      (click)="closeMenu()"
+    >
+      Programmmes
+    </a>
+    <a
+      routerLink="/ministere-enfants"
+      routerLinkActive="active"
+      aria-label="Departement"
+      (click)="closeMenu()"
+    >
+      Departement
+    </a>
+    <!-- ? BOUTON ACTUALITES -->
     <a
       routerLink="/actualites"
       routerLinkActive="active"
       class="actualites"
-      aria-label="Actualités de CMCIEA France"
+      aria-label="Actualites de CMCIEA France"
+      (click)="closeMenu()"
     >
-      🔔 ACTUALITÉS
+      ?? ACTUALITES
     </a>
   </nav>
 </header>
+
+

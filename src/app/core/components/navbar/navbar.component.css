@@ -51,6 +51,7 @@
   font-weight: 600;
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
+  border: 0;
   transition: background 0.2s ease;
 }
 
@@ -70,6 +71,29 @@
   font-weight: 700;
   border-radius: 999px;
   padding: 0.55rem 1rem;
+  border: 0;
+}
+
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(12, 43, 78, 0.6);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 999px;
 }
 
 /* Petit point animé */
@@ -107,8 +131,32 @@
     max-width: 190px;
   }
 
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .navbar-links {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 1rem;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+    padding: 0.8rem;
+    border-radius: 14px;
+    background: #1D546C;
+    border: 1px solid #005461;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    min-width: 220px;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
   .navbar-links a {
-    padding: 0.5rem 0.75rem;
+    padding: 0.55rem 0.85rem;
   }
 }
 
