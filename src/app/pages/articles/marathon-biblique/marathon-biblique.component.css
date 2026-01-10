@@ -1,13 +1,18 @@
 :host{
-  --brand:#00bf63;
-  --brand-dark:#0e5f3a;
-  --brand-soft:#e6f7ef;
-  --highlight:#f4c430;
-  --bg:#fafafa;
-  --surface:#ffffff;
-  --border:#e5e7eb;
-  --title:#111827;
-  --text:#374151;
+  --brand:#1D546C;
+  --brand-dark:#1A3D64;
+  --brand-soft:#F4F4F4;
+  --highlight:#00B7B5;
+  --bg:#F4F4F4;
+  --surface:#FFFFFF;
+  --border:#005461;
+  --title:#1D546C;
+  --text:#111111;
+  --accent:#00B7B5;
+  --accent-hover:#018790;
+  --cta:#0C2B4E;
+  --cta-hover:#1A3D64;
+  --muted:#334155;
 
   display:block;
   color:var(--text);
@@ -30,11 +35,11 @@
   letter-spacing:.14em;
   font-size:.82rem;
   color:var(--brand-dark);
-  background:var(--brand-soft);
+  background:rgba(0, 183, 181, 0.12);
   display:inline-block;
   padding:.35rem .7rem;
   border-radius:999px;
-  border:1px solid rgba(0,191,99,.25);
+  border:1px solid rgba(0, 183, 181, 0.35);
 }
 
 h1{
@@ -47,7 +52,7 @@ h1{
 
 .meta{
   margin:0;
-  color:#6b7280;
+  color:var(--muted);
 }
 
 .article{
@@ -86,9 +91,9 @@ ul{
 blockquote{
   margin:1.2rem 0;
   padding:1rem 1rem;
-  background:#f9fafb;
+  background:#F4F4F4;
   border:1px solid var(--border);
-  border-left:5px solid var(--brand);
+  border-left:5px solid #005461;
   border-radius:14px;
   font-style: italic;
   font-size: 1.05rem;
@@ -97,14 +102,14 @@ blockquote{
 blockquote span{
   display:block;
   margin-top:.5rem;
-  color:#6b7280;
+  color:var(--muted);
 }
 
 .note{
   margin-top:1rem;
   padding:.9rem 1rem;
-  background:var(--brand-soft);
-  border:1px solid rgba(0,191,99,.25);
+  background:rgba(0, 183, 181, 0.12);
+  border:1px solid rgba(0, 183, 181, 0.35);
   border-radius:14px;
   font-weight:600;
 }
@@ -129,24 +134,24 @@ blockquote span{
 }
 
 .btn-primary{
-  background:var(--brand);
-  color:#0b0b0b;
+  background:var(--cta);
+  color:#ffffff;
   border:2px solid transparent;
 }
 
 .btn-primary:hover{
-  background:var(--brand-dark);
+  background:var(--cta-hover);
   color:#fff;
 }
 
 .btn-outline{
   background:transparent;
   color:var(--brand-dark);
-  border:2px solid rgba(0,191,99,.35);
+  border:2px solid rgba(0, 183, 181, 0.45);
 }
 
 .btn-outline:hover{
-  background:var(--brand-soft);
+  background:rgba(0, 183, 181, 0.12);
 }
 
 .btn-ghost{

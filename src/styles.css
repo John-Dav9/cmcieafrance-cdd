@@ -5,10 +5,24 @@ html, body {
   height: 100%;
 }
 
+:root {
+  --primary-bg: #F4F4F4;
+  --brand: #1D546C;
+  --brand-secondary: #1A3D64;
+  --cta: #0C2B4E;
+  --cta-hover: #1A3D64;
+  --accent: #00B7B5;
+  --accent-hover: #018790;
+  --support: #005461;
+  --surface: #FFFFFF;
+  --text: #111111;
+  --muted: #334155;
+}
+
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f6f7fb; /* ✅ thème clair */
-  color: #0f172a;      /* texte par défaut */
+  background: var(--primary-bg);
+  color: var(--text);
 }
 
 /* ⚠️ Ton container était trop étroit pour un calendrier 7 colonnes */
@@ -28,19 +42,19 @@ app-root, app-home {
 .footer {
   text-align: center;
   padding: 1.2rem;
-  margin-top: 2rem;
+  margin-top: 0;
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--muted);
 }
 
-/* ✅ Liens : plus de bleu par défaut */
+/* ✅ Liens : palette principale */
 a {
-  color: inherit;
+  color: var(--accent);
   text-decoration: none;
 }
 
 a:hover {
-  text-decoration: none;
+  color: var(--accent-hover);
 }
 
 /* ✅ Liens "texte" : underline élégant au survol */

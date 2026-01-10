@@ -72,4 +72,37 @@ export class HomeComponent implements OnInit {
       content: 'fr_FR'
     });
   }
+
+  sendWhatsApp(form: HTMLFormElement, prenom: string, nom: string, email: string, message: string): void {
+    const safePrenom = (prenom || '').trim();
+    const safeNom = (nom || '').trim();
+    const safeEmail = (email || '').trim();
+    const safeMessage = (message || '').trim();
+
+    if (form && !form.reportValidity()) {
+      return;
+    }
+
+    if (!safePrenom || !safeNom || !safeEmail || !safeMessage) {
+      return;
+    }
+
+    const text = `
+🙏 Bonjour,
+
+Je vous contacte via le site *CMCIEA-FRANCE – Chercheurs de Dieu*.
+
+👤 *Prénom* : ${safePrenom}
+👤 *Nom* : ${safeNom}
+📧 *Email* : ${safeEmail}
+
+📝 *Message / Demande* :
+${safeMessage}
+
+Que le Seigneur vous bénisse.
+`.trim();
+
+    const url = `https://wa.me/33744896818?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
 }

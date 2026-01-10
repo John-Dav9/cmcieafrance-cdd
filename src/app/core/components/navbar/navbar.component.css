@@ -2,14 +2,14 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #fff;
+  background: #1D546C;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   padding: 0.75rem 1.5rem;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid #005461;
 }
 
 /* Logo + texte */
@@ -28,11 +28,11 @@
 
 /* Texte du logo */
 .logo-text {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Lora', Georgia, serif;
   font-size: 0.60rem;
   font-weight: 600;
   line-height: 1.2;
-  color: #048848;
+  color: #FFFFFF;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   max-width: 280px;
@@ -47,7 +47,7 @@
 
 .navbar-links a {
   text-decoration: none;
-  color: #1a1a1a;
+  color: #FFFFFF;
   font-weight: 600;
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
@@ -55,17 +55,17 @@
 }
 
 .navbar-links a:hover {
-  background: rgba(4, 136, 72, 0.08);
+  background: rgba(0, 183, 181, 0.2);
 }
 
 .navbar-links a.active {
-  background: rgba(4, 136, 72, 0.12);
-  color: #048848;
+  background: rgba(0, 183, 181, 0.3);
+  color: #00B7B5;
 }
 
 .navbar-links a.actualites {
   position: relative;
-  background: #048848;
+  background: #0C2B4E;
   color: #fff;
   font-weight: 700;
   border-radius: 999px;
@@ -80,7 +80,7 @@
   right: 8px;
   width: 8px;
   height: 8px;
-  background: #ff3b3b;
+  background: #00B7B5;
   border-radius: 50%;
   animation: pulse 1.6s infinite;
 }

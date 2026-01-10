@@ -16,9 +16,67 @@
 /* footer sur toute la largeur */
 .footer {
   width: 100%;
-  text-align: center;
-  padding: 1rem 0;
-  background: #f7f7f7;
-  color: #333;
+  text-align: left;
+  padding: 2.5rem 0 1.2rem;
+  background: #1D546C;
+  color: #FFFFFF;
   font-size: 0.9rem;
+}
+
+.footer a {
+  color: #00B7B5;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #018790;
+}
+
+.footer-inner {
+  width: min(1100px, calc(100% - 2.2rem));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2rem;
+}
+
+.footer-title {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.footer-text {
+  margin: 0 0 0.6rem;
+  color: #E2E8F0;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.footer-links a {
+  display: block;
+  line-height: 1.5;
+}
+
+.footer-bottom {
+  width: min(1100px, calc(100% - 2.2rem));
+  margin: 2rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 183, 181, 0.25);
+  text-align: center;
+  color: #E2E8F0;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+  }
 }
