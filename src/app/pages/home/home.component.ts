@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit,Component, OnInit } from '@angular/core';
 import { PagesService } from '../../core/services/pages.service';
 import { Meta, Title } from '@angular/platform-browser';
+
 
 
 @Component({
@@ -8,7 +9,7 @@ import { Meta, Title } from '@angular/platform-browser';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   data: any;
 
   constructor(
@@ -73,21 +74,52 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  sendWhatsApp(form: HTMLFormElement, prenom: string, nom: string, email: string, message: string): void {
-    const safePrenom = (prenom || '').trim();
-    const safeNom = (nom || '').trim();
-    const safeEmail = (email || '').trim();
-    const safeMessage = (message || '').trim();
+  ngAfterViewInit(): void {
+  const elements = document.querySelectorAll('.animate-reveal');
 
-    if (form && !form.reportValidity()) {
-      return;
-    }
+  if (!elements.length) return;
 
-    if (!safePrenom || !safeNom || !safeEmail || !safeMessage) {
-      return;
-    }
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target); // ✅ animation 1 seule fois
+        }
+      });
+    },
+    { threshold: 0.25 }
+  );
 
-    const text = `
+  elements.forEach((el) => observer.observe(el));
+}
+
+  sendWhatsApp(
+  form: HTMLFormElement,
+  prenom: string,
+  nom: string,
+  email: string,
+  message: string
+): void {
+
+  // 🔐 Sécurisation des champs
+  const safePrenom = (prenom || '').trim();
+  const safeNom = (nom || '').trim();
+  const safeEmail = (email || '').trim();
+  const safeMessage = (message || '').trim();
+
+  // ✅ Validation HTML native
+  if (!form.reportValidity()) {
+    return;
+  }
+
+  // ✅ Sécurité supplémentaire
+  if (!safePrenom || !safeNom || !safeEmail || !safeMessage) {
+    return;
+  }
+
+  // 🕊️ Message pastoral
+  const text = `
 🙏 Bonjour,
 
 Je vous contacte via le site *CMCIEA-FRANCE – Chercheurs de Dieu*.
@@ -100,9 +132,19 @@ Je vous contacte via le site *CMCIEA-FRANCE – Chercheurs de Dieu*.
 ${safeMessage}
 
 Que le Seigneur vous bénisse.
-`.trim();
+  `.trim();
 
-    const url = `https://wa.me/33744896818?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
-  }
+  // 📲 Numéro WhatsApp (France : 33 + numéro sans 0)
+  const phoneNumber = '33744896818';
+
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
+
+  // 🚀 Ouvre WhatsApp
+  window.open(url, '_blank');
+
+  // ✅ Reset du formulaire (UX propre)
+  form.reset();
 }
+}
+
+
