@@ -159,7 +159,10 @@ export class MarathonBibliqueComponent implements OnInit {
 
   toggleChecked(day?: number, event?: Event): void {
     if (!day) return;
-    const checked = (event?.target as HTMLInputElement)?.checked ?? false;
+    const target = event?.target as HTMLInputElement | null;
+    const checked = target && typeof target.checked === 'boolean'
+      ? target.checked
+      : !this.progress[day];
     this.progress[day] = checked;
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.progress));
   }

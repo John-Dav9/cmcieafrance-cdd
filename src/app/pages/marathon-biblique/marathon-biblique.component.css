@@ -254,8 +254,20 @@
 }
 
 /* Checkbox */
-.cell-check { display: inline-flex; align-items: center; cursor: pointer; }
-.cell-check input { display: none; }
+.cell-check {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+.cell-check input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+}
 
 .check-ui {
   width: 18px;
@@ -708,7 +720,7 @@
 .seo-alias {
   margin-top: 3.5rem;
   padding: 2.6rem 2.4rem;
-  background: rgba(0, 183, 181, 0.12);
+  background: rgba(96, 227, 225, 0.12);
   border-radius: 18px;
   border: 1px solid #005461;
   box-shadow: 0 14px 38px rgba(17, 24, 39, 0.08);

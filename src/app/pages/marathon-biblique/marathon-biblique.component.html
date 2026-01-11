@@ -37,13 +37,24 @@
             <div class="cell-top">
               <span class="cell-date">{{ c.label }}</span>
 
-              <label class="cell-check" title="Marquer comme lu">
+              <label
+                class="cell-check"
+                title="Marquer comme lu"
+                [attr.for]="'day-check-' + c.dayNumber"
+              >
                 <input
                   type="checkbox"
+                  [id]="'day-check-' + c.dayNumber"
                   [checked]="isChecked(c.dayNumber)"
                   (change)="toggleChecked(c.dayNumber, $event)"
                 />
-                <span class="check-ui"></span>
+                <span
+                  class="check-ui"
+                  role="checkbox"
+                  [attr.aria-checked]="isChecked(c.dayNumber)"
+                  tabindex="0"
+                  (click)="toggleChecked(c.dayNumber, $event)"
+                ></span>
               </label>
             </div>
 
