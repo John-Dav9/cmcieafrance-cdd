@@ -5,3 +5,5 @@
 firebase-debug.log
 .env
 .env
+src/environments/environment.ts
+.env.local

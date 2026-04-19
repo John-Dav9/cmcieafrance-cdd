@@ -10,6 +10,7 @@ import { Message, MessagesService } from '../../core/services/messages.service';
 export class MessagesComponent implements OnInit {
   messages: (Message & { safeUrl: SafeResourceUrl })[] = [];
   currentIndex = 0;
+  private readonly videoIdPattern = /^[A-Za-z0-9_-]{11}$/;
 
   constructor(
     private messagesService: MessagesService,
@@ -18,12 +19,17 @@ export class MessagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.messagesService.getMessages().subscribe((msgs) => {
-      this.messages = msgs.map((m) => ({
-        ...m,
-        safeUrl: this.sanitizer.bypassSecurityTrustResourceUrl(
-          `https://www.youtube.com/embed/${m.videoId}`,
-        ),
-      }));
+      this.messages = msgs
+        .filter((m) => this.videoIdPattern.test((m.videoId || '').trim()))
+        .map((m) => {
+          const videoId = m.videoId.trim();
+          return {
+            ...m,
+            safeUrl: this.sanitizer.bypassSecurityTrustResourceUrl(
+              `https://www.youtube.com/embed/${videoId}`,
+            ),
+          };
+        });
     });
   }
 

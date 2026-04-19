@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = environment.apiBase;
 
 export interface Message {
   id: number;
