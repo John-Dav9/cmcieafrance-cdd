@@ -59,7 +59,6 @@
       }
     }
   },
-  "defaultProject": "eglise-frontend",
   "cli": {
     "analytics": false
   }

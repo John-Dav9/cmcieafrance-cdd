@@ -1,6 +1,13 @@
-# Firebase CI/CD frontend — checklist de correction
+# Firebase CI/CD frontend — état actuel
 
-Si le push sur GitHub ne met plus le site à jour, vérifie dans cet ordre :
+Le déploiement automatique Firebase est déjà configuré dans ce repo.
+
+- Workflow merge: `.github/workflows/firebase-hosting-merge.yml`
+- Déclencheur: `push` sur la branche `main`
+- Build lancé: `npx ng build --configuration production`
+- Déploiement Hosting: projet `cmcieafrance-cdd`
+
+Si un push GitHub ne met plus le site à jour, vérifie dans cet ordre :
 
 ## 1) Le workflow est bien dans le bon dossier
 
@@ -33,7 +40,7 @@ Le workflow doit :
 
 - installer Node 20
 - exécuter `npm ci`
-- exécuter `npm run build -- --configuration production`
+- exécuter `npx ng build --configuration production`
 
 ## 5) Vérifier le déploiement Firebase Hosting
 
@@ -48,4 +55,8 @@ Alors le problème n’est pas le workflow, mais la config prod de l’app. Dans
 - `frontend/src/environments/environment.prod.ts`
 - surtout `apiBase`
 
-Il doit pointer vers le backend réellement hébergé.
+Il pointe maintenant par défaut vers :
+
+- `https://cmciea-backend.onrender.com/api`
+
+Si Render attribue une autre URL finale, il faudra mettre à jour `environment.prod.ts`.
