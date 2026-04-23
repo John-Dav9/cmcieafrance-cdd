@@ -2,14 +2,14 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #fff;
+  background: #1D546C;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   padding: 0.75rem 1.5rem;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid #005461;
 }
 
 /* Logo + texte */
@@ -28,11 +28,11 @@
 
 /* Texte du logo */
 .logo-text {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Lora', Georgia, serif;
   font-size: 0.60rem;
   font-weight: 600;
   line-height: 1.2;
-  color: #048848;
+  color: #FFFFFF;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   max-width: 280px;
@@ -47,29 +47,67 @@
 
 .navbar-links a {
   text-decoration: none;
-  color: #1a1a1a;
+  color: #FFFFFF;
   font-weight: 600;
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
+  border: 0;
   transition: background 0.2s ease;
 }
 
 .navbar-links a:hover {
-  background: rgba(4, 136, 72, 0.08);
+  background: rgba(0, 183, 181, 0.2);
 }
 
 .navbar-links a.active {
-  background: rgba(4, 136, 72, 0.12);
-  color: #048848;
+  background: rgba(0, 183, 181, 0.3);
+  color: #00B7B5;
 }
 
 .navbar-links a.actualites {
   position: relative;
-  background: #048848;
+  background: #0C2B4E;
   color: #fff;
   font-weight: 700;
   border-radius: 999px;
   padding: 0.55rem 1rem;
+  border: 0;
+}
+
+.navbar-links a.mon-espace {
+  background: rgba(0,183,181,0.18);
+  color: #a5f3fc;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(0,183,181,0.35);
+  transition: background 0.15s;
+}
+
+.navbar-links a.mon-espace:hover,
+.navbar-links a.mon-espace.active { background: rgba(0,183,181,0.32); }
+
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(12, 43, 78, 0.6);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+  flex-direction: column;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 999px;
 }
 
 /* Petit point animé */
@@ -80,7 +118,7 @@
   right: 8px;
   width: 8px;
   height: 8px;
-  background: #ff3b3b;
+  background: #00B7B5;
   border-radius: 50%;
   animation: pulse 1.6s infinite;
 }
@@ -107,8 +145,32 @@
     max-width: 190px;
   }
 
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .navbar-links {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 1rem;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+    padding: 0.8rem;
+    border-radius: 14px;
+    background: #1D546C;
+    border: 1px solid #005461;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    min-width: 220px;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
   .navbar-links a {
-    padding: 0.5rem 0.75rem;
+    padding: 0.55rem 0.85rem;
   }
 }
 

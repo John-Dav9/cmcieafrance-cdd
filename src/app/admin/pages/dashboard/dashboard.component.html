@@ -1,0 +1,16 @@
+<div class="page">
+  <h2 class="page-title">Tableau de bord</h2>
+  <p class="page-sub">Bienvenue dans l'espace d'administration CMCIEA France.</p>
+
+  <div class="cards">
+    <a *ngFor="let c of cards" [routerLink]="c.route" class="card">
+      <span class="card-icon" [style.background]="c.color + '18'" [style.color]="c.color">
+        {{ c.icon }}
+      </span>
+      <div>
+        <h3>{{ c.label }}</h3>
+        <p>{{ c.desc }}</p>
+      </div>
+    </a>
+  </div>
+</div>

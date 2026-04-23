@@ -1,0 +1,26 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>CMCIEA</h1>
+      <p>Espace administration</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="admin@cmciea-france.com" autocomplete="email" />
+      </div>
+
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+
+      <button type="submit" [disabled]="loading || form.invalid" class="btn-login">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+    </form>
+  </div>
+</div>

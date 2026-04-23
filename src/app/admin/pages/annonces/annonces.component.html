@@ -1,0 +1,65 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Annonces</h2>
+  </div>
+
+  <!-- Formulaire -->
+  <div class="form-card">
+    <h3>Nouvelle annonce</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label>Titre</label>
+        <input type="text" formControlName="titre" placeholder="Titre de l'annonce" />
+      </div>
+      <div class="field">
+        <label>Contenu</label>
+        <textarea formControlName="contenu" placeholder="Contenu de l'annonce..."></textarea>
+      </div>
+      <div class="checkboxes">
+        <label class="check-label">
+          <input type="checkbox" formControlName="publiee" />
+          Publier sur le site
+        </label>
+        <label class="check-label">
+          <input type="checkbox" formControlName="envoyerEmail" />
+          Envoyer par email à tous les inscrits
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || saving">
+          {{ saving ? 'Publication...' : 'Publier' }}
+        </button>
+      </div>
+      <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+    </form>
+  </div>
+
+  <!-- Liste -->
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && annonces.length === 0" class="empty">Aucune annonce.</div>
+
+  <div *ngIf="!loading && annonces.length > 0" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of annonces">
+          <td><strong>{{ a.titre }}</strong><br /><span class="excerpt">{{ a.contenu | slice:0:80 }}...</span></td>
+          <td>
+            <button class="toggle-btn" [class.publiee]="a.publiee" (click)="togglePubliee(a)">
+              {{ a.publiee ? 'Publiée' : 'Brouillon' }}
+            </button>
+          </td>
+          <td>{{ a.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td><button class="btn-del" (click)="delete(a.id)">✕</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

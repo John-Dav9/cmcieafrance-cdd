@@ -1,0 +1,40 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Témoignages</h2>
+    <div class="filters">
+      <select [(ngModel)]="filtre" (change)="load()">
+        <option *ngFor="let s of statuts" [value]="s.value">{{ s.label }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && temoignages.length === 0" class="empty">
+    Aucun témoignage {{ filtre === 'EN_ATTENTE' ? 'en attente' : '' }}.
+  </div>
+
+  <div *ngIf="!loading && temoignages.length > 0" class="temoignages-list">
+    <div *ngFor="let t of temoignages" class="temoignage-card">
+      <div class="temo-header">
+        <div>
+          <span class="temo-nom">{{ t.nom }}</span>
+          <span class="temo-ville" *ngIf="t.ville"> — {{ t.ville }}</span>
+        </div>
+        <div class="temo-meta">
+          <span class="statut-badge" [class]="'statut-' + t.statut">{{ statutLabel(t.statut) }}</span>
+          <span class="temo-date">{{ t.createdAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+      <p class="temo-contenu">{{ t.contenu }}</p>
+      <div class="temo-actions">
+        <button class="btn-approuver" *ngIf="t.statut !== 'APPROUVE'" (click)="approuver(t.id)">
+          ✓ Approuver
+        </button>
+        <button class="btn-rejeter" *ngIf="t.statut !== 'REJETE'" (click)="rejeter(t.id)">
+          ✕ Rejeter
+        </button>
+        <button class="btn-del" (click)="delete(t.id)">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Bibliothèque</h2>
+  </div>
+
+  <div class="form-card">
+    <h3>Ajouter un livre / traité</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="two-cols">
+        <div class="field">
+          <label>Titre *</label>
+          <input type="text" formControlName="titre" placeholder="Titre du livre" />
+        </div>
+        <div class="field">
+          <label>Auteur</label>
+          <input type="text" formControlName="auteur" placeholder="Nom de l'auteur" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea formControlName="description" placeholder="Résumé..."></textarea>
+      </div>
+      <div class="two-cols">
+        <div class="field">
+          <label>Catégorie</label>
+          <input type="text" formControlName="categorie" placeholder="Traité, Bible, Étude..." />
+        </div>
+      </div>
+      <div class="two-cols">
+        <div class="field">
+          <label>Fichier PDF *</label>
+          <input type="file" accept=".pdf" (change)="onPdfChange($event)" />
+        </div>
+        <div class="field">
+          <label>Image de couverture</label>
+          <input type="file" accept="image/*" (change)="onCoverChange($event)" />
+        </div>
+      </div>
+
+      <div class="progress-bar" *ngIf="uploading">
+        <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+        <span>{{ uploadProgress }}%</span>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || !pdfFile || uploading">
+          {{ uploading ? 'Envoi...' : 'Ajouter' }}
+        </button>
+      </div>
+      <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && livres.length === 0" class="empty">Aucun livre.</div>
+
+  <div *ngIf="!loading && livres.length > 0" class="livres-grid">
+    <div *ngFor="let l of livres" class="livre-card">
+      <div class="livre-cover">
+        <img *ngIf="l.coverUrl" [src]="l.coverUrl" [alt]="l.titre" />
+        <div *ngIf="!l.coverUrl" class="cover-placeholder">📖</div>
+      </div>
+      <div class="livre-info">
+        <h4>{{ l.titre }}</h4>
+        <p class="auteur" *ngIf="l.auteur">{{ l.auteur }}</p>
+        <p class="categorie" *ngIf="l.categorie">{{ l.categorie }}</p>
+        <div class="livre-actions">
+          <a [href]="l.pdfUrl" target="_blank" class="btn-pdf">Voir PDF</a>
+          <button class="btn-del" (click)="delete(l.id)">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

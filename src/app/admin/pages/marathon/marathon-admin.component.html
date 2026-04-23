@@ -1,0 +1,186 @@
+<div class="page">
+
+  <!-- En-tête -->
+  <div class="page-header">
+    <h2 class="page-title">Marathons Bibliques</h2>
+    <button class="btn-primary" (click)="showForm = !showForm">
+      {{ showForm ? '✕ Annuler' : '+ Nouveau marathon' }}
+    </button>
+  </div>
+
+  <!-- Banner Firebase non configuré -->
+  <div class="firebase-warn" *ngIf="firebaseError">
+    <span>⚠️</span>
+    <div>
+      <strong>Firebase non configuré</strong>
+      <p>{{ firebaseError }}</p>
+      <p>Dans <code>backend/.env</code>, renseignez <code>FIREBASE_PROJECT_ID</code>, <code>FIREBASE_CLIENT_EMAIL</code> et <code>FIREBASE_PRIVATE_KEY</code> avec les vraies valeurs depuis Firebase Console → Paramètres du projet → Comptes de service → Générer une nouvelle clé privée.</p>
+    </div>
+  </div>
+
+  <!-- ── Formulaire de création ────────────────────────────────────────────── -->
+  <div class="form-card" *ngIf="showForm">
+    <h3>Créer un marathon</h3>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Titre</label>
+        <input type="text" [(ngModel)]="form.titre" placeholder="Ex: Marathon Bible complète 2026" />
+      </div>
+      <div class="field">
+        <label>Scope de lecture</label>
+        <select [(ngModel)]="form.scope">
+          <option *ngFor="let s of scopeOptions" [value]="s">{{ scopeLabels[s] }}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Date de début</label>
+        <input type="date" [(ngModel)]="form.dateDebut" />
+      </div>
+      <div class="field">
+        <label>Date de fin</label>
+        <input type="date" [(ngModel)]="form.dateFin" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Description (optionnel)</label>
+      <textarea [(ngModel)]="form.description" placeholder="Présentation du marathon..."></textarea>
+    </div>
+
+    <!-- Sélecteur de livres (LIVRES_CHOISIS uniquement) -->
+    <div class="books-picker" *ngIf="form.scope === 'LIVRES_CHOISIS'">
+      <h4>Sélectionner les livres</h4>
+      <div class="books-cols">
+        <div class="books-col">
+          <p class="books-testament">Ancien Testament</p>
+          <label class="book-check" *ngFor="let b of atBooks">
+            <input type="checkbox" [checked]="isLivreSelected(b.id)" (change)="toggleLivre(b.id)" />
+            {{ b.nom }}
+          </label>
+        </div>
+        <div class="books-col">
+          <p class="books-testament">Nouveau Testament</p>
+          <label class="book-check" *ngFor="let b of ntBooks">
+            <input type="checkbox" [checked]="isLivreSelected(b.id)" (change)="toggleLivre(b.id)" />
+            {{ b.nom }}
+          </label>
+        </div>
+      </div>
+      <p class="books-count" *ngIf="form.livresChoisis.length">
+        {{ form.livresChoisis.length }} livre(s) sélectionné(s)
+      </p>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" [disabled]="saving || !form.titre || !form.dateDebut || !form.dateFin" (click)="submit()">
+        {{ saving ? 'Création en cours...' : 'Créer le marathon' }}
+      </button>
+    </div>
+
+    <p class="success-msg" *ngIf="successMsg">✓ {{ successMsg }}</p>
+    <p class="error-msg"   *ngIf="errorMsg">{{ errorMsg }}</p>
+  </div>
+
+  <!-- ── Liste des marathons ────────────────────────────────────────────────── -->
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && marathons.length === 0" class="empty">Aucun marathon créé.</div>
+
+  <div *ngIf="!loading && marathons.length > 0" class="marathons-list">
+    <div class="marathon-card" *ngFor="let m of marathons" [class.archived]="m.statut === 'ARCHIVE'">
+
+      <!-- Ligne principale -->
+      <div class="mc-main">
+        <div class="mc-info">
+          <div class="mc-title-row">
+            <strong class="mc-title">{{ m.titre }}</strong>
+            <span class="statut-badge" [class]="'statut-' + m.statut">{{ statutLabels[m.statut] }}</span>
+          </div>
+          <p class="mc-meta">
+            {{ scopeLabels[m.scope] }} &bull;
+            {{ m.dateDebut }} → {{ m.dateFin }} &bull;
+            {{ m.nbJours }} jours
+            <span *ngIf="m.statut === 'ACTIF'" class="days-left">({{ nbJoursRestants(m.dateFin) }}j restants)</span>
+          </p>
+          <p class="mc-desc" *ngIf="m.description">{{ m.description }}</p>
+        </div>
+
+        <div class="mc-counter">
+          <span class="counter-num">{{ m.nbInscrits }}</span>
+          <span class="counter-label">inscrit(s)</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="mc-actions">
+        <button class="btn-secondary" (click)="voirInscrits(m)">
+          {{ inscritsMarathonId === m.id ? '▲ Masquer' : '▼ Participants' }}
+        </button>
+        <button class="btn-secondary" *ngIf="m.statut !== 'ARCHIVE'" (click)="archiver(m.id)">Archiver</button>
+        <button class="btn-secondary" *ngIf="m.statut === 'ARCHIVE'"  (click)="reactiver(m.id)">Réactiver</button>
+        <button class="btn-del"                                        (click)="supprimer(m.id)">✕</button>
+      </div>
+
+      <!-- Panneau inscrits (dépliable) -->
+      <div class="inscrits-panel" *ngIf="inscritsMarathonId === m.id">
+        <div *ngIf="loadingInscrits" class="loading">Chargement des participants...</div>
+        <div *ngIf="!loadingInscrits && inscrits.length === 0" class="empty">Aucun inscrit pour l'instant.</div>
+
+        <div *ngIf="!loadingInscrits && inscrits.length > 0" class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Participant</th>
+                <th>Email</th>
+                <th>Progression</th>
+                <th>Jalons</th>
+                <th>Inscription</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of inscrits">
+                <td><strong class="rank">{{ i.rank }}</strong></td>
+                <td>{{ i.fullName }}</td>
+                <td class="email-cell">{{ i.email }}</td>
+                <td>
+                  <div class="progress-wrap">
+                    <div class="progress-bar" [style.width.%]="i.progressPercent"></div>
+                  </div>
+                  <span class="progress-pct">{{ i.progressPercent }}%</span>
+                </td>
+                <td>
+                  <span class="milestone" *ngFor="let ms of [25,50,75,100]"
+                        [class.reached]="i.milestonesReached?.includes(ms)">
+                    {{ ms }}%
+                  </span>
+                </td>
+                <td>{{ i.createdAt?.toDate ? (i.createdAt.toDate() | date:'dd/MM/yy') : '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Attestations annuelles ──────────────────────────────────────────────── -->
+  <div class="form-card attestation-card">
+    <h3>Attestations de fidélité annuelles</h3>
+    <p class="hint">
+      Envoie une attestation aux participants ayant complété 100% de <strong>tous</strong>
+      les marathons lancés au cours d'une année.
+    </p>
+    <div class="form-actions">
+      <div class="field inline">
+        <label>Année</label>
+        <input type="number" [(ngModel)]="anneeAttestation" style="width:100px" />
+      </div>
+      <button class="btn-primary" [disabled]="sendingAttestations" (click)="envoyerAttestations()">
+        {{ sendingAttestations ? 'Envoi...' : 'Envoyer les attestations' }}
+      </button>
+    </div>
+    <p class="success-msg" *ngIf="attestationMsg">{{ attestationMsg }}</p>
+  </div>
+
+</div>

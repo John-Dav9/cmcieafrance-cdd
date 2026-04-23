@@ -3,7 +3,7 @@
   <!-- Image de fond -->
   <img
     class="hero-video"
-    src="assets/images/eglise-presentation.png"
+    [src]="heroImageUrl"
     alt="CMCIEA-FRANCE Chercheurs de Dieu"
   />
 
@@ -12,19 +12,9 @@
 
   <!-- Contenu -->
   <div class="hero-content">
-    <p class="hero-tagline">
-      Bienvenue à CMCIEA-FRANCE CHERCHEURS DE DIEU
-    </p>
-
-    <h1 class="hero-title">
-      Une église pour <span>tous</span>,<br />
-      Une église enracinée dans <span>la Parole</span>
-    </h1>
-
-    <p class="hero-text">
-      Découvre une communauté de chercheurs de Dieu qui aiment Jésus,
-      aiment les gens et désirent voir l'Évangile transformer des vies.
-    </p>
+    <p class="hero-tagline">{{ heroTagline }}</p>
+    <h1 class="hero-title" [innerHTML]="heroTitle"></h1>
+    <p class="hero-text">{{ heroText }}</p>
   </div>
 </section>
 
@@ -46,7 +36,7 @@
     <!-- Carte 2 -->
     <article class="info-card card-ressources">
       <p class="card-eyebrow">RESSOURCES</p>
-      <h2 class="card-title">NOUVEAU ?</h2>
+      <h2 class="card-title">NOUVEAU DANS LA FOI ?</h2>
       <p class="card-text">
         Une sélection de ressources pour débuter ton cheminement spirituel.
 
@@ -68,7 +58,7 @@
       <p class="card-text">
         Transformez votre vie en 45 jours : marathon biblique du 05 janvier au 18 février 2026.
       </p>
-      <a routerLink="/marathon-biblique" class="btn btn-outline-dark btn-sm">DÉCOUVRIR</a>
+      <a routerLink="/marathon-biblique" class="btn btn-outline-light btn-sm">DÉCOUVRIR</a>
     </article>
 
     <!-- ✅ Carte 4 : Ministère Enfants -->
@@ -87,12 +77,10 @@
 <!-- SECTION VISION / QUI SOMMES-NOUS -->
 <section class="vision-section">
   <div class="vision-container">
-    <h2 class="vision-heading">
-      Une communauté de <span>disciples du Seigneur Jésus-Christ</span>,
-      qui ont décidé de vivre selon la <span>Parole de Dieu</span>
-    </h2>
+    <h2 class="vision-heading animate-reveal" [innerHTML]="visionHeading"></h2>
 
-    <p class="vision-text">
+
+    <!-- <p class="vision-text">
       À l'église <strong>Chercheurs de Dieu</strong>, 
       la Parole de Dieu est au cœur de notre vie :
       nous la <strong>lisons</strong> abondamment,
@@ -109,7 +97,7 @@
       <strong>aiment</strong> le Seigneur Jésus-Christ, 
       <strong>le cherchent</strong> de tout leurs coeurs
       et <strong>le servent</strong> ardemment.
-    </p>
+    </p> -->
 
     <!-- <a routerLink="/a-propos" class="btn btn-primary vision-btn">
       En savoir plus sur notre vision
@@ -120,21 +108,9 @@
 <!-- SECTION YOUTUBE / MÉDIAS -->
 <section class="media-section">
   <div class="media-inner">
-    <h2 class="media-title">
-      DÉCOUVREZ NOS PROGRAMMATIONS MÉDIAS
-    </h2>
-    <p class="media-text">
-      Nous annonçons la bonne nouvelle de Jésus-Christ qui sauve, guérit et
-      délivre au travers des médias partout dans le monde.
-    </p>
-    <a
-      href="https://www.youtube.com/channel/UCdy_sjWGshzrF2NqzzTfd1Q"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="btn btn-outline-dark media-btn"
-    >
-      Je veux voir la programmation
-    </a>
+    <h2 class="media-title">{{ mediaTitle }}</h2>
+    <p class="media-text">{{ mediaText }}</p>
+    <a [href]="mediaYoutubeUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark media-btn">{{ mediaButtonText }}</a>
   </div>
 </section>
 
@@ -148,72 +124,43 @@
         <h2 class="events-title">PROGRAMMES HEBDOMADAIRES</h2>
       </div>
 
-      <div class="event-item">
-        <h3 class="event-day">DU LUNDI AU VENDREDI</h3>
+      <div class="event-item" *ngFor="let c of cultes">
+        <h3 class="event-day">{{ c.jour }}</h3>
         <p class="event-details">
-          DE 12H30 A 13H30 – PRIÈRE EN LIGNE
+          DE {{ c.heure }} – {{ c.description }}
         </p>
-      </div>
-
-      <div class="event-item">
-        <h3 class="event-day">DIMANCHE</h3>
-        <p class="event-details">
-          DE 17H A 18H– CELEBRATION EN LIGNE
-        </p>
-      </div>
-
-      <div class="event-item">
-        <h3 class="event-day">MERCREDI</h3>
-        <p class="event-details">
-          DE 20H A 21H – ENSEIGNEMENTS BIBLIQUE EN LIGNE
-        </p>
-      </div>
-
-      <div class="event-item">
-        <h3 class="event-day">VENDREDI</h3>
-        <p class="event-details">
-          DE 23H A 1H – NUIT DE PRIÈRE EN LIGNE<br />
-          <!-- <span class="event-note">
-            * Veuillez SVP consulter le compte
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
-              >INSTAGRAM</a
-            >
-            de la JEUNESSE CMCIEA-FRANCE afin de découvrir le programme.
-          </span> -->
-        </p>
+        <a *ngIf="c.lien" [href]="c.lien" target="_blank" rel="noopener" class="event-link">Rejoindre →</a>
       </div>
     </div>
 
     <!-- COLONNE CONTACT -->
     <div class="contact-column">
       <div class="contact-card">
-        <h2 class="contact-title">Nous contacter</h2>
-        <p class="contact-intro">
-          Une question, un besoin de prière, envie d’en savoir plus ?
-          Écris-nous, notre équipe te répondra rapidement.
-        </p>
+        <h2 class="contact-title">{{ contactTitle }}</h2>
+        <p class="contact-intro">{{ contactIntro }}</p>
 
-        <form class="contact-form">
+        <form class="contact-form" #contactForm>
           <div class="form-row">
             <div class="form-group">
               <label for="prenom">Prénom</label>
-              <input id="prenom" type="text" name="prenom" required />
+              <input id="prenom" #prenom type="text" name="prenom" required />
             </div>
             <div class="form-group">
               <label for="nom">Nom</label>
-              <input id="nom" type="text" name="nom" required />
+              <input id="nom" #nom type="text" name="nom" required />
             </div>
           </div>
 
           <div class="form-group">
             <label for="email">Adresse e-mail</label>
-            <input id="email" type="email" name="email" required />
+            <input id="email" #email type="email" name="email" required />
           </div>
 
           <div class="form-group">
             <label for="message">Message</label>
             <textarea
               id="message"
+              #message
               name="message"
               rows="4"
               placeholder="Dis-nous comment nous pouvons t’aider."
@@ -221,7 +168,11 @@
             ></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary contact-btn">
+          <button
+            type="button"
+            class="btn btn-primary contact-btn"
+            (click)="sendWhatsApp(contactForm, prenom.value, nom.value, email.value, message.value)"
+          >
             Envoyer le message
           </button>
         </form>
@@ -229,7 +180,7 @@
         <div class="contact-extra">
           <p>
             Ou écris-nous directement à
-            <a href="mailto:contact&#64;cmciea-france.fr">contact&#64;cmciea-france.com</a>
+            <a href="mailto:contact&#64;cmciea-france.com">contact&#64;cmciea-france.com</a>
           </p>
         </div>
       </div>

@@ -1,0 +1,80 @@
+<div class="editor-shell">
+
+  <!-- ── Panneau gauche : contrôles ── -->
+  <div class="controls-panel">
+    <div class="panel-header">
+      <h2>Thème & couleurs</h2>
+      <p>Les changements sont visibles en direct dans l'aperçu.</p>
+    </div>
+
+    <form [formGroup]="form" class="controls-form">
+
+      <div class="section-label">Couleurs</div>
+
+      <div class="color-grid">
+        <div class="color-field" *ngFor="let f of colorFields">
+          <label>{{ f.label }}</label>
+          <div class="color-input-wrap">
+            <input type="color" [formControlName]="f.key" />
+            <input type="text" [formControlName]="f.key" class="hex-input" maxlength="7" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Typographie</div>
+
+      <div class="two-cols">
+        <div class="field">
+          <label>Police des titres</label>
+          <select formControlName="fontHeading">
+            <option *ngFor="let f of fonts" [value]="f">{{ f }}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Police du corps</label>
+          <select formControlName="fontBody">
+            <option *ngFor="let f of fonts" [value]="f">{{ f }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-label">Images</div>
+
+      <div class="field">
+        <label>Logo de l'église</label>
+        <input type="file" accept="image/*" (change)="onLogoChange($event)" />
+      </div>
+
+      <div class="field">
+        <label>Image hero (page d'accueil)</label>
+        <input type="file" accept="image/*" (change)="onHeroChange($event)" />
+      </div>
+
+      <div class="save-row">
+        <button class="btn-primary" (click)="save()" [disabled]="saving">
+          {{ saving ? 'Sauvegarde...' : '✓ Sauvegarder le thème' }}
+        </button>
+        <p class="saved-msg" *ngIf="savedMsg">{{ savedMsg }}</p>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ── Panneau droit : prévisualisation ── -->
+  <div class="preview-panel">
+    <div class="preview-header">
+      <span class="preview-label">Aperçu live</span>
+      <span class="preview-url">cmciea-france.com</span>
+    </div>
+    <div class="preview-frame-wrap">
+      <iframe
+        #previewFrame
+        src="/"
+        (load)="onIframeLoad()"
+        class="preview-iframe"
+        title="Aperçu du site"
+      ></iframe>
+    </div>
+  </div>
+
+</div>

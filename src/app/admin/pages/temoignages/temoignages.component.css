@@ -1,0 +1,101 @@
+@import '../../admin-shared.css';
+
+.filters select {
+  padding: 8px 12px;
+  border: 1px solid #dde1ec;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+}
+
+.temoignages-list { display: flex; flex-direction: column; gap: 12px; }
+
+.temoignage-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #eef0f7;
+}
+
+.temo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.temo-nom { font-weight: 600; color: #1a1f2e; font-size: 14px; }
+.temo-ville { color: #8b93a8; font-size: 13px; }
+.temo-meta { display: flex; align-items: center; gap: 10px; }
+.temo-date { color: #8b93a8; font-size: 12px; }
+
+.statut-badge {
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statut-EN_ATTENTE { background: #fef3c7; color: #d97706; }
+.statut-APPROUVE { background: #f0fdf4; color: #16a34a; }
+.statut-REJETE { background: #fef2f2; color: #ef4444; }
+
+.temo-contenu {
+  color: #3d4663;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+  border-left: 3px solid #eef0f7;
+  padding-left: 12px;
+}
+
+.temo-actions { display: flex; gap: 8px; align-items: center; }
+
+.btn-approuver {
+  padding: 7px 14px;
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-approuver:hover { background: #dcfce7; }
+
+.btn-rejeter {
+  padding: 7px 14px;
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-rejeter:hover { background: #fee2e2; }
+
+.btn-del {
+  background: none;
+  border: none;
+  color: #8b93a8;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+  margin-left: auto;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+
+.btn-del:hover { color: #ef5350; }

@@ -1,0 +1,65 @@
+@import '../../admin-shared.css';
+
+.page-sub { font-size: 13px; color: #5a6480; margin: -8px 0 20px; }
+
+.culte-card {
+  background: #fff;
+  border: 1px solid #dde6f0;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.culte-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.culte-index { font-size: 12px; font-weight: 700; color: #aab0c4; }
+
+.culte-actions { display: flex; gap: 8px; align-items: center; }
+
+.btn-icon {
+  background: #f4f6fb;
+  border: 1px solid #dde6f0;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  color: #5a6480;
+}
+.btn-icon:disabled { opacity: 0.4; cursor: default; }
+
+.btn-danger-sm {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.culte-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field--wide { grid-column: 1 / -1; }
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #aab0c4;
+  font-size: 14px;
+  background: #f4f6fb;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.save-row { display: flex; align-items: center; gap: 14px; margin-top: 20px; }
+.saved-msg { font-size: 13px; color: #16a34a; font-weight: 600; }
+.error-msg { font-size: 13px; color: #dc2626; font-weight: 600; }

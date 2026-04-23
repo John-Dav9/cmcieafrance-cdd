@@ -20,16 +20,13 @@ export class MessagesComponent implements OnInit {
   ngOnInit(): void {
     this.messagesService.getMessages().subscribe((msgs) => {
       this.messages = msgs
-        .filter((m) => this.videoIdPattern.test((m.videoId || '').trim()))
         .map((m) => {
-          const videoId = m.videoId.trim();
-          return {
-            ...m,
-            safeUrl: this.sanitizer.bypassSecurityTrustResourceUrl(
-              `https://www.youtube.com/embed/${videoId}`,
-            ),
-          };
-        });
+          const safeUrl = this.buildSafeUrl(m.videoId);
+          return safeUrl ? { ...m, safeUrl } : null;
+        })
+        .filter(
+          (m): m is Message & { safeUrl: SafeResourceUrl } => m !== null,
+        );
     });
   }
 
@@ -42,5 +39,15 @@ export class MessagesComponent implements OnInit {
   next() {
     if (!this.messages.length) return;
     this.currentIndex = (this.currentIndex + 1) % this.messages.length;
+  }
+
+  private buildSafeUrl(videoId: string): SafeResourceUrl | null {
+    const normalized = (videoId || '').trim();
+    if (!/^[a-zA-Z0-9_-]{11}$/.test(normalized)) {
+      return null;
+    }
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${normalized}`,
+    );
   }
 }

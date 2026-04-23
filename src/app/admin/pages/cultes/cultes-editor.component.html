@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Horaires des cultes</h2>
+    <button class="btn-primary" (click)="add()">+ Ajouter un créneau</button>
+  </div>
+
+  <p class="page-sub">Ces horaires sont affichés sur la page d'accueil du site.</p>
+
+  <div class="loading-state" *ngIf="loading">Chargement…</div>
+
+  <div *ngIf="!loading">
+
+    <div class="culte-card" *ngFor="let item of items; let i = index">
+      <div class="culte-card__head">
+        <span class="culte-index">#{{ i + 1 }}</span>
+        <div class="culte-actions">
+          <button class="btn-icon" (click)="moveUp(i)" title="Monter" [disabled]="i === 0">▲</button>
+          <button class="btn-icon" (click)="moveDown(i)" title="Descendre" [disabled]="i === items.length - 1">▼</button>
+          <button class="btn-danger-sm" (click)="remove(i)">Supprimer</button>
+        </div>
+      </div>
+
+      <div class="culte-fields">
+        <div class="field">
+          <label>Jour / Période</label>
+          <input type="text" [(ngModel)]="item.jour" placeholder="Ex: DIMANCHE" />
+        </div>
+        <div class="field">
+          <label>Horaire</label>
+          <input type="text" [(ngModel)]="item.heure" placeholder="Ex: 17H – 18H" />
+        </div>
+        <div class="field field--wide">
+          <label>Description</label>
+          <input type="text" [(ngModel)]="item.description" placeholder="Ex: CÉLÉBRATION EN LIGNE" />
+        </div>
+        <div class="field field--wide">
+          <label>Lien (optionnel)</label>
+          <input type="url" [(ngModel)]="item.lien" placeholder="https://t.me/..." />
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="items.length === 0">
+      Aucun créneau — cliquez sur « + Ajouter un créneau » pour commencer.
+    </div>
+
+    <div class="save-row">
+      <button class="btn-primary" (click)="save()" [disabled]="saving">
+        {{ saving ? 'Sauvegarde…' : '✓ Sauvegarder' }}
+      </button>
+      <span class="saved-msg" *ngIf="savedMsg">{{ savedMsg }}</span>
+      <span class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</span>
+    </div>
+
+  </div>
+</div>

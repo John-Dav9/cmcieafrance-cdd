@@ -1,0 +1,87 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Actualités</h2>
+  </div>
+
+  <div class="form-card">
+    <h3>{{ editId ? 'Modifier l\'article' : 'Nouvel article' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="two-cols">
+        <div class="field">
+          <label>Titre *</label>
+          <input type="text" formControlName="titre" placeholder="Titre de l'article" />
+        </div>
+        <div class="field">
+          <label>Auteur</label>
+          <input type="text" formControlName="auteur" placeholder="Pasteur Fernand..." />
+        </div>
+      </div>
+      <div class="field">
+        <label>Contenu *</label>
+        <textarea formControlName="contenu" placeholder="Corps de l'article..." style="min-height:140px"></textarea>
+      </div>
+      <div class="two-cols">
+        <div class="field">
+          <label>URL image de couverture</label>
+          <input type="text" formControlName="imageUrl" placeholder="https://..." />
+        </div>
+        <div class="field">
+          <label>ID vidéo YouTube</label>
+          <input type="text" formControlName="videoId" placeholder="dQw4w9WgXcQ" />
+        </div>
+      </div>
+      <div class="two-cols">
+        <div class="field">
+          <label>Tags (virgule séparés)</label>
+          <input type="text" formControlName="tags" placeholder="bible, prière, culte" />
+        </div>
+        <div class="field" style="justify-content:flex-end">
+          <label class="check-label">
+            <input type="checkbox" formControlName="publiee" />
+            Publier immédiatement
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || saving">
+          {{ saving ? 'Enregistrement...' : (editId ? 'Mettre à jour' : 'Créer') }}
+        </button>
+        <button type="button" class="btn-secondary" *ngIf="editId" (click)="cancelEdit()">Annuler</button>
+      </div>
+      <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && actualites.length === 0" class="empty">Aucun article.</div>
+
+  <div *ngIf="!loading && actualites.length > 0" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Auteur</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of actualites">
+          <td><strong>{{ a.titre }}</strong></td>
+          <td>{{ a.auteur || '—' }}</td>
+          <td>
+            <button class="toggle-btn" [class.publiee]="a.publiee" (click)="togglePubliee(a)">
+              {{ a.publiee ? 'Publié' : 'Brouillon' }}
+            </button>
+          </td>
+          <td>{{ a.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="edit(a)">✎</button>
+            <button class="btn-del" (click)="delete(a.id)">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

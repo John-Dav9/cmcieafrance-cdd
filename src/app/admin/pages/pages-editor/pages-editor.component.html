@@ -1,0 +1,71 @@
+<div class="editor-shell">
+
+  <!-- ── Panneau gauche ── -->
+  <div class="controls-panel">
+    <div class="panel-header">
+      <h2>Éditeur de pages</h2>
+      <!-- Sélecteur de page -->
+      <div class="page-tabs">
+        <button
+          *ngFor="let p of pages"
+          class="page-tab"
+          [class.active]="p.id === selectedPageId"
+          (click)="selectPage(p.id)"
+        >{{ p.label }}</button>
+      </div>
+    </div>
+
+    <form [formGroup]="form" class="controls-form">
+      <ng-container *ngFor="let section of sections">
+        <div class="section-label">{{ section }}</div>
+
+        <ng-container *ngFor="let f of fieldsForSection(section)">
+
+          <!-- Champ texte -->
+          <div class="field" *ngIf="f.type === 'text'">
+            <label>{{ f.label }}</label>
+            <input type="text" [formControlName]="f.key" />
+          </div>
+
+          <!-- Champ textarea -->
+          <div class="field" *ngIf="f.type === 'textarea'">
+            <label>{{ f.label }}</label>
+            <textarea [formControlName]="f.key"></textarea>
+          </div>
+
+          <!-- Champ image -->
+          <div class="field" *ngIf="f.type === 'image'">
+            <label>{{ f.label }}</label>
+            <input type="file" accept="image/*" (change)="onImageChange(f.field, $event)" />
+          </div>
+
+        </ng-container>
+      </ng-container>
+
+      <div class="save-row">
+        <button class="btn-primary" (click)="save()" [disabled]="saving">
+          {{ saving ? 'Sauvegarde...' : '✓ Sauvegarder' }}
+        </button>
+        <p class="saved-msg" *ngIf="savedMsg">{{ savedMsg }}</p>
+      </div>
+    </form>
+  </div>
+
+  <!-- ── Panneau droit : aperçu ── -->
+  <div class="preview-panel">
+    <div class="preview-header">
+      <span class="preview-label">Aperçu live</span>
+      <span class="preview-url">{{ schema.route }}</span>
+    </div>
+    <div class="preview-frame-wrap">
+      <iframe
+        #previewFrame
+        [src]="previewRoute"
+        (load)="onIframeLoad()"
+        class="preview-iframe"
+        title="Aperçu de la page"
+      ></iframe>
+    </div>
+  </div>
+
+</div>

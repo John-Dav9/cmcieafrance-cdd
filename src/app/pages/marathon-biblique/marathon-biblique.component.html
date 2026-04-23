@@ -1,311 +1,238 @@
-<section class="marathon-container" [class.join-open]="isJoinOpen">
-  <!-- COLONNE GAUCHE -->
-  <div class="marathon-calendar">
-    <h1 class="page-title">{{ title }}</h1>
-    <p class="subtitle" >{{ subtitle }}</p>
+<!-- ── Chargement ─────────────────────────────────────────────────────────── -->
+<div *ngIf="loadingMarathons" class="page-loading">
+  <div class="loading-spinner"></div>
+  <p>Chargement des marathons…</p>
+</div>
 
-    <!-- Barre de progression -->
-    <div class="progress-bar">
-      <div class="progress-left">
-        <span class="progress-title">Progression</span>
-        <span class="progress-value">
-          {{ completedCount }}/{{ totalDays }} jours terminés
-        </span>
-      </div>
-      <button type="button" class="today-btn" (click)="scrollToToday()">
-        Aujourd’hui
-      </button>
-
-      <div class="progress-pill">{{ progressPercent }}%</div>
-    </div>
-
-    <!-- Calendrier -->
-    <div class="calendar-shell" #calendarShell>
-      <div class="calendar-grid">
-        <div class="calendar-weekday" *ngFor="let w of weekdays">
-          {{ w }}
-        </div>
-
-        <div
-          class="calendar-cell"
-          *ngFor="let c of calendarCells"
-          [class.is-empty]="!c.date"
-          [class.is-today]="isToday(c.date)"
-          [class.is-done]="c.dayNumber && isChecked(c.dayNumber)"
-        >
-          <ng-container *ngIf="c.date">
-            <div class="cell-top">
-              <span class="cell-date">{{ c.label }}</span>
-
-              <label class="cell-check" title="Marquer comme lu">
-                <input
-                  type="checkbox"
-                  [checked]="isChecked(c.dayNumber)"
-                  (change)="toggleChecked(c.dayNumber, $event)"
-                />
-                <span class="check-ui"></span>
-              </label>
-            </div>
-
-            <div class="cell-content">
-              <div class="cell-day">Jour {{ c.dayNumber }}</div>
-              <div
-                class="cell-reading"
-                [innerHTML]="formatReading(c.reading)"
-              ></div>
-
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- COLONNE DROITE -->
-  <div class="marathon-media">
-    <!-- ✅ Spacer pour aligner avec la barre de progression -->
-    <div class="media-spacer"></div>
-
-    <h2 class="media-title">🎧 Bible Audio – Playlist Officielle</h2>
-
-    <a
-      [href]="youtubePlaylistUrl"
-      target="_blank"
-      rel="noopener"
-      class="youtube-card"
-    >
-      <div class="youtube-overlay">
-        <!-- <img src="assets/images/marathon-thumbnail.png" alt="Playlist YouTube" /> -->
-        <span class="play-icon">▶</span>
-        <span>Écouter la Bible</span>
-      </div>
-    </a>
-    
-    <!-- ✅ CTA / FORMULAIRE INLINE (sous la vidéo) -->
-    <div class="join-inline">
-
-      <!-- ✅ Bouton "Je participe" (même style que /actualites) -->
-      <button
-        *ngIf="!isJoinOpen"
-        type="button"
-        class="btn-prayer join-btn"
-        (click)="openJoinInline()"
-      >
-        Je participe
-      </button>
-
-      <p *ngIf="!isJoinOpen" class="join-hint">Inscription rapide (gratuite)</p>
-
-      <!-- ✅ Formulaire inline (remplace le bouton) -->
-      <div *ngIf="isJoinOpen" class="join-card">
-        <div class="join-head">
-          <div>
-            <h3 class="join-title">Je participe au Marathon Biblique</h3>
-            <p class="join-subtitle">
-              Remplis ce formulaire pour confirmer ta participation.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            class="join-close"
-            (click)="closeJoinInline()"
-            aria-label="Fermer"
-          >
-            ✕
-          </button>
-        </div>
-
-        <form (ngSubmit)="submitJoin()" #f="ngForm" class="join-form">
-
-          <div class="join-grid">
-            <label class="field">
-              <span class="field-label">Nom complet *</span>
-              <input
-                class="field-input"
-                name="fullName"
-                [(ngModel)]="joinForm.fullName"
-                required
-                placeholder="Ex : Jean Dupont"
-              />
-            </label>
-
-            <label class="field">
-              <span class="field-label">Email *</span>
-              <input
-                class="field-input"
-                name="email"
-                [(ngModel)]="joinForm.email"
-                required
-                type="email"
-                placeholder="exemple@mail.com"
-              />
-            </label>
-
-            <label class="field">
-              <span class="field-label">Téléphone</span>
-              <input
-                class="field-input"
-                name="phone"
-                [(ngModel)]="joinForm.phone"
-                placeholder="+33..."
-              />
-            </label>
-
-            <label class="field">
-              <span class="field-label">Ville</span>
-              <input
-                class="field-input"
-                name="city"
-                [(ngModel)]="joinForm.city"
-                placeholder="Paris"
-              />
-            </label>
-          </div>
-
-          <p class="form-error" *ngIf="submitError">{{ submitError }}</p>
-          <p class="form-success" *ngIf="submitSuccess">✅ Inscription enregistrée !</p>
-
-          <button
-            class="btn-prayer join-submit"
-            type="submit"
-            [disabled]="isSubmitting"
-          >
-            {{ isSubmitting ? 'Enregistrement…' : 'Confirmer ma participation' }}
-          </button>
-
-          <p class="join-footnote">
-            Aucune donnée n’est affichée publiquement.
-          </p>
-        </form>
-      </div>
-    </div>
-
-
+<!-- ── Aucun marathon actif ───────────────────────────────────────────────── -->
+<section *ngIf="!loadingMarathons && marathons.length === 0" class="marathon-empty">
+  <div class="empty-card">
+    <span class="empty-icon">📖</span>
+    <h2>Aucun marathon en cours</h2>
+    <p>Le prochain marathon sera annoncé prochainement. Revenez bientôt !</p>
   </div>
 </section>
 
-<!-- ✅ SECTION EN BAS (PLEINE LARGEUR) -->
+<!-- ── Contenu principal ──────────────────────────────────────────────────── -->
+<ng-container *ngIf="!loadingMarathons && marathons.length > 0">
+
+  <!-- Tabs (si plusieurs marathons actifs) -->
+  <div class="marathon-tabs-bar" *ngIf="marathons.length > 1">
+    <button
+      class="tab-btn"
+      *ngFor="let m of marathons"
+      [class.active]="selectedId === m.id"
+      (click)="selectMarathon(m.id)"
+    >
+      {{ m.titre }}
+      <span class="tab-counter">{{ nbInscrits[m.id] ?? m.nbInscrits }} inscrits</span>
+    </button>
+  </div>
+
+  <!-- Vue marathon sélectionné -->
+  <section class="marathon-container" *ngIf="marathon" [class.join-open]="isJoinOpen">
+
+    <!-- ══ COLONNE GAUCHE : Calendrier ══════════════════════════════════════ -->
+    <div class="marathon-calendar">
+
+      <h1 class="page-title">{{ marathon.titre }}</h1>
+      <p class="subtitle">{{ marathon.description }}</p>
+
+      <!-- Barre progression + compteur temps réel -->
+      <div class="progress-bar">
+        <div class="progress-left">
+          <span class="progress-title">Progression</span>
+          <span class="progress-value">{{ completedCount }}/{{ totalDays }} jours terminés</span>
+        </div>
+
+        <div class="counter-live" title="Participants inscrits">
+          <span class="counter-num">{{ currentNbInscrits }}</span>
+          <span class="counter-unit">inscrits</span>
+        </div>
+
+        <button type="button" class="today-btn" (click)="scrollToToday()">Aujourd'hui</button>
+        <div class="progress-pill">{{ progressPercent }}%</div>
+      </div>
+
+      <!-- Rang (si connecté et progression chargée) -->
+      <div class="rank-banner" *ngIf="serverProgression && serverProgression.rank">
+        <span class="rank-icon">🏅</span>
+        Tu es <strong>#{{ serverProgression.rank }}</strong>
+        sur {{ serverProgression.totalParticipants }} participants
+        <span class="rank-milestones">
+          <span *ngFor="let ms of [25,50,75,100]"
+                class="ms-badge"
+                [class.reached]="serverProgression.milestonesReached?.includes(ms)">
+            {{ ms }}%
+          </span>
+        </span>
+      </div>
+
+      <!-- Calendrier -->
+      <div class="calendar-shell" #calendarShell>
+        <div class="calendar-grid">
+          <div class="calendar-weekday" *ngFor="let w of weekdays">{{ w }}</div>
+
+          <div
+            class="calendar-cell"
+            *ngFor="let c of calendarCells"
+            [class.is-empty]="!c.date"
+            [class.is-today]="isToday(c.date)"
+            [class.is-done]="c.dayNumber && isChecked(c.dayNumber)"
+          >
+            <ng-container *ngIf="c.date">
+              <div class="cell-top">
+                <span class="cell-date">{{ c.label }}</span>
+                <label class="cell-check" [attr.for]="'day-check-' + c.dayNumber">
+                  <input
+                    type="checkbox"
+                    [id]="'day-check-' + c.dayNumber"
+                    [checked]="isChecked(c.dayNumber)"
+                    (change)="toggleChecked(c.dayNumber, $event)"
+                  />
+                  <span class="check-ui"
+                        role="checkbox"
+                        [attr.aria-checked]="isChecked(c.dayNumber)"
+                        tabindex="0"
+                        (click)="toggleChecked(c.dayNumber, $event)"></span>
+                </label>
+              </div>
+              <div class="cell-content">
+                <div class="cell-day">Jour {{ c.dayNumber }}</div>
+                <div class="cell-reading" [innerHTML]="formatReading(c.reading)"></div>
+              </div>
+              <div class="saving-dot" *ngIf="savingDay === c.dayNumber"></div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COLONNE DROITE ════════════════════════════════════════════════════ -->
+    <div class="marathon-media">
+      <div class="media-spacer"></div>
+
+      <h2 class="media-title">🎧 Bible Audio – Playlist Officielle</h2>
+      <a [href]="ytUrl" target="_blank" rel="noopener" class="youtube-card">
+        <div class="youtube-overlay">
+          <span class="play-icon">▶</span>
+          <span>Écouter la Bible</span>
+        </div>
+      </a>
+
+      <!-- ── Identification utilisateur ──────────────────────────────────── -->
+      <div class="identity-bar" *ngIf="!emailSet && !isJoinOpen">
+        <p class="identity-hint">
+          Déjà inscrit(e) ? Identifie-toi pour charger ta progression et ton rang.
+        </p>
+        <button class="btn-identify" (click)="showEmailForm = !showEmailForm">
+          {{ showEmailForm ? 'Annuler' : 'Charger ma progression' }}
+        </button>
+        <div class="email-form" *ngIf="showEmailForm">
+          <input class="field-input" type="email" [(ngModel)]="emailInput" placeholder="Ton email d'inscription" (keyup.enter)="confirmEmail()" />
+          <button class="btn-prayer" (click)="confirmEmail()">Confirmer</button>
+          <p class="form-error" *ngIf="emailError">{{ emailError }}</p>
+        </div>
+      </div>
+
+      <div class="identity-bar identity-bar--active" *ngIf="emailSet">
+        <span class="identity-name">👤 {{ userFullName || userEmail }}</span>
+        <button class="btn-forget" (click)="forgetMe()">Déconnecter</button>
+      </div>
+
+      <!-- ── Bouton/Formulaire inscription ───────────────────────────────── -->
+      <div class="join-inline">
+        <button *ngIf="!isJoinOpen" type="button" class="btn-prayer join-btn" (click)="openJoinInline()">
+          Je participe
+        </button>
+        <p *ngIf="!isJoinOpen" class="join-hint">Inscription rapide &amp; gratuite</p>
+
+        <div *ngIf="isJoinOpen" class="join-card">
+          <div class="join-head">
+            <div>
+              <h3 class="join-title">{{ marathon.titre }}</h3>
+              <p class="join-subtitle">Remplis ce formulaire pour confirmer ta participation.</p>
+            </div>
+            <button type="button" class="join-close" (click)="closeJoinInline()" aria-label="Fermer">✕</button>
+          </div>
+
+          <form (ngSubmit)="submitJoin()" class="join-form">
+            <div class="join-grid">
+              <label class="field">
+                <span class="field-label">Nom complet *</span>
+                <input class="field-input" name="fullName" [(ngModel)]="joinForm.fullName" required placeholder="Jean Dupont" />
+              </label>
+              <label class="field">
+                <span class="field-label">Email *</span>
+                <input class="field-input" name="email" [(ngModel)]="joinForm.email" required type="email" placeholder="exemple@mail.com" />
+              </label>
+              <label class="field">
+                <span class="field-label">Téléphone</span>
+                <input class="field-input" name="phone" [(ngModel)]="joinForm.phone" placeholder="+33..." />
+              </label>
+              <label class="field">
+                <span class="field-label">Ville</span>
+                <input class="field-input" name="city" [(ngModel)]="joinForm.city" placeholder="Paris" />
+              </label>
+            </div>
+            <p class="form-error"   *ngIf="submitError">{{ submitError }}</p>
+            <p class="form-success" *ngIf="submitSuccess">✅ Inscription enregistrée !</p>
+            <button class="btn-prayer join-submit" type="submit" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Enregistrement…' : 'Confirmer ma participation' }}
+            </button>
+            <p class="join-footnote">Aucune donnée n'est affichée publiquement.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-container>
+
+<!-- ── Sections fixes (info + FAQ + SEO) ─────────────────────────────────── -->
 <section class="marathon-info">
   <div class="info-card">
     <div class="info-badge">✨ Objectif</div>
     <h2>Pourquoi participer au Marathon Biblique ?</h2>
-
-    <p>
-      Le Marathon Biblique est une opportunité unique de parcourir toute la Bible en seulement
-      <strong>45 jours</strong>, de la Genèse à l’Apocalypse, avec une progression claire et structurée.
-    </p>
-
+    <p>Le Marathon Biblique est une opportunité unique de parcourir la Bible de la Genèse à l'Apocalypse avec une progression claire, structurée et communautaire.</p>
     <ul class="info-list">
-      <li>
-        <strong>Discipline</strong> : un rendez-vous quotidien qui t’aide à rester constant.
-      </li>
-      <li>
-        <strong>Compréhension</strong> : une lecture continue pour mieux saisir le message biblique.
-      </li>
-      <li>
-        <strong>Foi</strong> : une expérience qui fortifie ton cœur et ta relation avec Dieu.
-      </li>
+      <li><strong>Discipline</strong> : un rendez-vous quotidien qui t'aide à rester constant.</li>
+      <li><strong>Compréhension</strong> : une lecture continue pour mieux saisir le message biblique.</li>
+      <li><strong>Foi</strong> : une expérience qui fortifie ton cœur et ta relation avec Dieu.</li>
     </ul>
-
-    <p class="info-quote">
-      “Prends ce temps comme un rendez-vous quotidien avec Dieu et laisse Sa Parole transformer ta vie.”
-    </p>
+    <p class="info-quote" style="color:white">"Prends ce temps comme un rendez-vous quotidien avec Dieu et laisse Sa Parole transformer ta vie."</p>
   </div>
 </section>
 
 <section class="faq-section">
   <div class="faq-container">
     <span class="faq-badge">❓ FAQ</span>
-    <h2 class="faq-title">Questions fréquentes sur le Marathon Biblique</h2>
-
+    <h2 class="faq-title">Questions fréquentes</h2>
     <div class="faq-list">
-
       <details class="faq-item" open>
-        <summary>
-          Qu’est-ce qu’un marathon biblique ?
-        </summary>
-        <p>
-          Un marathon biblique est un programme de lecture intensive permettant de lire
-          toute la Bible sur une période définie. Dans ce cas précis, le Marathon Biblique
-          s’étend sur <strong>45 jours</strong>, de la Genèse à l’Apocalypse.
-        </p>
+        <summary>Qu'est-ce qu'un marathon biblique ?</summary>
+        <p>Un programme de lecture intensive permettant de lire la Bible (ou une partie) sur une période définie, avec un plan quotidien clair.</p>
       </details>
-
       <details class="faq-item">
-        <summary>
-          Le Marathon Biblique est-il gratuit ?
-        </summary>
-        <p>
-          Oui. La participation au Marathon Biblique est
-          <strong>entièrement gratuite</strong> et ouverte à tous,
-          que tu participes seul(e), en famille ou en groupe.
-        </p>
+        <summary>Le Marathon est-il gratuit ?</summary>
+        <p>Oui. La participation est <strong>entièrement gratuite</strong> et ouverte à tous.</p>
       </details>
-
       <details class="faq-item">
-        <summary>
-          Quelle version de la Bible utiliser ?
-        </summary>
-        <p>
-          Le plan de lecture est compatible avec toutes les versions de la Bible.
-          Nous recommandons particulièrement la
-          <strong>Bible Louis Segond 1910 (LSG)</strong>,
-          mais tu peux utiliser la version avec laquelle tu es le plus à l’aise.
-        </p>
+        <summary>Quelle version de la Bible utiliser ?</summary>
+        <p>Le plan est compatible avec toutes les versions. Nous recommandons la <strong>Bible Louis Segond 1910 (LSG)</strong>.</p>
       </details>
-
       <details class="faq-item">
-        <summary>
-          Peut-on suivre le Marathon Biblique en ligne ?
-        </summary>
-        <p>
-          Oui. Le Marathon Biblique est accessible en ligne avec des
-          <strong>ressources numériques</strong>, un calendrier interactif
-          et un suivi quotidien pour t’aider à rester constant.
-        </p>
+        <summary>Que se passe-t-il si je prends du retard ?</summary>
+        <p>Aucun stress. Le Marathon est avant tout un <strong>cheminement spirituel</strong>. Reprends à ton rythme.</p>
       </details>
-
       <details class="faq-item">
-        <summary>
-          Que se passe-t-il si je prends du retard ?
-        </summary>
-        <p>
-          Aucun stress. Le Marathon Biblique est avant tout un
-          <strong>cheminement spirituel</strong>.
-          Tu peux reprendre à ton rythme et utiliser le calendrier pour te réorganiser.
-        </p>
+        <summary>Pourquoi cocher chaque jour lu ?</summary>
+        <p>Cocher ta progression te permet de recevoir des emails d'encouragement à 25%, 50%, 75% et une <strong>attestation personnalisée</strong> à 100%.</p>
       </details>
-
-      <details class="faq-item">
-        <summary>
-          Comment confirmer ma participation ?
-        </summary>
-        <p>
-          Il suffit de cliquer sur le bouton
-          <strong>« Je participe »</strong> et de remplir le formulaire.
-          Aucune donnée n’est affichée publiquement.
-        </p>
-      </details>
-
     </div>
   </div>
 </section>
 
 <section class="seo-alias container" aria-label="À propos de CMCIEA France">
   <h2>CMCIEA France et le Marathon Biblique</h2>
-
-  <p>
-    La <strong>CMCIEA France</strong>, également appelée sous les noms
-    <strong>CMCI et Églises Associées France</strong>, <strong>CMCIEA</strong> ou <strong>CMCIEA FR</strong>,
-    est la Communauté Missionnaire Chrétienne Internationale & Églises Associées en France.
-    Nous organisons le <strong>Marathon Biblique</strong>, un programme de lecture de la Bible en <strong>45 jours</strong>,
-    accessible en ligne et ouvert à tous.
-    Notre église est enracinée dans la Parole de Dieu et engagée à
-    <strong>partager l’Évangile</strong> à travers des initiatives comme le Marathon Biblique.
-    Nous croyons que la lecture régulière de la Bible est essentielle pour
-    <strong>croître spirituellement</strong> et approfondir sa relation avec Dieu.
-  </p>
+  <p>La <strong>CMCIEA France</strong> organise des <strong>Marathons Bibliques</strong> accessibles en ligne, ouverts à tous. Notre église est enracinée dans la Parole de Dieu et engagée à partager l'Évangile à travers des initiatives de lecture communautaire.</p>
 </section>
-
-

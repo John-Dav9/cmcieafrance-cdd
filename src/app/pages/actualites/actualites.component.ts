@@ -17,13 +17,18 @@ export class ActualitesComponent implements OnInit {
   private meta = inject(Meta);
 
   videoId = 'AdN46ZvxjFs';
-  videoUrl!: SafeResourceUrl;
+  videoUrl: SafeResourceUrl | null = null;
 
   ngOnInit(): void {
     // 🎥 URL YouTube sécurisée
-    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${this.videoId}?rel=0&modestbranding=1`
-    );
+    const normalizedVideoId = this.videoId.trim();
+    if (this.isValidVideoId(normalizedVideoId)) {
+      this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        `https://www.youtube.com/embed/${normalizedVideoId}?rel=0&modestbranding=1`
+      );
+    } else {
+      this.videoUrl = null;
+    }
 
     // 🔍 SEO PAGE ACTUALITÉS
     this.title.setTitle(
@@ -37,20 +42,26 @@ export class ActualitesComponent implements OnInit {
     });
 
     // 📊 SEO avancé : VideoObject (Google adore)
-    const jsonLd = {
+    if (this.isValidVideoId(normalizedVideoId)) {
+      const jsonLd = {
       "@context": "https://schema.org",
       "@type": "VideoObject",
       "name": "Message du Président — CMCIEA France",
       "description": "Message officiel du président de CMCIEA France.",
-      "thumbnailUrl": `https://img.youtube.com/vi/${this.videoId}/hqdefault.jpg`,
+      "thumbnailUrl": `https://img.youtube.com/vi/${normalizedVideoId}/hqdefault.jpg`,
       "uploadDate": "2026-01-03",
-      "embedUrl": `https://www.youtube.com/embed/${this.videoId}`,
-      "url": `https://youtu.be/${this.videoId}`
+      "embedUrl": `https://www.youtube.com/embed/${normalizedVideoId}`,
+      "url": `https://youtu.be/${normalizedVideoId}`
     };
 
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(jsonLd);
-    document.head.appendChild(script);
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(jsonLd);
+      document.head.appendChild(script);
+    }
+  }
+
+  private isValidVideoId(videoId: string): boolean {
+    return /^[a-zA-Z0-9_-]{11}$/.test(videoId);
   }
 }

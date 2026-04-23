@@ -1,10 +1,8 @@
 <section class="kids-hero">
   <div class="kids-hero-inner">
-    <p class="kids-kicker">Département des enfants et des jeunes</p>
-
-    <h1 class="kids-title">
-      Que personne ne méprise <span>ta jeunesse</span>.
-    </h1>
+    <p class="kids-kicker">{{ heroKicker }}</p>
+    <h1 class="kids-title" [innerHTML]="heroTitle"></h1>
+    <p class="kids-mission" *ngIf="missionText" style="white-space:pre-line">{{ missionText }}</p>
 
     <p class="kids-verse">
       « LAISSEZ LES PETITS ENFANTS, NE LES EMPÊCHEZ PAS DE VENIR À MOI,

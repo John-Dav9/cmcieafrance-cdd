@@ -1,0 +1,49 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Inscriptions</h2>
+    <div class="filters">
+      <select [(ngModel)]="filtre" (change)="load()">
+        <option *ngFor="let t of types" [value]="t.value">{{ t.label }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading && inscriptions.length === 0" class="empty">
+    Aucune inscription trouvée.
+  </div>
+
+  <div *ngIf="!loading && inscriptions.length > 0" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Type</th>
+          <th>Détails</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of inscriptions">
+          <td>{{ i.prenom }} {{ i.nom }}</td>
+          <td><a [href]="'mailto:' + i.email">{{ i.email }}</a></td>
+          <td>{{ i.telephone || '—' }}</td>
+          <td><span class="badge" [class]="'badge-' + i.type">{{ typeLabel(i.type) }}</span></td>
+          <td>
+            <span *ngIf="i.dateCulte">{{ i.dateCulte }}</span>
+            <span *ngIf="i.pseudoTelegram">{{"@"}}{{ i.pseudoTelegram }}</span>
+            <span *ngIf="!i.dateCulte && !i.pseudoTelegram">—</span>
+          </td>
+          <td>{{ i.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="btn-del" (click)="delete(i.id)">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,13 +1,9 @@
 <section class="pv-hero">
   <div class="pv-hero__inner">
 
-    <h1 class="pv-title">PREMIÈRE VISITE</h1>
-
-    <p class="pv-subtitle">
-      Bienvenue à la <strong>CMCIEA-FRANCE</strong>.<br />
-      Rejoins-nous en ligne <br />
-      et en présentiel à Paris.
-    </p>
+    <h1 class="pv-title">{{ heroTitle }}</h1>
+    <p class="pv-subtitle" style="white-space:pre-line">{{ heroSubtitle }}</p>
+    <p class="pv-infos" *ngIf="infosPratiques" style="white-space:pre-line">{{ infosPratiques }}</p>
 
   </div>
 </section>
@@ -52,7 +48,7 @@
 
       <div class="pv-cta">
         <a class="btn btn-ghost"
-          href="https://t.me/cmciea_notif_bot?start=join"
+          href="https://t.me/cmciea_notif_bot?start=join:a27e950af32e424b88d4a3914f72111b"
           target="_blank"
           rel="noopener">
           Nous contacter (Telegram)
@@ -117,7 +113,7 @@
       <div class="pv-cta">
 
         <a
-          class="btn btn-primary"
+          class="btn btn-ghost"
           href="https://www.google.com/maps?q=11+rue+de+l'%C3%A9toile+75017+paris"
           target="_blank"
           rel="noopener"
@@ -140,8 +136,7 @@
       <div class="pv-contact">
         <div class="pv-contact__item">
           <span class="pv-label">Telephone</span>
-         <a class="pv-link">+33 6 34 80 96 62 <br>
-          +33 7 82 21 98 91
+         <a class="pv-link">+33 7 44 89 68 18 <br>
          </a>
         </div>
 

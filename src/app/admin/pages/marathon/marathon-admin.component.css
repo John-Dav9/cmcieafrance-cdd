@@ -1,0 +1,213 @@
+@import '../../admin-shared.css';
+
+/* ── Banner Firebase ─────────────────────────────────────────────────────────── */
+.firebase-warn {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: #92400e;
+}
+.firebase-warn span { font-size: 1.4rem; flex-shrink: 0; }
+.firebase-warn strong { display: block; font-size: 14px; margin-bottom: 4px; color: #78350f; }
+.firebase-warn p { margin: 4px 0 0; line-height: 1.5; }
+.firebase-warn code { background: #fef3c7; padding: 1px 4px; border-radius: 4px; font-size: 12px; }
+
+/* ── Grille formulaire ──────────────────────────────────────────────────────── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ── Sélecteur de livres ────────────────────────────────────────────────────── */
+.books-picker {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8f9fc;
+  border-radius: 10px;
+  border: 1px solid #eef0f7;
+}
+
+.books-picker h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1f2e;
+  margin-bottom: 12px;
+}
+
+.books-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.books-testament {
+  font-size: 11px;
+  font-weight: 700;
+  color: #4f7dff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.book-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #3d4663;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.book-check input { cursor: pointer; }
+
+.books-count {
+  font-size: 12px;
+  color: #4f7dff;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* ── Liste marathons ────────────────────────────────────────────────────────── */
+.marathons-list { display: flex; flex-direction: column; gap: 16px; }
+
+.marathon-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eef0f7;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.marathon-card.archived { opacity: 0.7; }
+.marathon-card:hover     { border-color: #c7d2f0; }
+
+.mc-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 16px;
+}
+
+.mc-info { flex: 1; min-width: 0; }
+
+.mc-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.mc-title { font-size: 16px; color: #1a1f2e; }
+
+.mc-meta {
+  font-size: 12px;
+  color: #8b93a8;
+  margin-bottom: 4px;
+}
+
+.mc-desc { font-size: 13px; color: #5a6480; margin-top: 4px; }
+
+.days-left { color: #16a34a; font-weight: 600; }
+
+/* ── Compteur inscrits ──────────────────────────────────────────────────────── */
+.mc-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 64px;
+  background: #f0f4ff;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.counter-num   { font-size: 26px; font-weight: 700; color: #4f7dff; line-height: 1; }
+.counter-label { font-size: 11px; color: #8b93a8; margin-top: 2px; }
+
+/* ── Badges statut ──────────────────────────────────────────────────────────── */
+.statut-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.statut-ACTIF    { background: #dcfce7; color: #16a34a; }
+.statut-PLANIFIE { background: #fef9c3; color: #ca8a04; }
+.statut-ARCHIVE  { background: #f4f6f9; color: #8b93a8; }
+
+/* ── Actions ────────────────────────────────────────────────────────────────── */
+.mc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid #f4f6f9;
+  background: #fafbff;
+}
+
+/* ── Panneau inscrits ───────────────────────────────────────────────────────── */
+.inscrits-panel {
+  border-top: 2px solid #eef0f7;
+  padding: 16px 20px;
+}
+
+.progress-wrap {
+  width: 100px;
+  height: 6px;
+  background: #eef0f7;
+  border-radius: 3px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #4f7dff;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.progress-pct { font-size: 12px; color: #3d4663; vertical-align: middle; }
+
+.rank { font-size: 15px; color: #4f7dff; }
+
+.email-cell { font-size: 12px; color: #8b93a8; }
+
+.milestone {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  margin-right: 3px;
+  background: #f4f6f9;
+  color: #aab0c4;
+}
+
+.milestone.reached { background: #dcfce7; color: #16a34a; font-weight: 700; }
+
+/* ── Attestations ───────────────────────────────────────────────────────────── */
+.attestation-card { margin-top: 32px; }
+
+.hint { font-size: 13px; color: #5a6480; margin-bottom: 12px; }
+
+.field.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+}

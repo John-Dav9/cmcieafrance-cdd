@@ -34,6 +34,16 @@ const routes: Routes = [
       .then(m => m.Voeux2026PasteurFernandComponent),
   },
 
+  {
+    path: 'mon-espace',
+    loadComponent: () =>
+      import('./pages/user-dashboard/user-dashboard.component').then(m => m.UserDashboardComponent),
+  },
+  {
+    path: 'espace-admin',
+    loadChildren: () =>
+      import('./admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+  },
   { path: '**', redirectTo: '' },
 ];
 

@@ -1,7 +1,8 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ThemeService } from './core/services/theme.service';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,6 +18,7 @@ import { RessourcesDecouvrirComponent } from './pages/ressources-decouvrir/resso
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideAuth, getAuth } from '@angular/fire/auth';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,14 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
   ],
   providers: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (theme: ThemeService) => () => theme.load(),
+      deps: [ThemeService],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

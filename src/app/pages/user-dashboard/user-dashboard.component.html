@@ -1,0 +1,198 @@
+<div class="dash-page">
+
+  <!-- ══ Identification ══════════════════════════════════════════════════════ -->
+  <section class="dash-hero">
+    <div class="dash-hero__inner">
+      <h1 class="dash-hero__title">Mon Espace</h1>
+      <p class="dash-hero__sub">Suis ta progression, ton rang et tes badges dans les Marathons Bibliques.</p>
+
+      <div *ngIf="!identified" class="id-card">
+        <p class="id-label">Entre ton adresse email d'inscription pour accéder à ton espace.</p>
+        <div class="id-row">
+          <input
+            class="id-input"
+            type="email"
+            [(ngModel)]="emailInput"
+            placeholder="exemple@mail.com"
+            (keyup.enter)="identify()"
+          />
+          <button class="btn-primary" [disabled]="loading" (click)="identify()">
+            {{ loading ? 'Chargement…' : 'Accéder' }}
+          </button>
+        </div>
+        <p class="id-error" *ngIf="emailError">{{ emailError }}</p>
+        <p class="id-hint">
+          Pas encore inscrit ? <a routerLink="/marathon-biblique">Rejoins un marathon</a>.
+        </p>
+      </div>
+
+      <div *ngIf="identified" class="id-active">
+        <span class="id-avatar">{{ dashboard.fullName.charAt(0).toUpperCase() }}</span>
+        <div>
+          <strong>{{ dashboard.fullName }}</strong>
+          <span class="id-email">{{ dashboard.email }}</span>
+        </div>
+        <button class="btn-logout" (click)="logout()">Se déconnecter</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Dashboard (après identification) ═══════════════════════════════════ -->
+  <div class="dash-body" *ngIf="identified && dashboard">
+
+    <!-- ── Stats globales ──────────────────────────────────────────────────── -->
+    <section class="dash-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">📚</span>
+          <span class="stat-num">{{ dashboard.stats.totalMarathons }}</span>
+          <span class="stat-label">Marathon(s) participé(s)</span>
+        </div>
+        <div class="stat-card stat-card--green">
+          <span class="stat-icon">✅</span>
+          <span class="stat-num">{{ dashboard.stats.completed }}</span>
+          <span class="stat-label">Terminé(s) à 100%</span>
+        </div>
+        <div class="stat-card stat-card--blue">
+          <span class="stat-icon">🔥</span>
+          <span class="stat-num">{{ dashboard.stats.inProgress }}</span>
+          <span class="stat-label">En cours</span>
+        </div>
+        <div class="stat-card stat-card--gold">
+          <span class="stat-icon">📖</span>
+          <span class="stat-num">{{ dashboard.stats.totalDaysRead }}</span>
+          <span class="stat-label">Jours de lecture cochés</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Marathons actifs ────────────────────────────────────────────────── -->
+    <section class="dash-section" *ngIf="dashboard.marathonsActifs.length > 0">
+      <h2 class="dash-section__title">📅 Marathons en cours</h2>
+      <div class="active-grid">
+        <div class="active-card" *ngFor="let m of dashboard.marathonsActifs">
+          <div class="active-card__head">
+            <div>
+              <strong class="active-title">{{ m.titre }}</strong>
+              <span class="active-scope">{{ scopeLabels[m.scope] }}</span>
+            </div>
+            <div class="rank-badge" *ngIf="m.rank">
+              <span class="rank-num">#{{ m.rank }}</span>
+              <span class="rank-total">/ {{ m.totalParticipants }}</span>
+            </div>
+          </div>
+
+          <!-- Barre de progression -->
+          <div class="prog-track">
+            <div class="prog-fill" [style.width.%]="m.progressPercent" [style.background]="barColor(m.statut, m.progressPercent)"></div>
+          </div>
+          <div class="prog-meta">
+            <span>{{ m.daysRead }} / {{ m.nbJours }} jours lus</span>
+            <strong>{{ m.progressPercent }}%</strong>
+          </div>
+
+          <!-- Jalons -->
+          <div class="milestones-row">
+            <span
+              *ngFor="let ms of [25,50,75,100]"
+              class="ms-chip"
+              [class.reached]="milestoneReached(m, ms)"
+            >
+              {{ ms === 100 ? '🏆' : ms + '%' }}
+              <span *ngIf="ms === 100 && milestoneReached(m, ms)" class="ms-label">Attestation envoyée</span>
+            </span>
+          </div>
+
+          <div class="active-dates">{{ m.dateDebut }} → {{ m.dateFin }}</div>
+
+          <a class="btn-goto" routerLink="/marathon-biblique">Continuer la lecture →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Courbe de fidélité ──────────────────────────────────────────────── -->
+    <section class="dash-section" *ngIf="dashboard.fideliteData.length > 0">
+      <h2 class="dash-section__title">📊 Courbe de fidélité à la Parole</h2>
+      <p class="dash-section__sub">Progression complétée pour chaque marathon, du premier au dernier.</p>
+
+      <div class="chart-wrap">
+        <div class="chart-bars">
+          <div class="chart-col" *ngFor="let d of dashboard.fideliteData">
+            <div class="chart-bar-wrap">
+              <span class="chart-pct">{{ d.percent }}%</span>
+              <div
+                class="chart-bar"
+                [style.height.px]="chartBarHeight(d.percent)"
+                [style.background]="barColor(d.statut, d.percent)"
+              ></div>
+            </div>
+            <span class="chart-label">{{ d.label }}</span>
+          </div>
+        </div>
+        <div class="chart-baseline"></div>
+      </div>
+    </section>
+
+    <!-- ── Badges ─────────────────────────────────────────────────────────── -->
+    <section class="dash-section" *ngIf="dashboard.badges.length > 0">
+      <h2 class="dash-section__title">🏅 Badges obtenus</h2>
+      <div class="badges-grid">
+        <div class="badge-card" *ngFor="let b of dashboard.badges">
+          <span class="badge-icon">{{ b.icon }}</span>
+          <strong class="badge-label">{{ b.label }}</strong>
+          <p class="badge-desc">{{ b.desc }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Historique ─────────────────────────────────────────────────────── -->
+    <section class="dash-section" *ngIf="dashboard.historique.length > 0">
+      <h2 class="dash-section__title">📜 Historique des marathons</h2>
+      <div class="history-table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Marathon</th>
+              <th>Scope</th>
+              <th>Période</th>
+              <th>Progression</th>
+              <th>Jalons</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of dashboard.historique">
+              <td><strong>{{ m.titre }}</strong></td>
+              <td><span class="scope-chip">{{ scopeLabels[m.scope] }}</span></td>
+              <td class="dates-cell">{{ m.dateDebut }} → {{ m.dateFin }}</td>
+              <td>
+                <div class="mini-track">
+                  <div class="mini-fill" [style.width.%]="m.progressPercent" [style.background]="barColor(m.statut, m.progressPercent)"></div>
+                </div>
+                <span class="mini-pct">{{ m.progressPercent }}%</span>
+              </td>
+              <td>
+                <span *ngFor="let ms of [25,50,75,100]"
+                      class="ms-dot"
+                      [class.reached]="milestoneReached(m, ms)"
+                      [title]="ms + '%'">
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── Activité (coming soon) ─────────────────────────────────────────── -->
+    <section class="dash-section">
+      <h2 class="dash-section__title">🔍 Activité sur le site</h2>
+      <div class="coming-soon-grid">
+        <div class="coming-card"><span class="coming-icon">📗</span><span>Livres &amp; traités lus</span><span class="soon-badge">Bientôt</span></div>
+        <div class="coming-card"><span class="coming-icon">📰</span><span>Articles lus</span><span class="soon-badge">Bientôt</span></div>
+        <div class="coming-card"><span class="coming-icon">🎙️</span><span>Messages écoutés</span><span class="soon-badge">Bientôt</span></div>
+        <div class="coming-card"><span class="coming-icon">▶️</span><span>Vidéos vues</span><span class="soon-badge">Bientôt</span></div>
+      </div>
+    </section>
+
+  </div>
+</div>
