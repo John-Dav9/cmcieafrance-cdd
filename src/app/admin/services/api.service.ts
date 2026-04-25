@@ -103,6 +103,10 @@ export class ApiService {
     return this.withAuth((h) => this.http.get(`${this.base}/marathon/admin/all`, { headers: h }));
   }
 
+  getOrphanedMarathons() {
+    return this.withAuth((h) => this.http.get(`${this.base}/marathon/admin/orphaned`, { headers: h }));
+  }
+
   creerMarathon(data: any) {
     return this.withAuth((h) => this.http.post(`${this.base}/marathon`, data, { headers: h }));
   }

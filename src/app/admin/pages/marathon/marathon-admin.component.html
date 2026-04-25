@@ -164,6 +164,29 @@
     </div>
   </div>
 
+  <!-- ── Marathons supprimés (historique orphelin) ────────────────────────────── -->
+  <div *ngIf="orphanedMarathons.length > 0" class="form-card" style="margin-top:1.5rem">
+    <h3>Historique — marathons supprimés</h3>
+    <p class="hint">Ces marathons ont été supprimés mais des participants y sont encore inscrits.</p>
+    <div class="marathons-list">
+      <div class="marathon-card archived" *ngFor="let m of orphanedMarathons">
+        <div class="mc-main">
+          <div class="mc-info">
+            <div class="mc-title-row">
+              <strong class="mc-title">{{ m.titre }}</strong>
+              <span class="statut-badge statut-ARCHIVE">Supprimé</span>
+            </div>
+            <p class="mc-meta">ID : {{ m.id }}</p>
+          </div>
+          <div class="mc-counter">
+            <span class="counter-num">{{ m.nbInscrits }}</span>
+            <span class="counter-label">inscrit(s)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Attestations annuelles ──────────────────────────────────────────────── -->
   <div class="form-card attestation-card">
     <h3>Attestations de fidélité annuelles</h3>

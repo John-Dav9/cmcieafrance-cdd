@@ -67,6 +67,7 @@ export class MarathonAdminComponent implements OnInit {
 
   // ─── Données ───────────────────────────────────────────────────────────────
   marathons: any[] = [];
+  orphanedMarathons: any[] = [];
   loading = true;
   firebaseError = '';
 
@@ -109,7 +110,14 @@ export class MarathonAdminComponent implements OnInit {
     this.loading = true;
     this.firebaseError = '';
     this.api.getMarathonsAdmin().subscribe({
-      next: (data: any) => { this.marathons = data; this.loading = false; },
+      next: (data: any) => {
+        this.marathons = data;
+        this.loading = false;
+        this.api.getOrphanedMarathons().subscribe({
+          next: (orphaned: any) => { this.orphanedMarathons = orphaned; },
+          error: () => {},
+        });
+      },
       error: (err: any) => {
         const msg = err?.error?.message ?? '';
         if (err?.status === 503 || msg.toLowerCase().includes('firebase')) {
