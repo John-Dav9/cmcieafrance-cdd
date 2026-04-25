@@ -75,7 +75,7 @@
 
           <div
             class="calendar-cell"
-            *ngFor="let c of calendarCells"
+            *ngFor="let c of calendarCells; trackBy: trackCell"
             [class.is-empty]="!c.date"
             [class.is-today]="isToday(c.date)"
             [class.is-done]="c.dayNumber && isChecked(c.dayNumber)"
@@ -83,12 +83,12 @@
             <ng-container *ngIf="c.date">
               <div class="cell-top">
                 <span class="cell-date">{{ c.label }}</span>
-                <label class="cell-check">
+                <label class="cell-check" *ngIf="c.dayNumber">
                   <input
                     type="checkbox"
                     [id]="'day-check-' + c.dayNumber"
                     [checked]="isChecked(c.dayNumber)"
-                    (change)="toggleChecked(c.dayNumber, $event)"
+                    (click)="toggleChecked(c.dayNumber!, $event)"
                   />
                   <span class="check-ui"
                         role="checkbox"

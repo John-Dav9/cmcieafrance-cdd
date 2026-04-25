@@ -143,12 +143,21 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
 
   isChecked(day?: number): boolean { return day ? !!this.localProgress[day] : false; }
 
-  toggleChecked(day?: number, event?: Event): void {
-    if (!day || !this.selectedId) return;
-    const target  = event?.target as HTMLInputElement | null;
-    const checked = target ? target.checked : !this.localProgress[day];
+  trackCell(_index: number, cell: { date: Date | null; dayNumber?: number }): string {
+    return cell.date ? cell.date.toISOString() : `empty-${_index}`;
+  }
 
-    this.localProgress[day] = checked;
+  toggleChecked(day: number, event: Event): void {
+    if (!day || !this.selectedId) return;
+
+    event.preventDefault();
+    const newChecked = !this.localProgress[day];
+    this.localProgress[day] = newChecked;
+
+    // Mise à jour immédiate du DOM pour que le CSS :checked s'applique
+    const input = event.target as HTMLInputElement;
+    input.checked = newChecked;
+
     this.saveLocalProgress();
 
     if (!this.emailSet) return;
@@ -157,7 +166,7 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
     this.http.post(`${this.base}/marathon/${this.selectedId}/progression`, {
       email:   this.userEmail,
       day,
-      checked,
+      checked: newChecked,
     }).subscribe({
       next:  (res: any) => { this.serverProgression = { ...this.serverProgression, ...res }; this.savingDay = null; },
       error: () => { this.savingDay = null; },
