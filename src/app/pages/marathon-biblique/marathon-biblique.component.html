@@ -78,7 +78,7 @@
             *ngFor="let c of calendarCells; trackBy: trackCell"
             [class.is-empty]="!c.date"
             [class.is-today]="isToday(c.date)"
-            [class.is-done]="c.dayNumber && isChecked(c.dayNumber)"
+            [class.is-done]="c.dayNumber && localProgress[c.dayNumber]"
           >
             <ng-container *ngIf="c.date">
               <div class="cell-top">
@@ -87,12 +87,12 @@
                   <input
                     type="checkbox"
                     [id]="'day-check-' + c.dayNumber"
-                    [checked]="isChecked(c.dayNumber)"
-                    (click)="toggleChecked(c.dayNumber!, $event)"
+                    [(ngModel)]="localProgress[c.dayNumber!]"
+                    (ngModelChange)="onDayChange(c.dayNumber!, $event)"
                   />
                   <span class="check-ui"
                         role="checkbox"
-                        [attr.aria-checked]="isChecked(c.dayNumber)"
+                        [attr.aria-checked]="localProgress[c.dayNumber!]"
                         tabindex="0"></span>
                 </label>
               </div>

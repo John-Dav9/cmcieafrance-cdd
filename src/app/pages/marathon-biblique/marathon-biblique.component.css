@@ -364,9 +364,11 @@
 }
 
 .calendar-cell.is-empty {
-  background: var(--bg);
-  border: 1px dashed var(--support);
+  background: transparent;
+  border: none;
   box-shadow: none;
+  pointer-events: none;
+  min-height: 0;
 }
 
 /* Jour actuel */
