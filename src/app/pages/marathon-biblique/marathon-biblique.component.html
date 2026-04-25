@@ -83,7 +83,7 @@
             <ng-container *ngIf="c.date">
               <div class="cell-top">
                 <span class="cell-date">{{ c.label }}</span>
-                <label class="cell-check" [attr.for]="'day-check-' + c.dayNumber">
+                <label class="cell-check">
                   <input
                     type="checkbox"
                     [id]="'day-check-' + c.dayNumber"
@@ -93,8 +93,7 @@
                   <span class="check-ui"
                         role="checkbox"
                         [attr.aria-checked]="isChecked(c.dayNumber)"
-                        tabindex="0"
-                        (click)="toggleChecked(c.dayNumber, $event)"></span>
+                        tabindex="0"></span>
                 </label>
               </div>
               <div class="cell-content">

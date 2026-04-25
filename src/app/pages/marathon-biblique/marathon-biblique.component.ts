@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
 import { PageContentService } from '../../core/services/page-content.service';
@@ -71,6 +71,7 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private firestore: Firestore,
     private pageContent: PageContentService,
+    private zone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -107,7 +108,9 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
     for (const m of this.marathons) {
       this.nbInscrits[m.id] = m.nbInscrits ?? 0;
       const unsub = onSnapshot(doc(this.firestore, 'marathons', m.id), snap => {
-        this.nbInscrits[m.id] = snap.data()?.['nbInscrits'] ?? 0;
+        this.zone.run(() => {
+          this.nbInscrits[m.id] = snap.data()?.['nbInscrits'] ?? 0;
+        });
       });
       this.unsubs.push(unsub);
     }
