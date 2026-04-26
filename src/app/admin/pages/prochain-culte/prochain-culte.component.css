@@ -1,0 +1,175 @@
+.pc-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.pc-header {
+  margin-bottom: 32px;
+}
+
+.pc-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1A3D64;
+  margin: 0 0 6px;
+}
+
+.pc-subtitle {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.pc-loading {
+  padding: 40px;
+  text-align: center;
+  color: #888;
+}
+
+.pc-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.pc-card--broadcast {
+  border-color: #1D546C;
+  background: linear-gradient(135deg, #eef6fa 0%, #f8fbfd 100%);
+}
+
+.pc-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1A3D64;
+  margin: 0 0 20px;
+}
+
+.pc-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.pc-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.pc-input,
+.pc-textarea {
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #222;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.pc-input:focus,
+.pc-textarea:focus {
+  outline: none;
+  border-color: #1D546C;
+}
+
+.pc-file-input {
+  font-size: 13px;
+  color: #555;
+}
+
+.pc-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1D546C, #1A3D64);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-broadcast {
+  background: linear-gradient(135deg, #1D546C, #00B7B5);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 13px 32px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 16px;
+}
+
+.btn-broadcast:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.msg-success {
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.msg-error {
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.broadcast-info {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 8px;
+}
+
+.broadcast-result {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.flyer-zone {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.flyer-preview {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.flyer-caption {
+  font-size: 12px;
+  color: #888;
+  margin: 8px 0 0;
+}
+
+.flyer-empty {
+  color: #aaa;
+  font-size: 13px;
+  padding: 16px 0;
+}

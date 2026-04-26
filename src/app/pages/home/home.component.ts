@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   data: any;
   c: any = {};
   cultes: any[] = DEFAULT_CULTES;
+  nextCulte: any = null;
 
   get heroTagline()    { return this.c.heroTagline    || 'Bienvenue à la CMCIEA-FRANCE'; }
   get heroTitle()      { return this.c.heroTitle      || 'Une église pour <span>tous</span>,<br/>Une église enracinée dans <span>la Parole</span>'; }
@@ -51,6 +52,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.pageContent.getPage('home').subscribe((res) => { if (res) this.c = res; });
     this.http.get<any[]>(`${environment.apiBase}/settings/cultes`).subscribe({
       next: (data) => { if (data?.length) this.cultes = data; },
+      error: () => {},
+    });
+
+    this.http.get<any>(`${environment.apiBase}/settings/next-culte`).subscribe({
+      next: (data) => { if (data?.date) this.nextCulte = data; },
       error: () => {},
     });
 

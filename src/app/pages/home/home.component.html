@@ -19,6 +19,21 @@
 </section>
 
 
+<!-- ── PROCHAIN CULTE PRÉSENTIEL ──────────────────────────────────────────── -->
+<section class="next-culte-banner" *ngIf="nextCulte">
+  <div class="next-culte-inner">
+    <div class="next-culte-left">
+      <span class="next-culte-badge">📅 Prochain culte en présentiel</span>
+      <h2 class="next-culte-title">{{ nextCulte.sujet }}</h2>
+      <p class="next-culte-date">{{ nextCulte.date }}</p>
+      <p class="next-culte-message" *ngIf="nextCulte.message">{{ nextCulte.message }}</p>
+    </div>
+    <div class="next-culte-right" *ngIf="nextCulte.flyerUrl">
+      <img [src]="nextCulte.flyerUrl" alt="Flyer du culte" class="next-culte-flyer" />
+    </div>
+  </div>
+</section>
+
 <!-- SECTION CARTES LIENS (Première visite / Ressources / Célébrations) -->
 <section class="cards-section">
   <div class="cards-grid">

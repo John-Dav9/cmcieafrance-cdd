@@ -64,6 +64,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/cultes/cultes-editor.component').then((m) => m.CultesEditorComponent),
       },
+      {
+        path: 'prochain-culte',
+        loadComponent: () =>
+          import('./pages/prochain-culte/prochain-culte.component').then((m) => m.ProchainCulteComponent),
+      },
     ],
   },
 ];

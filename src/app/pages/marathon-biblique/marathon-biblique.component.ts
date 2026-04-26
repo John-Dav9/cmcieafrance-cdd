@@ -125,9 +125,15 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
 
   // ─── Progression locale ────────────────────────────────────────────────────
 
+  // Clé inclut l'email pour isoler la progression par utilisateur sur l'appareil
+  private progressKey(): string {
+    const suffix = this.emailSet ? `-${this.userEmail}` : '';
+    return `${PROGRESS_KEY}-${this.selectedId}${suffix}`;
+  }
+
   private loadLocalProgress(): void {
     try {
-      const raw = localStorage.getItem(`${PROGRESS_KEY}-${this.selectedId}`);
+      const raw = localStorage.getItem(this.progressKey());
       this.localProgress = raw ? JSON.parse(raw) : {};
     } catch {
       this.localProgress = {};
@@ -135,10 +141,7 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
   }
 
   private saveLocalProgress(): void {
-    localStorage.setItem(
-      `${PROGRESS_KEY}-${this.selectedId}`,
-      JSON.stringify(this.localProgress),
-    );
+    localStorage.setItem(this.progressKey(), JSON.stringify(this.localProgress));
   }
 
   isChecked(day?: number): boolean { return day ? !!this.localProgress[day] : false; }
@@ -172,12 +175,15 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
     this.http.get<any>(`${this.base}/marathon/${this.selectedId}/progression?email=${encodeURIComponent(this.userEmail)}`).subscribe({
       next: (data) => {
         this.serverProgression = data;
+        // Remplace entièrement la progression locale par celle du serveur
+        // (évite de conserver des jours d'un autre utilisateur sur le même appareil)
+        this.localProgress = {};
         if (data?.progress) {
           Object.entries(data.progress).forEach(([k, v]) => {
             this.localProgress[parseInt(k)] = v as boolean;
           });
-          this.saveLocalProgress();
         }
+        this.saveLocalProgress();
         this.loadingProgression = false;
       },
       error: () => { this.loadingProgression = false; },
@@ -202,11 +208,13 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
       this.emailError = 'Email invalide.';
       return;
     }
-    this.userEmail = e;
-    this.emailSet  = true;
+    this.userEmail     = e;
+    this.emailSet      = true;
     this.showEmailForm = false;
-    this.emailError = '';
+    this.emailError    = '';
     localStorage.setItem(EMAIL_KEY, e);
+    // Réinitialise la progression affichée avant de charger celle du serveur
+    this.localProgress = {};
     this.loadServerProgression();
   }
 
@@ -260,6 +268,10 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
         this.emailSet     = true;
         localStorage.setItem(EMAIL_KEY, email);
         localStorage.setItem(NAME_KEY, fullName);
+
+        // Repart de zéro : le nouvel inscrit n'a aucune progression
+        this.localProgress = {};
+        this.serverProgression = null;
 
         this.joinForm = { fullName: '', email: '', phone: '', city: '' };
         setTimeout(() => { this.closeJoinInline(); this.loadServerProgression(); }, 1500);

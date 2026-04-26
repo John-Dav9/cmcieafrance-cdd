@@ -1,0 +1,88 @@
+<div class="pc-page">
+  <div class="pc-header">
+    <h1 class="pc-title">📅 Prochain culte en présentiel</h1>
+    <p class="pc-subtitle">Configurez l'annonce du prochain culte, uploadez le flyer et envoyez l'email à tous les inscrits.</p>
+  </div>
+
+  <div *ngIf="loading" class="pc-loading">Chargement…</div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- ── Info card ── -->
+    <div class="pc-card">
+      <h2 class="pc-card-title">Informations du culte</h2>
+
+      <label class="pc-field">
+        <span class="pc-label">Sujet / Titre de l'annonce *</span>
+        <input class="pc-input" type="text" [(ngModel)]="form.sujet" placeholder="Ex: Notre prochain culte en présentiel" />
+      </label>
+
+      <label class="pc-field">
+        <span class="pc-label">Date et heure *</span>
+        <input class="pc-input" type="text" [(ngModel)]="form.date" placeholder="Ex: Dimanche 26 avril 2026 à 17h00" />
+      </label>
+
+      <label class="pc-field">
+        <span class="pc-label">Message (affiché dans l'email et sur le site)</span>
+        <textarea class="pc-textarea" rows="4" [(ngModel)]="form.message"
+          placeholder="Rejoignez-nous pour notre culte en présentiel. Nous vous attendons avec joie !"></textarea>
+      </label>
+
+      <div class="pc-actions">
+        <button class="btn-primary" (click)="save()" [disabled]="saving">
+          {{ saving ? 'Sauvegarde…' : 'Sauvegarder' }}
+        </button>
+        <span class="msg-success" *ngIf="savedMsg">{{ savedMsg }}</span>
+        <span class="msg-error"   *ngIf="errorMsg">{{ errorMsg }}</span>
+      </div>
+    </div>
+
+    <!-- ── Flyer card ── -->
+    <div class="pc-card">
+      <h2 class="pc-card-title">Flyer du culte</h2>
+
+      <div class="flyer-zone" *ngIf="flyerUrl && !flyerPreview">
+        <img [src]="flyerUrl" alt="Flyer actuel" class="flyer-preview" />
+        <p class="flyer-caption">Flyer actuel — uploadez une nouvelle image pour le remplacer.</p>
+      </div>
+
+      <div class="flyer-zone" *ngIf="flyerPreview">
+        <img [src]="flyerPreview" alt="Aperçu" class="flyer-preview" />
+        <p class="flyer-caption">Aperçu — cliquez sur "Uploader" pour confirmer.</p>
+      </div>
+
+      <div *ngIf="!flyerUrl && !flyerPreview" class="flyer-empty">
+        Aucun flyer pour l'instant.
+      </div>
+
+      <label class="pc-field" style="margin-top:16px;">
+        <span class="pc-label">Choisir une image (PNG, JPG…)</span>
+        <input type="file" accept="image/*" (change)="onFlyerChange($event)" class="pc-file-input" />
+      </label>
+
+      <div class="pc-actions" *ngIf="flyerFile">
+        <button class="btn-primary" (click)="uploadFlyer()" [disabled]="uploadingFlyer">
+          {{ uploadingFlyer ? 'Upload en cours…' : 'Uploader le flyer' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Broadcast card ── -->
+    <div class="pc-card pc-card--broadcast">
+      <h2 class="pc-card-title">📣 Envoyer à tous les inscrits</h2>
+      <p class="broadcast-info">
+        Cet email sera envoyé à <strong>toutes les adresses email</strong> présentes dans la base de données
+        (inscrits aux marathons et aux autres programmes).
+        Assurez-vous que les informations ci-dessus sont sauvegardées avant d'envoyer.
+      </p>
+
+      <div *ngIf="broadcastMsg" class="msg-success broadcast-result">{{ broadcastMsg }}</div>
+      <div *ngIf="errorMsg"     class="msg-error">{{ errorMsg }}</div>
+
+      <button class="btn-broadcast" (click)="broadcast()" [disabled]="broadcasting">
+        {{ broadcasting ? 'Envoi en cours…' : '📨 Envoyer l\'email à tous' }}
+      </button>
+    </div>
+
+  </ng-container>
+</div>
