@@ -1,0 +1,188 @@
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+.dept-hero {
+  background: linear-gradient(135deg, #1A3D64 0%, #1D546C 60%, #00B7B5 100%);
+  padding: 80px 24px 72px;
+  text-align: center;
+}
+
+.dept-hero-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.dept-hero-badge {
+  display: inline-block;
+  background: rgba(0,183,181,0.25);
+  color: #00B7B5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 16px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+
+.dept-hero-title {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 18px;
+  line-height: 1.15;
+}
+
+.dept-hero-sub {
+  color: #c0d8e8;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Grid ───────────────────────────────────────────────────────────────── */
+.dept-grid-section {
+  background: #f4f4f4;
+  padding: 64px 24px;
+}
+
+.dept-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.dept-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 2px solid transparent;
+}
+
+.dept-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  border-color: var(--dept-color);
+}
+
+.dept-card-top {
+  padding: 28px 24px 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.dept-card-emoji {
+  font-size: 44px;
+  line-height: 1;
+}
+
+.dept-card-badge {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  align-self: center;
+}
+
+.dept-card:hover .dept-card-badge {
+  opacity: 1;
+}
+
+.dept-card-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1A3D64;
+  margin: 8px 24px 6px;
+  line-height: 1.25;
+}
+
+.dept-card-tagline {
+  font-size: 13px;
+  color: var(--dept-color);
+  font-weight: 600;
+  margin: 0 24px 14px;
+  font-style: italic;
+}
+
+.dept-card-activities {
+  flex: 1;
+  margin: 0 24px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dept-card-activities li {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  padding: 5px 0 5px 18px;
+  position: relative;
+  border-top: 1px solid #f0f0f0;
+}
+
+.dept-card-activities li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--dept-color);
+  font-weight: 700;
+}
+
+.dept-card-footer {
+  margin-top: 20px;
+  padding: 14px 24px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+/* ── CTA bas ────────────────────────────────────────────────────────────── */
+.dept-cta {
+  background: linear-gradient(135deg, #1A3D64, #1D546C);
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.dept-cta-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.dept-cta-verse {
+  font-size: 18px;
+  color: #ffffff;
+  font-style: italic;
+  line-height: 1.7;
+  margin: 0 0 8px;
+}
+
+.dept-cta-ref {
+  color: #00B7B5;
+  font-weight: 700;
+  font-size: 14px;
+  margin: 0 0 20px;
+}
+
+.dept-cta-text {
+  color: #c0d8e8;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .dept-grid { grid-template-columns: 1fr; }
+}

@@ -35,6 +35,14 @@ const routes: Routes = [
   },
 
   {
+    path: 'departements',
+    loadComponent: () => import('./pages/departements/departements.component').then(m => m.DepartementsComponent),
+  },
+  {
+    path: 'departements/:slug',
+    loadComponent: () => import('./pages/departements/departement-detail/departement-detail.component').then(m => m.DepartementDetailComponent),
+  },
+  {
     path: 'mon-espace',
     loadComponent: () =>
       import('./pages/user-dashboard/user-dashboard.component').then(m => m.UserDashboardComponent),

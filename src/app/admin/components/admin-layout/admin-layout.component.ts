@@ -25,6 +25,7 @@ export class AdminLayoutComponent {
     { label: 'Marathons bibliques', icon: '📅', route: '/espace-admin/marathon' },
     { label: 'Horaires des cultes', icon: '🕐', route: '/espace-admin/cultes' },
     { label: 'Prochain culte présentiel', icon: '📅', route: '/espace-admin/prochain-culte' },
+    { label: 'Modèles d\'emails',  icon: '✉️', route: '/espace-admin/email-templates' },
     { label: 'Thème & couleurs',   icon: '🎨', route: '/espace-admin/theme' },
     { label: 'Pages & contenu',    icon: '✏️', route: '/espace-admin/pages' },
   ];

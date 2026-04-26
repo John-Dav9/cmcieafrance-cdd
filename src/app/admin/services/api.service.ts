@@ -130,4 +130,21 @@ export class ApiService {
   envoyerAttestationsAnnuelles(annee: number) {
     return this.withAuth((h) => this.http.post(`${this.base}/marathon/attestations-annuelles`, { annee }, { headers: h }));
   }
+
+  // Email templates
+  listEmailTemplates() {
+    return this.withAuth((h) => this.http.get(`${this.base}/settings/email-templates`, { headers: h }));
+  }
+
+  getEmailTemplate(key: string) {
+    return this.withAuth((h) => this.http.get(`${this.base}/settings/email-templates/${key}`, { headers: h }));
+  }
+
+  saveEmailTemplate(key: string, subject: string, body: string) {
+    return this.withAuth((h) => this.http.patch(`${this.base}/settings/email-templates/${key}`, { subject, body }, { headers: h }));
+  }
+
+  resetEmailTemplate(key: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/settings/email-templates/${key}`, { headers: h }));
+  }
 }

@@ -1,0 +1,53 @@
+<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="dept-hero">
+  <div class="dept-hero-inner">
+    <span class="dept-hero-badge">Notre communauté</span>
+    <h1 class="dept-hero-title">Nos Départements</h1>
+    <p class="dept-hero-sub">
+      La CMCIEA France est organisée en départements pour mieux accompagner
+      chaque membre selon son âge, sa vocation et ses besoins.
+      Trouve ta famille spirituelle et rejoins-nous.
+    </p>
+  </div>
+</section>
+
+<!-- ── Grid des départements ─────────────────────────────────────────────── -->
+<section class="dept-grid-section">
+  <div class="dept-grid">
+    <a
+      *ngFor="let d of departements"
+      [routerLink]="['/departements', d.slug]"
+      class="dept-card"
+      [style.--dept-color]="d.color"
+      [style.--dept-color-light]="d.colorLight"
+    >
+      <div class="dept-card-top">
+        <span class="dept-card-emoji">{{ d.emoji }}</span>
+        <div class="dept-card-badge" [style.background]="d.color">Découvrir</div>
+      </div>
+      <h2 class="dept-card-name">{{ d.name }}</h2>
+      <p class="dept-card-tagline">{{ d.tagline }}</p>
+      <ul class="dept-card-activities">
+        <li *ngFor="let a of d.activites.slice(0, 2)">{{ a }}</li>
+      </ul>
+      <div class="dept-card-footer" [style.background]="d.color">
+        <span>Rejoindre ce département →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ── Verset / Call-to-action bas de page ───────────────────────────────── -->
+<section class="dept-cta">
+  <div class="dept-cta-inner">
+    <p class="dept-cta-verse">
+      « Et chacun sert selon le don qu'il a reçu, comme un bon administrateur
+      des diverses grâces de Dieu. »
+    </p>
+    <p class="dept-cta-ref">1 Pierre 4:10</p>
+    <p class="dept-cta-text">
+      Chaque département est un endroit où tes dons trouvent leur place.
+      Prends contact avec nous — ensemble, nous grandissons.
+    </p>
+  </div>
+</section>

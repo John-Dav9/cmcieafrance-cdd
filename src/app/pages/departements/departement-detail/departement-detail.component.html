@@ -1,0 +1,162 @@
+<!-- ── Département introuvable ───────────────────────────────────────────── -->
+<div *ngIf="notFound" class="dd-notfound">
+  <p>Département introuvable.</p>
+  <button (click)="backToDepts()" class="dd-back-btn">← Voir tous les départements</button>
+</div>
+
+<!-- ── Contenu principal ─────────────────────────────────────────────────── -->
+<ng-container *ngIf="dept">
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────── -->
+  <section class="dd-hero" [style.background]="'linear-gradient(135deg, #1A3D64 0%, ' + dept.color + ' 100%)'">
+    <div class="dd-hero-inner">
+      <button class="dd-back" (click)="backToDepts()">← Tous les départements</button>
+      <span class="dd-hero-emoji">{{ dept.emoji }}</span>
+      <h1 class="dd-hero-title">{{ dept.name }}</h1>
+      <p class="dd-hero-tagline">{{ dept.tagline }}</p>
+    </div>
+  </section>
+
+  <!-- ── Description ───────────────────────────────────────────────────── -->
+  <section class="dd-section">
+    <div class="dd-container">
+      <div class="dd-intro-grid">
+        <div class="dd-intro-text">
+          <span class="dd-label" [style.color]="dept.color">À propos</span>
+          <h2 class="dd-section-title">Qui sommes-nous ?</h2>
+          <p class="dd-body">{{ dept.description }}</p>
+        </div>
+        <div class="dd-vision-card" [style.border-color]="dept.color" [style.background]="dept.colorLight">
+          <p class="dd-vision-label" [style.color]="dept.color">🎯 Notre vision</p>
+          <p class="dd-vision-text">{{ dept.vision }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Activités ─────────────────────────────────────────────────────── -->
+  <section class="dd-section dd-section--alt">
+    <div class="dd-container">
+      <span class="dd-label" [style.color]="dept.color">Ce que nous faisons</span>
+      <h2 class="dd-section-title">Nos activités</h2>
+      <ul class="dd-activities">
+        <li *ngFor="let a of dept.activites; let i = index" class="dd-activity">
+          <span class="dd-activity-num" [style.background]="dept.color">{{ i + 1 }}</span>
+          <span class="dd-activity-text">{{ a }}</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Verset ─────────────────────────────────────────────────────────── -->
+  <section class="dd-verse-section" [style.background]="'linear-gradient(135deg, #1A3D64, ' + dept.color + ')'">
+    <div class="dd-container dd-verse-inner">
+      <p class="dd-verse-text">{{ dept.verset }}</p>
+      <p class="dd-verse-ref">— {{ dept.versetRef }}</p>
+    </div>
+  </section>
+
+  <!-- ── Rejoindre ─────────────────────────────────────────────────────── -->
+  <section class="dd-section" id="join-form">
+    <div class="dd-container dd-join-container">
+
+      <!-- Succès -->
+      <div *ngIf="success" class="dd-success">
+        <span class="dd-success-icon">✅</span>
+        <h3>Ta demande a bien été reçue !</h3>
+        <p>Un email de confirmation t'a été envoyé. Notre équipe te contactera très prochainement pour t'accueillir dans le <strong>{{ dept.name }}</strong>.</p>
+        <button class="dd-btn-outline" (click)="backToDepts()">← Voir tous les départements</button>
+      </div>
+
+      <!-- Bouton d'ouverture du formulaire -->
+      <div *ngIf="!joinOpen && !success" class="dd-join-cta">
+        <span class="dd-label" [style.color]="dept.color">Tu es prêt(e) ?</span>
+        <h2 class="dd-section-title">Rejoindre ce département</h2>
+        <p class="dd-body">Remplis le formulaire ci-dessous et notre équipe te recontactera pour t'accueillir chaleureusement.</p>
+        <button class="dd-btn-primary" [style.background]="dept.color" (click)="openJoin()">
+          {{ dept.emoji }} Je veux rejoindre le {{ dept.name }} →
+        </button>
+      </div>
+
+      <!-- Formulaire -->
+      <div *ngIf="joinOpen && !success" class="dd-form-card" [style.border-color]="dept.color">
+        <div class="dd-form-header" [style.background]="'linear-gradient(135deg, #1A3D64, ' + dept.color + ')'">
+          <h3>{{ dept.emoji }} {{ dept.name }}</h3>
+          <button class="dd-form-close" (click)="closeJoin()" aria-label="Fermer">✕</button>
+        </div>
+
+        <form (ngSubmit)="submit()" class="dd-form">
+
+          <!-- Champs de base -->
+          <div class="dd-form-row">
+            <label class="dd-field">
+              <span class="dd-field-label">Prénom *</span>
+              <input class="dd-input" type="text" [(ngModel)]="form.prenom" name="prenom" placeholder="Jean" required />
+            </label>
+            <label class="dd-field">
+              <span class="dd-field-label">Nom *</span>
+              <input class="dd-input" type="text" [(ngModel)]="form.nom" name="nom" placeholder="Dupont" required />
+            </label>
+          </div>
+          <div class="dd-form-row">
+            <label class="dd-field">
+              <span class="dd-field-label">Email *</span>
+              <input class="dd-input" type="email" [(ngModel)]="form.email" name="email" placeholder="exemple@mail.com" required />
+            </label>
+            <label class="dd-field">
+              <span class="dd-field-label">Téléphone</span>
+              <input class="dd-input" type="tel" [(ngModel)]="form.telephone" name="telephone" placeholder="+33 6..." />
+            </label>
+          </div>
+
+          <!-- Extras : Enfants -->
+          <ng-container *ngIf="dept.formExtras === 'enfants'">
+            <div class="dd-extras-title" [style.color]="dept.color">Informations sur l'enfant</div>
+            <div class="dd-form-row">
+              <label class="dd-field">
+                <span class="dd-field-label">Prénom de l'enfant</span>
+                <input class="dd-input" type="text" [(ngModel)]="form.enfantPrenom" name="enfantPrenom" placeholder="Léa" />
+              </label>
+              <label class="dd-field">
+                <span class="dd-field-label">Âge de l'enfant</span>
+                <input class="dd-input" type="text" [(ngModel)]="form.enfantAge" name="enfantAge" placeholder="7 ans" />
+              </label>
+            </div>
+          </ng-container>
+
+          <!-- Extras : Étudiants -->
+          <ng-container *ngIf="dept.formExtras === 'etudiants'">
+            <label class="dd-field">
+              <span class="dd-field-label">Université / École</span>
+              <input class="dd-input" type="text" [(ngModel)]="form.universite" name="universite" placeholder="Université Paris-Sorbonne" />
+            </label>
+          </ng-container>
+
+          <!-- Extras : Chorale -->
+          <ng-container *ngIf="dept.formExtras === 'chorale'">
+            <label class="dd-field">
+              <span class="dd-field-label">Type de voix</span>
+              <select class="dd-input" [(ngModel)]="form.typeVoix" name="typeVoix">
+                <option value="">Sélectionner...</option>
+                <option *ngFor="let v of typesVoix" [value]="v">{{ v }}</option>
+              </select>
+            </label>
+          </ng-container>
+
+          <!-- Erreur -->
+          <p *ngIf="errorMsg" class="dd-error">{{ errorMsg }}</p>
+
+          <div class="dd-form-actions">
+            <button type="button" class="dd-btn-outline" (click)="closeJoin()">Annuler</button>
+            <button type="submit" class="dd-btn-primary" [style.background]="dept.color" [disabled]="submitting">
+              {{ submitting ? 'Envoi en cours…' : 'Confirmer ma demande' }}
+            </button>
+          </div>
+          <p class="dd-form-note">Aucune information n'est partagée publiquement. Un email de confirmation te sera envoyé.</p>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+</ng-container>

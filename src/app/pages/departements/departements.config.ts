@@ -1,0 +1,177 @@
+export type FormExtras = 'standard' | 'enfants' | 'etudiants' | 'chorale';
+
+export interface DepartementConfig {
+  slug:        string;
+  name:        string;
+  emoji:       string;
+  color:       string;
+  colorLight:  string;
+  tagline:     string;
+  description: string;
+  vision:      string;
+  activites:   string[];
+  verset:      string;
+  versetRef:   string;
+  formExtras:  FormExtras;
+}
+
+export const DEPARTEMENTS: DepartementConfig[] = [
+  {
+    slug:       'enfants',
+    name:       'Département Enfants',
+    emoji:      '👶',
+    color:      '#F97316',
+    colorLight: '#FFF7ED',
+    tagline:    'Un espace sûr pour grandir dans la foi',
+    description:
+      'Le département Enfants de la CMCIEA France est un espace bienveillant et joyeux où les enfants de 3 à 12 ans découvrent la Parole de Dieu à travers des activités adaptées à leur âge. Chaque semaine, nous cultivons leur foi avec amour, créativité et enthousiasme.',
+    vision:
+      'Accompagner chaque enfant dans sa découverte de Dieu, en semant dès le plus jeune âge des graines de foi, d\'amour et de joie qui porteront des fruits pour toute une vie.',
+    activites: [
+      'École du dimanche — étude de la Bible adaptée aux enfants',
+      'Ateliers créatifs bibliques (dessin, bricolage, chant)',
+      'Louange et chants pour les enfants',
+      'Activités thématiques aux grandes fêtes chrétiennes',
+      'Sorties et activités communautaires',
+    ],
+    verset:    '« Laissez les enfants venir à moi, et ne les en empêchez pas ; car le royaume de Dieu est pour ceux qui leur ressemblent. »',
+    versetRef: 'Marc 10:14',
+    formExtras: 'enfants',
+  },
+  {
+    slug:       'jeunes',
+    name:       'Département Jeunes',
+    emoji:      '⚡',
+    color:      '#8B5CF6',
+    colorLight: '#F5F3FF',
+    tagline:    'Vivre sa foi avec intensité',
+    description:
+      'Le département Jeunes rassemble les 13-25 ans dans une communauté vivante et engagée. Un espace pour questionner, grandir et vivre sa foi sans compromis, entouré de frères et sœurs qui marchent dans la même direction.',
+    vision:
+      'Susciter une génération de jeunes disciples, audacieux dans leur foi, enracinés dans la Parole, et pleinement engagés dans le monde pour le Royaume de Dieu.',
+    activites: [
+      'Rencontres de jeunes hebdomadaires',
+      'Études bibliques et groupes de discussion',
+      'Soirées de prière et de louange',
+      'Projets d\'évangélisation et de service',
+      'Camps et retraites spirituelles',
+    ],
+    verset:    '« Que personne ne méprise ta jeunesse ; mais sois un modèle pour les croyants, en parole, en conduite, en amour, en foi, en pureté. »',
+    versetRef: '1 Timothée 4:12',
+    formExtras: 'standard',
+  },
+  {
+    slug:       'etudiants',
+    name:       'Département Étudiants',
+    emoji:      '🎓',
+    color:      '#3B82F6',
+    colorLight: '#EFF6FF',
+    tagline:    'La foi au cœur de tes études',
+    description:
+      'Le département Étudiants accompagne les chrétiens en milieu universitaire. Face aux défis intellectuels, sociaux et spirituels de la vie étudiante, nous cheminons ensemble pour que la foi reste vivante au cœur des études.',
+    vision:
+      'Former des étudiants qui intègrent leur foi dans tous les domaines de leur vie académique, sociale et professionnelle, et qui influencent positivement leur campus pour Christ.',
+    activites: [
+      'Groupes de soutien et de prière entre étudiants',
+      'Conférences sur foi, études et vie professionnelle',
+      'Mentorat spirituel personnalisé',
+      'Bible study hebdomadaire',
+      'Entraide pratique et fraternelle entre étudiants',
+    ],
+    verset:    '« Confie à l\'Éternel tes œuvres, et tes projets réussiront. »',
+    versetRef: 'Proverbes 16:3',
+    formExtras: 'etudiants',
+  },
+  {
+    slug:       'parents-familles',
+    name:       'Parents & Familles',
+    emoji:      '👨‍👩‍👧',
+    color:      '#10B981',
+    colorLight: '#ECFDF5',
+    tagline:    'Construire une famille ancrée dans la Parole',
+    description:
+      'Le département Parents & Familles est un espace de soutien, de partage et d\'équipement pour tous ceux qui vivent la belle et exigeante vocation de la famille chrétienne — couples, parents, et familles en tous genres.',
+    vision:
+      'Accompagner les couples et les parents à construire des foyers solides, fondés sur l\'amour de Dieu et les valeurs de l\'Évangile, pour que la foi soit transmise de génération en génération.',
+    activites: [
+      'Soirées couples et partages en famille',
+      'Conférences sur le mariage et la famille chrétienne',
+      'Groupes de soutien pour parents',
+      'Ressources et conseils bibliques sur l\'éducation des enfants',
+      'Retraites et sorties familiales',
+    ],
+    verset:    '« Quant à moi et à ma maison, nous servirons l\'Éternel. »',
+    versetRef: 'Josué 24:15',
+    formExtras: 'standard',
+  },
+  {
+    slug:       'femmes',
+    name:       'Département Femmes',
+    emoji:      '🌸',
+    color:      '#EC4899',
+    colorLight: '#FDF2F8',
+    tagline:    'Sœurs en Christ, fortes ensemble',
+    description:
+      'Le département Femmes est une communauté de sœurs unies dans la foi, l\'amour et la prière. Un espace pour grandir dans son identité en Christ, partager ses expériences et se soutenir mutuellement dans toutes les saisons de la vie.',
+    vision:
+      'Révéler et développer l\'identité, les dons et la calling de chaque femme selon la Parole de Dieu, pour qu\'elle soit une lumière dans son foyer, son église et sa société.',
+    activites: [
+      'Rencontres de prière et de partage entre femmes',
+      'Conférences sur l\'identité et la destinée de la femme chrétienne',
+      'Ateliers de développement personnel et spirituel',
+      'Groupes de lecture et d\'étude biblique',
+      'Actions solidaires et caritatives',
+    ],
+    verset:    '« Elle est vêtue de force et de dignité, et elle rit de l\'avenir. »',
+    versetRef: 'Proverbes 31:25',
+    formExtras: 'standard',
+  },
+  {
+    slug:       'hommes',
+    name:       'Département Hommes',
+    emoji:      '💪',
+    color:      '#1D546C',
+    colorLight: '#EEF6FA',
+    tagline:    'Des hommes debout pour Dieu et leur famille',
+    description:
+      'Le département Hommes rassemble des hommes décidés à vivre pleinement leur vocation de fils de Dieu, de maris, de pères et de leaders intègres dans la société. La fraternité, la prière et la responsabilité sont au cœur de notre communauté.',
+    vision:
+      'Susciter des hommes d\'intégrité, de prière et de responsabilité, qui exercent une influence positive dans leur famille, leur église et leur communauté, à la gloire de Dieu.',
+    activites: [
+      'Rencontres mensuelles et petits groupes d\'hommes',
+      'Conférences sur le leadership et la virilité chrétienne',
+      'Groupes d\'accountability et de prière',
+      'Activités sportives et fraternelles',
+      'Service et projets communautaires',
+    ],
+    verset:    '« Soyez vigilants, demeurez fermes dans la foi, soyez des hommes courageux, soyez forts. »',
+    versetRef: '1 Corinthiens 16:13',
+    formExtras: 'standard',
+  },
+  {
+    slug:       'chorale',
+    name:       'Chorale',
+    emoji:      '🎵',
+    color:      '#F59E0B',
+    colorLight: '#FFFBEB',
+    tagline:    'Louer Dieu de toute notre voix',
+    description:
+      'La Chorale de la CMCIEA France est un ministère de louange qui porte l\'adoration de toute l\'assemblée. Chanteurs confirmés ou débutants, tous ceux qui aiment louer Dieu avec excellence sont les bienvenus parmi nous.',
+    vision:
+      'Offrir à Dieu une louange excellente qui édifie l\'assemblée et attire la présence de l\'Esprit Saint dans nos célébrations, en faisant de chaque chant une offrande au Seigneur.',
+    activites: [
+      'Répétitions hebdomadaires (chant et harmonie)',
+      'Participation aux cultes et célébrations du dimanche',
+      'Concerts et soirées de louange spéciales',
+      'Formation vocale et musicale continue',
+      'Enregistrements de cantiques et de louanges',
+    ],
+    verset:    '« Chantez à l\'Éternel un cantique nouveau ! Que toute la terre célèbre l\'Éternel ! »',
+    versetRef: 'Psaumes 96:1',
+    formExtras: 'chorale',
+  },
+];
+
+export function getDepartement(slug: string): DepartementConfig | undefined {
+  return DEPARTEMENTS.find(d => d.slug === slug);
+}

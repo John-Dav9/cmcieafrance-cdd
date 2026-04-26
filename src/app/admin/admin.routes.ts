@@ -69,6 +69,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/prochain-culte/prochain-culte.component').then((m) => m.ProchainCulteComponent),
       },
+      {
+        path: 'email-templates',
+        loadComponent: () =>
+          import('./pages/email-templates/email-templates.component').then((m) => m.EmailTemplatesComponent),
+      },
     ],
   },
 ];

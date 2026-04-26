@@ -1,0 +1,88 @@
+<!-- ── Liste des modèles ─────────────────────────────────────────────────── -->
+<div *ngIf="!selected" class="et-page">
+  <div class="et-header">
+    <h1 class="et-title">Modèles d'emails</h1>
+    <p class="et-subtitle">Personnalisez les emails envoyés automatiquement. Les variables entre <code>{{"{{"}}…{{"}}"}}</code> sont remplacées dynamiquement.</p>
+  </div>
+
+  <div *ngIf="loading" class="et-loading">Chargement…</div>
+
+  <div *ngIf="!loading" class="et-grid">
+    <div *ngFor="let t of templates" class="et-card" (click)="select(t)">
+      <div class="et-card-top">
+        <span class="et-card-label">{{ t.label }}</span>
+        <span class="et-badge" [class.et-badge--custom]="t.customized">
+          {{ t.customized ? 'Personnalisé' : 'Par défaut' }}
+        </span>
+      </div>
+      <p class="et-card-desc">{{ t.description }}</p>
+      <div class="et-card-vars">
+        <span *ngFor="let v of t.variables" class="et-var">{{"{{"}}{{ v }}{{"}}"}}</span>
+      </div>
+      <div class="et-card-footer">Modifier →</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Éditeur ───────────────────────────────────────────────────────────── -->
+<div *ngIf="selected" class="et-page">
+  <button class="et-back-btn" (click)="back()">← Retour aux modèles</button>
+
+  <div class="et-editor-header">
+    <div>
+      <h2 class="et-editor-title">{{ selected.label }}</h2>
+      <p class="et-editor-desc">{{ selected.description }}</p>
+    </div>
+    <span class="et-badge" [class.et-badge--custom]="selected.customized">
+      {{ selected.customized ? 'Personnalisé' : 'Par défaut' }}
+    </span>
+  </div>
+
+  <!-- Variables disponibles -->
+  <div class="et-vars-block">
+    <span class="et-vars-label">Variables disponibles :</span>
+    <span *ngFor="let v of selected.variables" class="et-var">{{"{{"}}{{ v }}{{"}}"}}</span>
+  </div>
+
+  <!-- Messages -->
+  <p *ngIf="successMsg" class="et-success">✅ {{ successMsg }}</p>
+  <p *ngIf="errorMsg" class="et-error">⚠️ {{ errorMsg }}</p>
+
+  <!-- Sujet -->
+  <div class="et-field">
+    <label class="et-label">Objet de l'email</label>
+    <input class="et-input" type="text" [(ngModel)]="editSubject" placeholder="Sujet de l'email…" />
+  </div>
+
+  <!-- Corps HTML -->
+  <div class="et-field">
+    <div class="et-body-header">
+      <label class="et-label">Corps de l'email (HTML)</label>
+      <div class="et-tabs">
+        <button class="et-tab" [class.et-tab--active]="!showPreview" (click)="showPreview=false">Éditer</button>
+        <button class="et-tab" [class.et-tab--active]="showPreview" (click)="showPreview=true">Aperçu</button>
+      </div>
+    </div>
+
+    <textarea *ngIf="!showPreview"
+      class="et-textarea"
+      [(ngModel)]="editBody"
+      placeholder="HTML du corps de l'email…"
+      rows="20"
+    ></textarea>
+
+    <div *ngIf="showPreview" class="et-preview">
+      <iframe [srcdoc]="previewHtml" class="et-preview-frame" title="Aperçu email"></iframe>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="et-actions">
+    <button class="et-btn-reset" (click)="reset()" [disabled]="resetting || !selected.customized">
+      {{ resetting ? 'Réinitialisation…' : '↺ Remettre par défaut' }}
+    </button>
+    <button class="et-btn-save" (click)="save()" [disabled]="saving">
+      {{ saving ? 'Sauvegarde…' : '💾 Sauvegarder' }}
+    </button>
+  </div>
+</div>
