@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/eglise-frontend",
+    "public": "dist/eglise-frontend/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
