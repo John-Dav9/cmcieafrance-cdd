@@ -91,23 +91,18 @@
       </div>
 
       <!-- PROCHAIN PRÉSENTIEL -->
-      <div class="pv-next">
+      <div class="pv-next" *ngIf="nextCulte">
         <div class="pv-next__left">
           <span class="pv-next__label">Prochain présentiel</span>
-          <strong class="pv-next__date">Dimanche 25 janvier 2026</strong>
+          <strong class="pv-next__date">{{ nextCulte.sujet }}</strong>
+          <span class="pv-next__date-detail">{{ nextCulte.date }}</span>
           <span class="pv-next__place">📍 11 rue de l'Étoile, 75017 Paris</span>
+          <span class="pv-next__message" *ngIf="nextCulte.message">{{ nextCulte.message }}</span>
         </div>
-
-        <div class="pv-next__right">
-          <a
-            class="btn btn-outline"
-            href="https://www.google.com/calendar/render?action=TEMPLATE&text=Culte+CMCIEA-FRANCE+CHERCHEURS+DE+DIEU&dates=20251228T140000/20251228T160000&details=Culte+en+pr%C3%A9sentiel+CMCIEA-FRANCE+CHERCHEURS+DE+DIEU&location=11+rue+de+l%27%C3%A9toile+75017+Paris"
-            target="_blank"
-            rel="noopener"
-          >
-            Ajouter au calendrier
-          </a>
-        </div>
+      </div>
+      <div class="pv-next pv-next--empty" *ngIf="!nextCulte">
+        <span class="pv-next__label">Prochain présentiel</span>
+        <span class="pv-next__date-detail">Date à venir — revenez bientôt.</span>
       </div>
 
       <div class="pv-cta">

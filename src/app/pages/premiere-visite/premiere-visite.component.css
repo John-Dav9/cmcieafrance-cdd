@@ -353,9 +353,27 @@
   color: var(--title);
 }
 
+.pv-next__date-detail{
+  font-size:14px;
+  color: var(--muted);
+  font-weight:500;
+}
+
+.pv-next__message{
+  font-size:13px;
+  color: var(--muted);
+  font-style:italic;
+}
+
 .pv-next__place{
   font-size:13px;
   color: var(--muted);
+}
+
+.pv-next--empty{
+  opacity:0.6;
+  flex-direction:column;
+  gap:4px;
 }
 
 .pv-next__right{
