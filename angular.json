@@ -36,7 +36,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "buildOptimizer": true,
               "serviceWorker": "ngsw-config.json",
               "fileReplacements": [
                 {
