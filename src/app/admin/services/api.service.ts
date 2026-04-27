@@ -127,8 +127,34 @@ export class ApiService {
     return this.withAuth((h) => this.http.get(`${this.base}/marathon/${id}/inscrits`, { headers: h }));
   }
 
+  uploadMarathonFlyer(id: string, formData: FormData) {
+    return this.withAuth((h) => this.http.post(`${this.base}/marathon/${id}/flyer`, formData, { headers: h }));
+  }
+
   envoyerAttestationsAnnuelles(annee: number) {
     return this.withAuth((h) => this.http.post(`${this.base}/marathon/attestations-annuelles`, { annee }, { headers: h }));
+  }
+
+  // Prières
+  getPrieres() {
+    return this.withAuth((h) => this.http.get(`${this.base}/prieres`, { headers: h }));
+  }
+
+  updatePriereStatut(id: string, statut: string) {
+    return this.withAuth((h) => this.http.patch(`${this.base}/prieres/${id}/statut`, { statut }, { headers: h }));
+  }
+
+  deletePriere(id: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/prieres/${id}`, { headers: h }));
+  }
+
+  // Newsletter
+  getNewsletterSubscribers() {
+    return this.withAuth((h) => this.http.get(`${this.base}/newsletter/subscribers`, { headers: h }));
+  }
+
+  deleteNewsletterSubscriber(id: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/newsletter/subscribers/${id}`, { headers: h }));
   }
 
   // Email templates

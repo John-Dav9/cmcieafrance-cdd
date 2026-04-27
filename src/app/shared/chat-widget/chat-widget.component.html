@@ -1,0 +1,89 @@
+<!-- ── Floating button ─────────────────────────────────────────────────── -->
+<button class="cw-fab" (click)="toggle()" [class.cw-fab--open]="open" aria-label="Chat">
+  <span class="cw-fab-icon" *ngIf="!open">💬</span>
+  <span class="cw-fab-icon" *ngIf="open">✕</span>
+</button>
+
+<!-- ── Panel ───────────────────────────────────────────────────────────── -->
+<div class="cw-panel" [class.cw-panel--visible]="open">
+
+  <!-- Header -->
+  <div class="cw-header">
+    <div class="cw-header-dot"></div>
+    <div>
+      <p class="cw-header-title">Comment pouvons-nous aider ?</p>
+      <p class="cw-header-sub">CMCIEA France</p>
+    </div>
+  </div>
+
+  <!-- ── Home tab ─────────────────────────────────────────────────────── -->
+  <div class="cw-body" *ngIf="tab === 'home'">
+    <p class="cw-intro">Choisissez le type de votre question :</p>
+
+    <button class="cw-option" (click)="selectTab('site')">
+      <span class="cw-option-icon">🌐</span>
+      <div>
+        <p class="cw-option-title">Question sur le site</p>
+        <p class="cw-option-desc">Inscription, ressources, fonctionnalités…</p>
+      </div>
+      <span class="cw-option-arrow">›</span>
+    </button>
+
+    <button class="cw-option" (click)="selectTab('spiritual')">
+      <span class="cw-option-icon">🙏</span>
+      <div>
+        <p class="cw-option-title">Question spirituelle</p>
+        <p class="cw-option-desc">Parler avec le pasteur, prière, conseil…</p>
+      </div>
+      <span class="cw-option-arrow">›</span>
+    </button>
+  </div>
+
+  <!-- ── Site question tab ─────────────────────────────────────────────── -->
+  <div class="cw-body" *ngIf="tab === 'site'">
+    <button class="cw-back" (click)="back()">← Retour</button>
+
+    <div *ngIf="!sent">
+      <p class="cw-intro">Envoyez-nous votre question :</p>
+      <input class="cw-input" type="text"  [(ngModel)]="form.nom"     placeholder="Votre nom" />
+      <input class="cw-input" type="email" [(ngModel)]="form.email"   placeholder="Votre email" />
+      <textarea class="cw-textarea"        [(ngModel)]="form.message"  placeholder="Votre message…" rows="4"></textarea>
+      <p class="cw-error" *ngIf="error">{{ error }}</p>
+      <button class="cw-btn-send" (click)="send()" [disabled]="sending || !form.nom || !form.email || !form.message">
+        {{ sending ? 'Envoi…' : 'Envoyer' }}
+      </button>
+    </div>
+
+    <div class="cw-success" *ngIf="sent">
+      <p class="cw-success-icon">✅</p>
+      <p class="cw-success-title">Message envoyé !</p>
+      <p class="cw-success-text">Nous vous répondrons sous peu.</p>
+      <button class="cw-back" (click)="back()">← Nouvelle question</button>
+    </div>
+  </div>
+
+  <!-- ── Spiritual question tab ─────────────────────────────────────────── -->
+  <div class="cw-body" *ngIf="tab === 'spiritual'">
+    <button class="cw-back" (click)="back()">← Retour</button>
+    <p class="cw-intro">Parlez directement avec le pasteur :</p>
+
+    <a [href]="whatsappUrl" target="_blank" rel="noopener" class="cw-contact-btn cw-contact-btn--whatsapp">
+      <span>📱</span>
+      <div>
+        <p class="cw-contact-title">WhatsApp</p>
+        <p class="cw-contact-desc">Réponse rapide</p>
+      </div>
+    </a>
+
+    <a [href]="pastorEmail" class="cw-contact-btn cw-contact-btn--email">
+      <span>✉️</span>
+      <div>
+        <p class="cw-contact-title">Email</p>
+        <p class="cw-contact-desc">contact&#64;cmciea-france.com</p>
+      </div>
+    </a>
+
+    <p class="cw-note">Toutes les demandes sont traitées avec bienveillance et confidentialité.</p>
+  </div>
+
+</div>

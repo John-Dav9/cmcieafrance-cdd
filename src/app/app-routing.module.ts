@@ -52,6 +52,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
+  {
+    path: 'prieres',
+    loadComponent: () => import('./pages/prieres/prieres.component').then(m => m.PrieresComponent),
+  },
   { path: '**', redirectTo: '' },
 ];
 

@@ -1,0 +1,26 @@
+<div class="cm-backdrop" *ngIf="visible" (click)="close()">
+  <div class="cm-card" (click)="$event.stopPropagation()">
+
+    <div class="cm-header">
+      <div class="cm-pulse"></div>
+      <span class="cm-eyebrow">Annonce de l'Église</span>
+      <button class="cm-close" (click)="close()" aria-label="Fermer">&#10005;</button>
+    </div>
+
+    <div class="cm-body">
+      <p class="cm-badge">📅 Prochain Culte Présentiel</p>
+      <h2 class="cm-title">{{ culte.sujet }}</h2>
+      <p class="cm-date">{{ culte.date }}</p>
+      <p class="cm-message" *ngIf="culte.message">{{ culte.message }}</p>
+
+      <div class="cm-flyer" *ngIf="culte.flyerUrl">
+        <img [src]="culte.flyerUrl" alt="Flyer du culte" />
+      </div>
+    </div>
+
+    <div class="cm-footer">
+      <button class="cm-btn-primary" (click)="close()">J'ai compris — À bientôt !</button>
+    </div>
+
+  </div>
+</div>

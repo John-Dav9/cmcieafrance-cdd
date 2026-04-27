@@ -2,10 +2,13 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { ThemeService } from './core/services/theme.service';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { CulteModalComponent } from './shared/culte-modal/culte-modal.component';
+import { ChatWidgetComponent } from './shared/chat-widget/chat-widget.component';
 
 import { NavbarComponent } from './core/components/navbar/navbar.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -36,7 +39,10 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    CulteModalComponent,
+    ChatWidgetComponent,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: true, registrationStrategy: 'registerWhenStable:30000' }),
   ],
   providers: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),

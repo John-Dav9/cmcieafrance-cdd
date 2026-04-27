@@ -1,0 +1,37 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Abonnés Newsletter</h2>
+      <p class="page-sub">{{ subscribers.length }} abonné(s) au total</p>
+    </div>
+    <button class="btn-export" (click)="exportCSV()" [disabled]="subscribers.length === 0">
+      ⬇ Exporter CSV
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement…</div>
+  <div *ngIf="!loading && subscribers.length === 0" class="empty">Aucun abonné pour l'instant.</div>
+
+  <div *ngIf="!loading && subscribers.length > 0" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Prénom</th>
+          <th>Email</th>
+          <th>Inscrit le</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of subscribers">
+          <td>{{ s.prenom || '—' }}</td>
+          <td class="email-cell">{{ s.email }}</td>
+          <td>{{ s.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="btn-del" (click)="desabonner(s.id)">Désabonner</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -72,6 +72,12 @@
       </p>
     </div>
 
+    <div class="field">
+      <label>Flyer (optionnel)</label>
+      <input type="file" accept="image/*" (change)="onFlyerChange($event)" />
+      <p class="hint" style="margin-top:4px;">Le flyer sera joint à la newsletter envoyée aux anciens participants.</p>
+    </div>
+
     <div class="form-actions">
       <button class="btn-primary" [disabled]="saving || !form.titre || !form.dateDebut || !form.dateFin" (click)="submit()">
         {{ saving ? 'Création en cours...' : 'Créer le marathon' }}
@@ -126,39 +132,50 @@
         <div *ngIf="loadingInscrits" class="loading">Chargement des participants...</div>
         <div *ngIf="!loadingInscrits && inscrits.length === 0" class="empty">Aucun inscrit pour l'instant.</div>
 
-        <div *ngIf="!loadingInscrits && inscrits.length > 0" class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Participant</th>
-                <th>Email</th>
-                <th>Progression</th>
-                <th>Jalons</th>
-                <th>Inscription</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let i of inscrits">
-                <td><strong class="rank">{{ i.rank }}</strong></td>
-                <td>{{ i.fullName }}</td>
-                <td class="email-cell">{{ i.email }}</td>
-                <td>
-                  <div class="progress-wrap">
-                    <div class="progress-bar" [style.width.%]="i.progressPercent"></div>
-                  </div>
-                  <span class="progress-pct">{{ i.progressPercent }}%</span>
-                </td>
-                <td>
-                  <span class="milestone" *ngFor="let ms of [25,50,75,100]"
-                        [class.reached]="i.milestonesReached?.includes(ms)">
-                    {{ ms }}%
-                  </span>
-                </td>
-                <td>{{ i.createdAt?.toDate ? (i.createdAt.toDate() | date:'dd/MM/yy') : '—' }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div *ngIf="!loadingInscrits && inscrits.length > 0">
+          <div class="inscrits-header">
+            <span class="inscrits-count">{{ inscrits.length }} participant(s)</span>
+            <button class="btn-csv" (click)="exportCSV(m)">⬇ Exporter CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Participant</th>
+                  <th>Email</th>
+                  <th>Progression</th>
+                  <th>Jalons</th>
+                  <th>Streak</th>
+                  <th>Inscription</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of inscrits">
+                  <td><strong class="rank">{{ i.rank }}</strong></td>
+                  <td>{{ i.fullName }}</td>
+                  <td class="email-cell">{{ i.email }}</td>
+                  <td>
+                    <div class="progress-wrap">
+                      <div class="progress-bar" [style.width.%]="i.progressPercent"></div>
+                    </div>
+                    <span class="progress-pct">{{ i.progressPercent }}%</span>
+                  </td>
+                  <td>
+                    <span class="milestone" *ngFor="let ms of [25,50,75,100]"
+                          [class.reached]="i.milestonesReached?.includes(ms)">
+                      {{ ms }}%
+                    </span>
+                  </td>
+                  <td class="streak-cell">
+                    <span title="Streak actuel">🔥 {{ i.currentStreak ?? 0 }}j</span>
+                    <span class="streak-max" title="Streak max">/ {{ i.maxStreak ?? 0 }}</span>
+                  </td>
+                  <td>{{ i.createdAt?.toDate ? (i.createdAt.toDate() | date:'dd/MM/yy') : '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

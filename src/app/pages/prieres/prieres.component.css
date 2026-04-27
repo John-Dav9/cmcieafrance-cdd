@@ -1,0 +1,152 @@
+.prieres-page { min-height: 100vh; background: #f8f9fc; }
+
+/* ── Hero ──────────────────────────────────────────────────────────────────── */
+.page-hero {
+  background: linear-gradient(135deg, #1D546C 0%, #0f3347 100%);
+  color: #fff;
+  padding: 80px 24px 60px;
+  text-align: center;
+}
+.hero-inner { max-width: 640px; margin: 0 auto; }
+.hero-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px; }
+.hero-title { font-size: 38px; font-weight: 800; margin: 0 0 16px; }
+.hero-sub { font-size: 16px; opacity: 0.85; line-height: 1.6; margin: 0; }
+
+/* ── Layout ─────────────────────────────────────────────────────────────────── */
+.form-section {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── Carte formulaire ───────────────────────────────────────────────────────── */
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 40px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.form-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1f2e;
+  margin: 0 0 28px;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3d4663;
+}
+
+.opt { font-weight: 400; color: #aab0c4; }
+.req { color: #e74c3c; }
+
+.field input,
+.field textarea {
+  border: 1px solid #dde0ec;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #1a1f2e;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus { border-color: #1D546C; box-shadow: 0 0 0 3px rgba(29,84,108,0.1); }
+
+.field input:disabled { background: #f4f6f9; color: #aab0c4; }
+
+.char-count { font-size: 11px; color: #aab0c4; text-align: right; }
+
+.anon-toggle { margin-bottom: 20px; }
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #5a6480;
+  cursor: pointer;
+}
+.toggle-label input { cursor: pointer; width: 15px; height: 15px; }
+
+.privacy-note {
+  font-size: 12px;
+  color: #8b93a8;
+  background: #f8f9fc;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 24px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: #1D546C;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-submit:hover:not(:disabled) { opacity: 0.88; }
+.btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.success-msg {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #dcfce7;
+  color: #16a34a;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error-msg {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* ── Bloc citation ──────────────────────────────────────────────────────────── */
+.encourage-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 36px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  border-left: 4px solid #1D546C;
+}
+
+blockquote {
+  font-size: 16px;
+  font-style: italic;
+  color: #3d4663;
+  line-height: 1.7;
+  margin: 0 0 12px;
+}
+
+cite { display: block; font-size: 13px; font-weight: 700; color: #1D546C; margin-top: 8px; font-style: normal; }
+
+.encourage-card p { font-size: 14px; color: #5a6480; margin: 0; }
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .hero-title { font-size: 28px; }
+  .form-card { padding: 24px 20px; }
+  .encourage-card { padding: 24px 20px; }
+}

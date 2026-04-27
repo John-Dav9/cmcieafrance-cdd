@@ -1,0 +1,25 @@
+.page { max-width: 800px; }
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; gap: 16px; }
+.page-title { font-size: 24px; font-weight: 700; color: #1a1f2e; margin: 0; }
+.page-sub { font-size: 13px; color: #888; margin: 4px 0 0; }
+.loading { color: #888; padding: 40px; text-align: center; }
+.empty { color: #888; padding: 40px; text-align: center; }
+
+.btn-export {
+  padding: 10px 20px; background: #1D546C; color: #fff; border: none;
+  border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.btn-export:hover { opacity: 0.88; }
+.btn-export[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px; border-bottom: 2px solid #eee; }
+td { padding: 12px 14px; font-size: 14px; color: #333; border-bottom: 1px solid #f0f0f0; }
+.email-cell { color: #1D546C; }
+
+.btn-del {
+  padding: 5px 12px; border: none; border-radius: 6px;
+  background: #fee2e2; color: #991b1b; font-size: 12px; cursor: pointer;
+}

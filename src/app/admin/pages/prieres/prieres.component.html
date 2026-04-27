@@ -1,0 +1,70 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Demandes de prière</h2>
+    <span class="badge-count" *ngIf="enAttente.length > 0">{{ enAttente.length }} en attente</span>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement…</div>
+
+  <div *ngIf="!loading && prieres.length === 0" class="empty">
+    Aucune demande de prière pour l'instant.
+  </div>
+
+  <div *ngIf="!loading && prieres.length > 0">
+
+    <!-- En attente -->
+    <div *ngIf="enAttente.length > 0" class="section">
+      <h3 class="section-label section-label--urgent">🙏 En attente ({{ enAttente.length }})</h3>
+      <div class="priere-card" *ngFor="let p of enAttente">
+        <div class="priere-top">
+          <div>
+            <span class="priere-prenom">{{ p.anonyme ? 'Anonyme' : p.prenom }}</span>
+            <span class="priere-sujet">{{ p.sujet }}</span>
+          </div>
+          <span class="priere-date">{{ p.createdAt | date:'dd/MM/yy HH:mm' }}</span>
+        </div>
+        <p class="priere-message">{{ p.message }}</p>
+        <div class="priere-actions">
+          <button class="btn-charge" (click)="updateStatut(p.id, 'pris_en_charge')">✓ Prendre en charge</button>
+          <button class="btn-ferme"  (click)="updateStatut(p.id, 'ferme')">Fermer</button>
+          <button class="btn-del"    (click)="supprimer(p.id)">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pris en charge -->
+    <div *ngIf="prisEnCharge.length > 0" class="section">
+      <h3 class="section-label">✅ Pris en charge ({{ prisEnCharge.length }})</h3>
+      <div class="priere-card priere-card--done" *ngFor="let p of prisEnCharge">
+        <div class="priere-top">
+          <div>
+            <span class="priere-prenom">{{ p.anonyme ? 'Anonyme' : p.prenom }}</span>
+            <span class="priere-sujet">{{ p.sujet }}</span>
+          </div>
+          <span class="priere-date">{{ p.createdAt | date:'dd/MM/yy' }}</span>
+        </div>
+        <p class="priere-message">{{ p.message }}</p>
+        <div class="priere-actions">
+          <button class="btn-ferme" (click)="updateStatut(p.id, 'ferme')">Fermer</button>
+          <button class="btn-del"   (click)="supprimer(p.id)">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fermés -->
+    <div *ngIf="fermes.length > 0" class="section">
+      <h3 class="section-label section-label--muted">🔒 Fermées ({{ fermes.length }})</h3>
+      <div class="priere-card priere-card--muted" *ngFor="let p of fermes">
+        <div class="priere-top">
+          <span class="priere-prenom">{{ p.anonyme ? 'Anonyme' : p.prenom }}</span>
+          <span class="priere-date">{{ p.createdAt | date:'dd/MM/yy' }}</span>
+        </div>
+        <p class="priere-sujet-inline">{{ p.sujet }}</p>
+        <div class="priere-actions">
+          <button class="btn-del" (click)="supprimer(p.id)">✕ Supprimer</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

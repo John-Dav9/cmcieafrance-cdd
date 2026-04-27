@@ -74,6 +74,16 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/email-templates/email-templates.component').then((m) => m.EmailTemplatesComponent),
       },
+      {
+        path: 'prieres',
+        loadComponent: () =>
+          import('./pages/prieres/prieres.component').then((m) => m.AdminPrieresComponent),
+      },
+      {
+        path: 'newsletter',
+        loadComponent: () =>
+          import('./pages/newsletter/newsletter.component').then((m) => m.AdminNewsletterComponent),
+      },
     ],
   },
 ];

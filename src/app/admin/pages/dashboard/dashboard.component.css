@@ -1,10 +1,78 @@
-.page { max-width: 900px; }
+.page { max-width: 1000px; }
 .page-title { font-size: 24px; font-weight: 700; color: #1a1f2e; }
 .page-sub { color: #8b93a8; margin-top: 4px; margin-bottom: 32px; font-size: 14px; }
 
+/* ── Stats grid ─────────────────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #eef0f7;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.stat-value { font-size: 28px; font-weight: 800; color: #1a1f2e; margin: 0; }
+.stat-label { font-size: 12px; color: #8b93a8; margin: 2px 0 0; }
+
+/* ── Section ────────────────────────────────────────────────────────────────── */
+.section { margin-bottom: 36px; }
+.section-title, h3.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1f2e;
+  margin: 0 0 16px;
+}
+
+/* ── Marathon rows ──────────────────────────────────────────────────────────── */
+.marathon-rows { display: flex; flex-direction: column; gap: 10px; }
+
+.m-row {
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #eef0f7;
+}
+
+.m-info { flex: 1; min-width: 0; }
+.m-name { display: block; font-size: 14px; font-weight: 600; color: #1a1f2e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-dates { font-size: 12px; color: #8b93a8; }
+
+.m-bar-wrap { width: 120px; height: 6px; background: #f0f0f0; border-radius: 3px; flex-shrink: 0; }
+.m-bar-fill { height: 100%; background: linear-gradient(90deg, #1D546C, #00B7B5); border-radius: 3px; transition: width 0.5s; }
+
+.m-count { font-size: 13px; font-weight: 600; color: #1D546C; white-space: nowrap; }
+.m-link { font-size: 12px; color: #1D546C; text-decoration: none; white-space: nowrap; }
+.m-link:hover { text-decoration: underline; }
+
+/* ── Navigation cards ───────────────────────────────────────────────────────── */
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
@@ -21,10 +89,7 @@
   border: 1px solid #eef0f7;
 }
 
-.card:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  transform: translateY(-2px);
-}
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
 
 .card-icon {
   width: 48px;
@@ -37,5 +102,5 @@
   flex-shrink: 0;
 }
 
-.card h3 { font-size: 15px; font-weight: 600; color: #1a1f2e; }
-.card p { font-size: 12px; color: #8b93a8; margin-top: 2px; }
+.card h3 { font-size: 14px; font-weight: 600; color: #1a1f2e; margin: 0; }
+.card p { font-size: 12px; color: #8b93a8; margin: 2px 0 0; }

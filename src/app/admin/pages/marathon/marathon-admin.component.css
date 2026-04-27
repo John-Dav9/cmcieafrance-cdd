@@ -200,6 +200,26 @@
 
 .milestone.reached { background: #dcfce7; color: #16a34a; font-weight: 700; }
 
+/* ── Inscrits header ────────────────────────────────────────────────────────── */
+.inscrits-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.inscrits-count { font-size: 13px; color: #5a6480; font-weight: 600; }
+
+.btn-csv {
+  padding: 6px 14px; background: #1D546C; color: #fff; border: none;
+  border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.btn-csv:hover { opacity: 0.88; }
+
+/* ── Streak ─────────────────────────────────────────────────────────────────── */
+.streak-cell { font-size: 12px; white-space: nowrap; }
+.streak-max  { color: #aab0c4; margin-left: 2px; }
+
 /* ── Attestations ───────────────────────────────────────────────────────────── */
 .attestation-card { margin-top: 32px; }
 

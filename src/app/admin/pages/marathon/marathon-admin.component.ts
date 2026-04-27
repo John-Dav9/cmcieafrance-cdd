@@ -82,6 +82,8 @@ export class MarathonAdminComponent implements OnInit {
   saving = false;
   successMsg = '';
   errorMsg = '';
+  flyerFile: File | null = null;
+  uploadingFlyer = false;
 
   form = {
     titre: '',
@@ -130,6 +132,11 @@ export class MarathonAdminComponent implements OnInit {
 
   // ─── Création ─────────────────────────────────────────────────────────────
 
+  onFlyerChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.flyerFile = input.files?.[0] ?? null;
+  }
+
   submit() {
     if (!this.form.titre || !this.form.dateDebut || !this.form.dateFin) return;
     if (this.form.scope === 'LIVRES_CHOISIS' && !this.form.livresChoisis.length) {
@@ -145,7 +152,17 @@ export class MarathonAdminComponent implements OnInit {
 
     this.api.creerMarathon(payload).subscribe({
       next: (res: any) => {
-        this.successMsg = `Marathon cr\u00e9\u00e9 \u2014 ${res.nbJours} jours, ${res.nbChapitres} chapitres r\u00e9partis.`;
+        const marathonId = res.id;
+        if (this.flyerFile && marathonId) {
+          this.uploadingFlyer = true;
+          const fd = new FormData();
+          fd.append('file', this.flyerFile);
+          this.api.uploadMarathonFlyer(marathonId, fd).subscribe({
+            next: () => { this.uploadingFlyer = false; },
+            error: () => { this.uploadingFlyer = false; },
+          });
+        }
+        this.successMsg = `Marathon cr\u00e9\u00e9 \u2014 ${res.nbJours} jours, ${res.nbChapitres} chapitres r\u00e9partis. Une newsletter a \u00e9t\u00e9 envoy\u00e9e aux anciens participants.`;
         this.saving = false;
         this.resetForm();
         this.load();
@@ -159,6 +176,7 @@ export class MarathonAdminComponent implements OnInit {
 
   resetForm() {
     this.form = { titre: '', description: '', dateDebut: '', dateFin: '', scope: 'BIBLE_COMPLETE', livresChoisis: [] };
+    this.flyerFile = null;
   }
 
   toggleLivre(id: string) {
@@ -205,6 +223,24 @@ export class MarathonAdminComponent implements OnInit {
   }
 
   // ─── Attestations annuelles ────────────────────────────────────────────────
+
+  exportCSV(m: any) {
+    if (!this.inscrits.length) return;
+    const header = ['Rang', 'Nom', 'Email', 'Progression (%)', 'Jalons', 'Streak actuel', 'Streak max'];
+    const rows = this.inscrits.map((i: any) => [
+      i.rank, i.fullName, i.email, i.progressPercent,
+      (i.milestonesReached ?? []).join('|'),
+      i.currentStreak ?? 0, i.maxStreak ?? 0,
+    ].join(';'));
+    const csv = [header.join(';'), ...rows].join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${m.titre.replace(/\s+/g, '-').toLowerCase()}-inscrits.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   envoyerAttestations() {
     if (!confirm(`Envoyer les attestations annuelles pour ${this.anneeAttestation} ?`)) return;

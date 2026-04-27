@@ -1,0 +1,51 @@
+.page { max-width: 800px; }
+.page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.page-title { font-size: 24px; font-weight: 700; color: #1a1f2e; margin: 0; }
+.badge-count { background: #7c3aed; color: #fff; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.loading { color: #888; padding: 40px; text-align: center; }
+.empty { color: #888; padding: 40px; text-align: center; }
+
+.section { margin-bottom: 32px; }
+.section-label { font-size: 14px; font-weight: 700; margin: 0 0 14px; color: #1a1f2e; }
+.section-label--urgent { color: #7c3aed; }
+.section-label--muted { color: #888; }
+
+.priere-card {
+  background: #fff;
+  border: 1.5px solid #e8e8f0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+
+.priere-card--done { opacity: 0.85; }
+.priere-card--muted { opacity: 0.6; }
+
+.priere-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.priere-prenom { font-weight: 700; color: #1A3D64; font-size: 14px; margin-right: 8px; }
+.priere-sujet { font-size: 14px; color: #444; }
+.priere-sujet-inline { font-size: 13px; color: #666; margin: 0 0 10px; }
+.priere-date { font-size: 11px; color: #aaa; white-space: nowrap; }
+.priere-message { font-size: 14px; color: #555; line-height: 1.6; margin: 0 0 14px; }
+
+.priere-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-charge {
+  padding: 7px 14px; border: none; border-radius: 6px;
+  background: #7c3aed; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.btn-ferme {
+  padding: 7px 14px; border: 1.5px solid #ccc; border-radius: 6px;
+  background: #fff; color: #555; font-size: 13px; cursor: pointer;
+}
+.btn-del {
+  padding: 7px 12px; border: none; border-radius: 6px;
+  background: #fee2e2; color: #991b1b; font-size: 13px; cursor: pointer;
+}

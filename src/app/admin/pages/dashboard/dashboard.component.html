@@ -2,6 +2,58 @@
   <h2 class="page-title">Tableau de bord</h2>
   <p class="page-sub">Bienvenue dans l'espace d'administration CMCIEA France.</p>
 
+  <!-- ── Stats ─────────────────────────────────────────────────────────────── -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#EEF6FA;color:#1D546C;">🏃</span>
+      <div>
+        <p class="stat-value">{{ stats.marathonsActifs }}</p>
+        <p class="stat-label">Marathon(s) actif(s)</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#f0fdf4;color:#16a34a;">👥</span>
+      <div>
+        <p class="stat-value">{{ stats.totalInscritsMarathon }}</p>
+        <p class="stat-label">Inscrits au total</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#faf5ff;color:#7c3aed;">🙏</span>
+      <div>
+        <p class="stat-value">{{ stats.demandesPriere }}</p>
+        <p class="stat-label">Prières en attente</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon" style="background:#ecfeff;color:#0891b2;">📧</span>
+      <div>
+        <p class="stat-value">{{ stats.abonnesNewsletter }}</p>
+        <p class="stat-label">Abonnés newsletter</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Marathons actifs ───────────────────────────────────────────────────── -->
+  <div class="section" *ngIf="!loading && marathonsActifs.length > 0">
+    <h3 class="section-title">Marathons actifs</h3>
+    <div class="marathon-rows">
+      <div class="m-row" *ngFor="let m of marathonsActifs">
+        <div class="m-info">
+          <span class="m-name">{{ m.titre }}</span>
+          <span class="m-dates">{{ m.dateDebut }} → {{ m.dateFin }}</span>
+        </div>
+        <div class="m-bar-wrap">
+          <div class="m-bar-fill" [style.width.%]="(m.nbInscrits || 0) > 0 ? 100 : 0"></div>
+        </div>
+        <span class="m-count">{{ m.nbInscrits }} inscrit(s)</span>
+        <a [routerLink]="'/espace-admin/marathon'" class="m-link">Gérer →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Navigation rapide ──────────────────────────────────────────────────── -->
+  <h3 class="section-title">Navigation rapide</h3>
   <div class="cards">
     <a *ngFor="let c of cards" [routerLink]="c.route" class="card">
       <span class="card-icon" [style.background]="c.color + '18'" [style.color]="c.color">

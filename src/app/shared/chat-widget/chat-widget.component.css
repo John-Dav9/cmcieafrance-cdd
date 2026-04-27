@@ -1,0 +1,254 @@
+/* ── Floating button ────────────────────────────────────────────────────── */
+.cw-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1D546C, #1A3D64);
+  border: none;
+  cursor: pointer;
+  z-index: 9000;
+  box-shadow: 0 6px 24px rgba(26, 61, 100, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+}
+
+.cw-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 32px rgba(26, 61, 100, 0.55);
+}
+
+.cw-fab--open { transform: scale(1.05); }
+
+.cw-fab-icon { font-size: 26px; line-height: 1; }
+
+/* ── Panel ──────────────────────────────────────────────────────────────── */
+.cw-panel {
+  position: fixed;
+  bottom: 100px;
+  right: 28px;
+  width: 340px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.25);
+  z-index: 8999;
+  overflow: hidden;
+  transform: translateY(20px) scale(0.97);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+}
+
+.cw-panel--visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.cw-header {
+  background: linear-gradient(135deg, #1D546C 0%, #1A3D64 100%);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cw-header-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #00e5a0;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 0 rgba(0, 229, 160, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 229, 160, 0.4); }
+  70%  { box-shadow: 0 0 0 8px rgba(0, 229, 160, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 229, 160, 0); }
+}
+
+.cw-header-title {
+  margin: 0;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cw-header-sub {
+  margin: 0;
+  color: #a8d8e8;
+  font-size: 12px;
+}
+
+/* ── Body ───────────────────────────────────────────────────────────────── */
+.cw-body { padding: 16px 18px 20px; }
+
+.cw-intro {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 14px;
+}
+
+/* ── Option buttons (home tab) ──────────────────────────────────────────── */
+.cw-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: #f8f9fa;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 10px;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.cw-option:hover {
+  border-color: #1D546C;
+  background: #EEF6FA;
+  transform: translateX(3px);
+}
+
+.cw-option-icon { font-size: 24px; flex-shrink: 0; }
+
+.cw-option-title {
+  margin: 0 0 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A3D64;
+}
+
+.cw-option-desc {
+  margin: 0;
+  font-size: 12px;
+  color: #888;
+}
+
+.cw-option-arrow {
+  margin-left: auto;
+  font-size: 20px;
+  color: #aaa;
+}
+
+/* ── Back button ────────────────────────────────────────────────────────── */
+.cw-back {
+  background: none;
+  border: none;
+  color: #1D546C;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.cw-back:hover { text-decoration: underline; }
+
+/* ── Contact form ───────────────────────────────────────────────────────── */
+.cw-input,
+.cw-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #222;
+  background: #fafafa;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.cw-input:focus,
+.cw-textarea:focus { border-color: #1A3D64; background: #fff; }
+
+.cw-btn-send {
+  width: 100%;
+  padding: 11px;
+  background: linear-gradient(135deg, #1D546C, #1A3D64);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 4px;
+}
+
+.cw-btn-send:hover:not([disabled]) { opacity: 0.88; }
+.cw-btn-send[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.cw-error { font-size: 12px; color: #c00; margin: 0 0 8px; }
+
+/* ── Success state ──────────────────────────────────────────────────────── */
+.cw-success { text-align: center; padding: 16px 0; }
+.cw-success-icon { font-size: 36px; margin: 0 0 8px; }
+.cw-success-title { font-size: 16px; font-weight: 700; color: #1A3D64; margin: 0 0 6px; }
+.cw-success-text { font-size: 13px; color: #666; margin: 0 0 16px; }
+
+/* ── Spiritual tab contact buttons ──────────────────────────────────────── */
+.cw-contact-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.cw-contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.cw-contact-btn span { font-size: 28px; flex-shrink: 0; }
+
+.cw-contact-btn--whatsapp {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+}
+
+.cw-contact-btn--email {
+  background: linear-gradient(135deg, #1D546C, #1A3D64);
+}
+
+.cw-contact-title {
+  margin: 0 0 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cw-contact-desc {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cw-note {
+  font-size: 11px;
+  color: #aaa;
+  text-align: center;
+  margin: 12px 0 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 400px) {
+  .cw-panel { width: calc(100vw - 32px); right: 16px; }
+  .cw-fab   { right: 16px; bottom: 16px; }
+}

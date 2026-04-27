@@ -68,6 +68,17 @@
         </span>
       </div>
 
+      <!-- Streak (si connecté) -->
+      <div class="streak-banner" *ngIf="serverProgression && (serverProgression.currentStreak > 0 || serverProgression.maxStreak > 0)">
+        <div class="streak-item" title="Jours consécutifs actuels">
+          🔥 <strong>{{ serverProgression.currentStreak ?? 0 }}</strong> jour(s) de suite
+        </div>
+        <div class="streak-separator">·</div>
+        <div class="streak-item streak-max" title="Meilleur streak">
+          🏆 Record : <strong>{{ serverProgression.maxStreak ?? 0 }}</strong> jour(s)
+        </div>
+      </div>
+
       <!-- Calendrier -->
       <div class="calendar-shell" #calendarShell>
         <div class="calendar-grid">
@@ -185,6 +196,47 @@
       </div>
     </div>
   </section>
+
+  <!-- ── Leaderboard public ─────────────────────────────────────────────────── -->
+  <section class="leaderboard-section" *ngIf="marathon">
+    <div class="leaderboard-header" (click)="toggleLeaderboard()">
+      <h2 class="leaderboard-title">🏆 Classement des participants</h2>
+      <span class="leaderboard-toggle">{{ showLeaderboard ? '▲ Masquer' : '▼ Voir le classement' }}</span>
+    </div>
+
+    <div class="leaderboard-body" *ngIf="showLeaderboard">
+      <div *ngIf="loadingLeaderboard" class="lb-loading">Chargement du classement…</div>
+      <div *ngIf="!loadingLeaderboard && leaderboard.length === 0" class="lb-empty">Aucun participant pour l'instant.</div>
+
+      <div *ngIf="!loadingLeaderboard && leaderboard.length > 0" class="lb-table-wrap">
+        <table class="lb-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Participant</th>
+              <th>Progression</th>
+              <th>Streak</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of leaderboard" [class.lb-me]="p.email === userEmail">
+              <td><strong class="lb-rank lb-rank--{{ p.rank <= 3 ? p.rank : 'other' }}">{{ p.rank }}</strong></td>
+              <td>{{ p.displayName }}</td>
+              <td>
+                <div class="lb-progress-wrap">
+                  <div class="lb-progress-bar" [style.width.%]="p.progressPercent"></div>
+                </div>
+                <span class="lb-pct">{{ p.progressPercent }}%</span>
+              </td>
+              <td><span class="lb-streak">🔥 {{ p.currentStreak ?? 0 }}j</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="lb-note">Les noms sont affichés sous forme abrégée pour la confidentialité.</p>
+      </div>
+    </div>
+  </section>
+
 </ng-container>
 
 <!-- ── Sections fixes (info + FAQ + SEO) ─────────────────────────────────── -->

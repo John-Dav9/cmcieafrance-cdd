@@ -133,6 +133,32 @@ export class HomeComponent implements OnInit, AfterViewInit {
   elements.forEach((el) => observer.observe(el));
 }
 
+  // ─── Newsletter ─────────────────────────────────────────────────────────────
+  nlPrenom = '';
+  nlEmail = '';
+  nlSending = false;
+  nlSuccess = '';
+  nlError = '';
+
+  subscribeNewsletter() {
+    if (!this.nlEmail) return;
+    this.nlSending = true;
+    this.nlSuccess = '';
+    this.nlError = '';
+    this.http.post(`${environment.apiBase}/newsletter/subscribe`, { prenom: this.nlPrenom, email: this.nlEmail }).subscribe({
+      next: () => {
+        this.nlSuccess = 'Merci ! Vous êtes maintenant abonné(e) à notre newsletter.';
+        this.nlSending = false;
+        this.nlPrenom = '';
+        this.nlEmail = '';
+      },
+      error: (err: any) => {
+        this.nlError = err?.error?.message ?? 'Une erreur est survenue. Veuillez réessayer.';
+        this.nlSending = false;
+      },
+    });
+  }
+
   sendWhatsApp(
   form: HTMLFormElement,
   prenom: string,

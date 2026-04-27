@@ -330,6 +330,28 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
     return (text || '').replace(/;\s*/g, '<br>');
   }
 
+  // ─── Leaderboard ──────────────────────────────────────────────────────────
+
+  leaderboard: any[]    = [];
+  loadingLeaderboard    = false;
+  showLeaderboard       = false;
+
+  toggleLeaderboard(): void {
+    this.showLeaderboard = !this.showLeaderboard;
+    if (this.showLeaderboard && !this.leaderboard.length) {
+      this.loadLeaderboard();
+    }
+  }
+
+  private loadLeaderboard(): void {
+    if (!this.selectedId) return;
+    this.loadingLeaderboard = true;
+    this.http.get<any[]>(`${this.base}/marathon/${this.selectedId}/leaderboard`).subscribe({
+      next: (data) => { this.leaderboard = data ?? []; this.loadingLeaderboard = false; },
+      error: () => { this.loadingLeaderboard = false; },
+    });
+  }
+
   // ─── Helpers ──────────────────────────────────────────────────────────────
 
   private resetProgressState(): void {
@@ -338,6 +360,8 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
     this.submitSuccess     = false;
     this.submitError       = '';
     this.isJoinOpen        = false;
+    this.leaderboard       = [];
+    this.showLeaderboard   = false;
   }
 
   get currentNbInscrits(): number {

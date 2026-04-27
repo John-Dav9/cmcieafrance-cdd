@@ -1,0 +1,62 @@
+<div class="prieres-page">
+
+  <!-- En-tête -->
+  <div class="page-hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">COMMUNION</p>
+      <h1 class="hero-title">Demandes de prière</h1>
+      <p class="hero-sub">Partagez vos besoins en prière avec notre communauté. Chaque demande est traitée avec soin et bienveillance.</p>
+    </div>
+  </div>
+
+  <!-- Formulaire -->
+  <div class="form-section">
+    <div class="form-card">
+      <h2 class="form-title">🙏 Soumettre une demande</h2>
+
+      <div class="field">
+        <label>Votre prénom <span class="opt">(optionnel)</span></label>
+        <input type="text" [(ngModel)]="form.prenom" placeholder="Ex : Marie" [disabled]="form.anonyme" />
+      </div>
+
+      <div class="anon-toggle">
+        <label class="toggle-label">
+          <input type="checkbox" [(ngModel)]="form.anonyme" />
+          Soumettre de façon anonyme
+        </label>
+      </div>
+
+      <div class="field">
+        <label>Sujet de prière <span class="req">*</span></label>
+        <input type="text" [(ngModel)]="form.sujet" placeholder="Ex : Guérison, Direction de vie, Famille…" maxlength="120" />
+      </div>
+
+      <div class="field">
+        <label>Votre demande <span class="req">*</span></label>
+        <textarea [(ngModel)]="form.message" rows="5" placeholder="Décrivez votre besoin en prière…" maxlength="1000"></textarea>
+        <span class="char-count">{{ form.message.length }}/1000</span>
+      </div>
+
+      <p class="privacy-note">
+        🔒 Vos données sont confidentielles et accessibles uniquement à l'équipe pastorale.
+      </p>
+
+      <button class="btn-submit" [disabled]="sending || !form.sujet || !form.message" (click)="submit()">
+        {{ sending ? 'Envoi en cours…' : 'Envoyer ma demande' }}
+      </button>
+
+      <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+      <p class="error-msg"   *ngIf="errorMsg">{{ errorMsg }}</p>
+    </div>
+
+    <!-- Bloc d'encouragement -->
+    <div class="encourage-card">
+      <blockquote>
+        « Ne vous inquiétez de rien ; mais en toute chose faites connaître vos besoins à Dieu par des prières et des supplications, avec des actions de grâces. »
+        <cite>— Philippiens 4:6</cite>
+      </blockquote>
+      <p>Notre équipe s'engage à intercéder pour chaque demande reçue.</p>
+    </div>
+  </div>
+
+</div>

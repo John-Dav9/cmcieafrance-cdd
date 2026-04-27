@@ -19,20 +19,6 @@
 </section>
 
 
-<!-- ── PROCHAIN CULTE PRÉSENTIEL ──────────────────────────────────────────── -->
-<section class="next-culte-banner" *ngIf="nextCulte">
-  <div class="next-culte-inner">
-    <div class="next-culte-left">
-      <span class="next-culte-badge">📅 Prochain culte en présentiel</span>
-      <h2 class="next-culte-title">{{ nextCulte.sujet }}</h2>
-      <p class="next-culte-date">{{ nextCulte.date }}</p>
-      <p class="next-culte-message" *ngIf="nextCulte.message">{{ nextCulte.message }}</p>
-    </div>
-    <div class="next-culte-right" *ngIf="nextCulte.flyerUrl">
-      <img [src]="nextCulte.flyerUrl" alt="Flyer du culte" class="next-culte-flyer" />
-    </div>
-  </div>
-</section>
 
 <!-- SECTION CARTES LIENS (Première visite / Ressources / Célébrations) -->
 <section class="cards-section">
@@ -126,6 +112,27 @@
     <h2 class="media-title">{{ mediaTitle }}</h2>
     <p class="media-text">{{ mediaText }}</p>
     <a [href]="mediaYoutubeUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark media-btn">{{ mediaButtonText }}</a>
+  </div>
+</section>
+
+<!-- SECTION NEWSLETTER -->
+<section class="newsletter-section">
+  <div class="newsletter-inner">
+    <div class="newsletter-text">
+      <h2 class="newsletter-title">Restez connecté(e) à la communauté</h2>
+      <p class="newsletter-sub">Recevez les actualités, annonces et encouragements de CMCIEA-FRANCE directement dans votre boîte mail.</p>
+    </div>
+    <form class="newsletter-form" (ngSubmit)="subscribeNewsletter()" #nlForm="ngForm">
+      <div class="nl-fields">
+        <input type="text" [(ngModel)]="nlPrenom" name="nlPrenom" placeholder="Votre prénom" class="nl-input" />
+        <input type="email" [(ngModel)]="nlEmail" name="nlEmail" placeholder="Votre adresse e-mail" class="nl-input" required />
+      </div>
+      <button type="submit" class="nl-btn" [disabled]="nlSending || !nlEmail">
+        {{ nlSending ? 'Inscription…' : "S'abonner" }}
+      </button>
+      <p class="nl-success" *ngIf="nlSuccess">✓ {{ nlSuccess }}</p>
+      <p class="nl-error"   *ngIf="nlError">{{ nlError }}</p>
+    </form>
   </div>
 </section>
 

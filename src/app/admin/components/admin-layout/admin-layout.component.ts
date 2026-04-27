@@ -26,6 +26,8 @@ export class AdminLayoutComponent {
     { label: 'Horaires des cultes', icon: '🕐', route: '/espace-admin/cultes' },
     { label: 'Prochain culte présentiel', icon: '📅', route: '/espace-admin/prochain-culte' },
     { label: 'Modèles d\'emails',  icon: '✉️', route: '/espace-admin/email-templates' },
+    { label: 'Demandes de prière', icon: '🙏', route: '/espace-admin/prieres' },
+    { label: 'Newsletter',         icon: '📧', route: '/espace-admin/newsletter' },
     { label: 'Thème & couleurs',   icon: '🎨', route: '/espace-admin/theme' },
     { label: 'Pages & contenu',    icon: '✏️', route: '/espace-admin/pages' },
   ];
