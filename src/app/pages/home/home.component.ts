@@ -134,6 +134,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 }
 
   // ─── Newsletter ─────────────────────────────────────────────────────────────
+  nlOpen = false;
   nlPrenom = '';
   nlEmail = '';
   nlSending = false;

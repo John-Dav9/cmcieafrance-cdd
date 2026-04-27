@@ -115,27 +115,6 @@
   </div>
 </section>
 
-<!-- SECTION NEWSLETTER -->
-<section class="newsletter-section">
-  <div class="newsletter-inner">
-    <div class="newsletter-text">
-      <h2 class="newsletter-title">Restez connecté(e) à la communauté</h2>
-      <p class="newsletter-sub">Recevez les actualités, annonces et encouragements de CMCIEA-FRANCE directement dans votre boîte mail.</p>
-    </div>
-    <form class="newsletter-form" (ngSubmit)="subscribeNewsletter()" #nlForm="ngForm">
-      <div class="nl-fields">
-        <input type="text" [(ngModel)]="nlPrenom" name="nlPrenom" placeholder="Votre prénom" class="nl-input" />
-        <input type="email" [(ngModel)]="nlEmail" name="nlEmail" placeholder="Votre adresse e-mail" class="nl-input" required />
-      </div>
-      <button type="submit" class="nl-btn" [disabled]="nlSending || !nlEmail">
-        {{ nlSending ? 'Inscription…' : "S'abonner" }}
-      </button>
-      <p class="nl-success" *ngIf="nlSuccess">✓ {{ nlSuccess }}</p>
-      <p class="nl-error"   *ngIf="nlError">{{ nlError }}</p>
-    </form>
-  </div>
-</section>
-
 <!-- SECTION ÉVÉNEMENTS + CONTACT -->
 <section class="events-contact-section">
   <div class="events-contact-grid">
@@ -152,6 +131,25 @@
           DE {{ c.heure }} – {{ c.description }}
         </p>
         <a *ngIf="c.lien" [href]="c.lien" target="_blank" rel="noopener" class="event-link">Rejoindre →</a>
+      </div>
+
+      <!-- NEWSLETTER -->
+      <div class="nl-block">
+        <button class="nl-trigger-btn" (click)="nlOpen = !nlOpen" *ngIf="!nlSuccess">
+          <span class="nl-trigger-icon">📧</span>
+          Recevoir nos actualités par email
+        </button>
+
+        <div class="nl-inline-form" *ngIf="nlOpen && !nlSuccess">
+          <input type="text"  [(ngModel)]="nlPrenom" name="nlPrenom" placeholder="Votre prénom (optionnel)" class="nl-field" />
+          <input type="email" [(ngModel)]="nlEmail"  name="nlEmail"  placeholder="Votre adresse e-mail *"  class="nl-field" />
+          <button class="nl-submit-btn" [disabled]="nlSending || !nlEmail" (click)="subscribeNewsletter()">
+            {{ nlSending ? 'Inscription…' : "S'abonner" }}
+          </button>
+          <p class="nl-error" *ngIf="nlError">{{ nlError }}</p>
+        </div>
+
+        <p class="nl-success-msg" *ngIf="nlSuccess">✓ {{ nlSuccess }}</p>
       </div>
     </div>
 
