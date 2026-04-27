@@ -7,7 +7,6 @@ import { MessagesComponent } from './pages/messages/messages.component';
 import { MarathonBibliqueComponent } from './pages/marathon-biblique/marathon-biblique.component';
 import { PremiereVisiteComponent } from './pages/premiere-visite/premiere-visite.component';
 import { RessourcesDecouvrirComponent } from './pages/ressources-decouvrir/ressources-decouvrir.component';
-import { MinistereEnfantsComponent } from './pages/ministere-enfants/ministere-enfants.component';
 
 
 
@@ -19,7 +18,7 @@ const routes: Routes = [
   { path: 'marathon-biblique', component: MarathonBibliqueComponent },
   { path: 'premiere-visite', component: PremiereVisiteComponent },
   { path: 'ressources/decouvrir', component: RessourcesDecouvrirComponent},
-  { path: 'ministere-enfants', component: MinistereEnfantsComponent },
+  { path: 'ministere-enfants', redirectTo: '/departements', pathMatch: 'full' },
   { path: 'actualites', loadComponent: () => import('./pages/actualites/actualites.component').then(m => m.ActualitesComponent) },
   {
   path: 'actualites/marathon-biblique',
