@@ -1,0 +1,83 @@
+/* ── Hero ── */
+.legal-hero {
+  background: linear-gradient(135deg, #1D546C 0%, #0f3547 100%);
+  color: #fff;
+  padding: 64px 24px 48px;
+  text-align: center;
+}
+.legal-hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.legal-hero h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.legal-hero p {
+  font-size: 1rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* ── Content ── */
+.legal-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+/* ── Sections ── */
+.legal-section {
+  margin-bottom: 40px;
+}
+.legal-section h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1D546C;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #e8f0f4;
+}
+.legal-section p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #444;
+  margin-bottom: 8px;
+}
+.legal-section ul {
+  margin: 8px 0 8px 20px;
+  padding: 0;
+}
+.legal-section li {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #444;
+  margin-bottom: 4px;
+}
+.legal-section a {
+  color: #1D546C;
+  text-decoration: underline;
+}
+.legal-section a:hover {
+  color: #0f3547;
+}
+
+/* ── Footer ── */
+.legal-date {
+  font-size: 0.82rem;
+  color: #999;
+  margin-top: 48px;
+  margin-bottom: 24px;
+}
+.legal-back {
+  display: inline-block;
+  color: #1D546C;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.legal-back:hover {
+  opacity: 0.7;
+}

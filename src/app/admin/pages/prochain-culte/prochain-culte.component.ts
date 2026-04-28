@@ -17,7 +17,7 @@ export class ProchainCulteComponent implements OnInit {
   private auth = inject(AdminAuthService);
   private base = environment.apiBase;
 
-  form = { sujet: '', date: '', message: '' };
+  form = { sujet: '', date: '', dateISO: '', message: '' };
   flyerUrl: string | null = null;
   flyerFile: File | null = null;
   flyerPreview: string | null = null;
@@ -38,7 +38,7 @@ export class ProchainCulteComponent implements OnInit {
     this.http.get<any>(`${this.base}/settings/next-culte`).subscribe({
       next: (data) => {
         if (data) {
-          this.form    = { sujet: data.sujet ?? '', date: data.date ?? '', message: data.message ?? '' };
+          this.form    = { sujet: data.sujet ?? '', date: data.date ?? '', dateISO: data.dateISO ?? '', message: data.message ?? '' };
           this.flyerUrl = data.flyerUrl ?? null;
         }
         this.loading = false;

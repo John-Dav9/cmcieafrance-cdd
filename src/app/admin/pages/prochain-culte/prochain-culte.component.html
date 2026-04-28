@@ -18,8 +18,13 @@
       </label>
 
       <label class="pc-field">
-        <span class="pc-label">Date et heure *</span>
+        <span class="pc-label">Date et heure * (texte affiché sur le site)</span>
         <input class="pc-input" type="text" [(ngModel)]="form.date" placeholder="Ex: Dimanche 26 avril 2026 à 17h00" />
+      </label>
+
+      <label class="pc-field">
+        <span class="pc-label">Date machine (pour le bouton "Ajouter à mon agenda")</span>
+        <input class="pc-input" type="datetime-local" [(ngModel)]="form.dateISO" />
       </label>
 
       <label class="pc-field">

@@ -74,6 +74,25 @@
   color: #E2E8F0;
   font-size: 0.85rem;
 }
+.footer-legal {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+}
+.footer-legal a {
+  color: rgba(226, 232, 240, 0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-legal a:hover {
+  color: #E2E8F0;
+}
+.footer-legal span {
+  color: rgba(226, 232, 240, 0.4);
+}
 
 @media (max-width: 900px) {
   .footer-inner {

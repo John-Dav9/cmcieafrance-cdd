@@ -55,6 +55,14 @@ const routes: Routes = [
     path: 'prieres',
     loadComponent: () => import('./pages/prieres/prieres.component').then(m => m.PrieresComponent),
   },
+  {
+    path: 'mentions-legales',
+    loadComponent: () => import('./pages/legal/mentions-legales.component').then(m => m.MentionsLegalesComponent),
+  },
+  {
+    path: 'politique-confidentialite',
+    loadComponent: () => import('./pages/legal/politique-confidentialite.component').then(m => m.PolitiqueConfidentialiteComponent),
+  },
   { path: '**', redirectTo: '' },
 ];
 

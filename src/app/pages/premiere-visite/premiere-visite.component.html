@@ -99,6 +99,11 @@
           <span class="pv-next__place">📍 11 rue de l'Étoile, 75017 Paris</span>
           <span class="pv-next__message" *ngIf="nextCulte.message">{{ nextCulte.message }}</span>
         </div>
+        <div class="pv-next__right" *ngIf="calendarUrl">
+          <a [href]="calendarUrl" target="_blank" rel="noopener" class="btn btn-outline">
+            📅 Ajouter à mon agenda
+          </a>
+        </div>
       </div>
       <div class="pv-next pv-next--empty" *ngIf="!nextCulte">
         <span class="pv-next__label">Prochain présentiel</span>
