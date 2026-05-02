@@ -26,8 +26,8 @@
         </label>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn-primary" [disabled]="form.invalid || saving">
-          {{ saving ? 'Publication...' : 'Publier' }}
+        <button type="button" class="btn-primary" [disabled]="form.invalid || saving" (click)="submit()">
+          {{ saving ? 'Envoi en cours...' : 'Publier' }}
         </button>
       </div>
       <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>

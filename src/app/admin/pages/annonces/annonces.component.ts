@@ -37,7 +37,7 @@ export class AnnoncesComponent implements OnInit {
   }
 
   submit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.saving) return;
     this.saving = true;
     this.api.createAnnonce(this.form.value).subscribe({
       next: () => {
