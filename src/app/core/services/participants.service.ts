@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp } from '@angular/fire/firestore';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface ParticipantPayload {
   fullName: string;
@@ -10,14 +12,11 @@ export interface ParticipantPayload {
 
 @Injectable({ providedIn: 'root' })
 export class ParticipantsService {
-  constructor(private firestore: Firestore) {}
+  constructor(private http: HttpClient) {}
 
-  async register(payload: ParticipantPayload): Promise<void> {
-    const ref = collection(this.firestore, 'participants');
-    await addDoc(ref, {
-      ...payload,
-      createdAt: serverTimestamp(),
-      source: 'marathon-biblique'
-    });
+  async register(marathonId: string, payload: ParticipantPayload): Promise<void> {
+    await firstValueFrom(
+      this.http.post(`${environment.apiBase}/marathon/${marathonId}/inscrire`, payload),
+    );
   }
 }
