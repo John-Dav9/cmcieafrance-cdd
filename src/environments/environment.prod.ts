@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBase: 'https://cmciea-backend.onrender.com/api',
+  apiBase: 'https://api.cmciea-france.com/api',
   devAdmin: {
     enabled: false,
     email: '',
