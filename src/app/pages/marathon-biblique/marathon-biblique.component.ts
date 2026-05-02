@@ -1,6 +1,5 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
 import { PageContentService } from '../../core/services/page-content.service';
 import { environment } from '../../../environments/environment';
 
@@ -20,7 +19,7 @@ const PROGRESS_KEY = 'marathon-progress-local';
 export class MarathonBibliqueComponent implements OnInit, OnDestroy {
 
   private base = environment.apiBase;
-  private unsubs: (() => void)[] = [];
+  private unsubs: (() => void)[] = []; // conservé pour compatibilité ngOnDestroy
   private c: any = {};
 
   // ─── CMS ──────────────────────────────────────────────────────────────────
@@ -69,9 +68,7 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private firestore: Firestore,
     private pageContent: PageContentService,
-    private zone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -102,17 +99,8 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToCounters(): void {
-    this.unsubs.forEach(u => u());
-    this.unsubs = [];
-
     for (const m of this.marathons) {
       this.nbInscrits[m.id] = m.nbInscrits ?? 0;
-      const unsub = onSnapshot(doc(this.firestore, 'marathons', m.id), snap => {
-        this.zone.run(() => {
-          this.nbInscrits[m.id] = snap.data()?.['nbInscrits'] ?? 0;
-        });
-      });
-      this.unsubs.push(unsub);
     }
   }
 
