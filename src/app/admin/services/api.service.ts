@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { from, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AdminAuthService } from './admin-auth.service';
 
@@ -11,12 +10,9 @@ export class ApiService {
   private base = environment.apiBase;
 
   private withAuth(fn: (headers: HttpHeaders) => any) {
-    return from(this.authService.getToken()).pipe(
-      switchMap((token) => {
-        const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-        return fn(headers);
-      }),
-    );
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token ?? ''}` });
+    return fn(headers);
   }
 
   // Inscriptions

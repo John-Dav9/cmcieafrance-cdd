@@ -44,7 +44,18 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.currentUser$.value;
+    const user = this.currentUser$.value;
+    if (!user) return false;
+    try {
+      const payload = JSON.parse(atob(user.access_token.split('.')[1]));
+      if (payload.exp * 1000 < Date.now()) {
+        this.logout();
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   isAdmin(): boolean {

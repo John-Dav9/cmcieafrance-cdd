@@ -273,14 +273,21 @@ export class MarathonBibliqueComponent implements OnInit, OnDestroy {
 
   // ─── Calendrier ───────────────────────────────────────────────────────────
 
+  private parseLocalDate(s: string): Date {
+    // Dates stockées au format "YYYY-MM-DD" sont parsées en UTC par défaut,
+    // ce qui décale le jour pour les fuseaux horaires hors Europe.
+    if (s && !s.includes('T')) return new Date(s + 'T00:00:00');
+    return new Date(s);
+  }
+
   get calendarCells(): CalendarCell[] {
     if (!this.marathon?.planLecture?.length) return [];
 
     const plan: ReadingDay[]  = this.marathon.planLecture;
     const planByDate = new Map(plan.map((d: ReadingDay) => [d.date, d]));
 
-    const start = new Date(this.marathon.dateDebut);
-    const end   = new Date(this.marathon.dateFin);
+    const start = this.parseLocalDate(this.marathon.dateDebut);
+    const end   = this.parseLocalDate(this.marathon.dateFin);
     const cells: CalendarCell[] = [];
 
     const offset = start.getDay();

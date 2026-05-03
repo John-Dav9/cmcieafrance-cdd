@@ -138,6 +138,7 @@ export class MarathonAdminComponent implements OnInit {
   }
 
   submit() {
+    if (this.saving) return;
     if (!this.form.titre || !this.form.dateDebut || !this.form.dateFin) return;
     if (this.form.scope === 'LIVRES_CHOISIS' && !this.form.livresChoisis.length) {
       this.errorMsg = 'Choisissez au moins un livre.';
