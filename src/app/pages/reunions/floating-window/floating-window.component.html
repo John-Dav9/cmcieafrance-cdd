@@ -1,0 +1,21 @@
+<div class="float-window"
+  [style.left.px]="posX"
+  [style.top.px]="posY"
+  [class.dragging]="dragging">
+
+  <div class="float-header" (mousedown)="onMouseDown($event)">
+    <span class="float-title">🎙 {{ title }}</span>
+    <button class="float-expand" (click)="expand.emit()" title="Agrandir">⬆</button>
+  </div>
+
+  <div class="float-controls">
+    <button class="float-btn" [class.float-btn--off]="!micOn" (click)="clickToggleMic()" title="Micro">
+      {{ micOn ? '🎤' : '🔇' }}
+    </button>
+    <button class="float-btn" [class.float-btn--off]="!camOn" (click)="clickToggleCam()" title="Caméra">
+      {{ camOn ? '📷' : '📵' }}
+    </button>
+    <button class="float-btn float-btn--leave" (click)="leave.emit()" title="Quitter">✕</button>
+  </div>
+
+</div>

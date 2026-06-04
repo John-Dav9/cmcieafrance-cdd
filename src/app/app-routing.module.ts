@@ -63,6 +63,45 @@ const routes: Routes = [
     path: 'politique-confidentialite',
     loadComponent: () => import('./pages/legal/politique-confidentialite.component').then(m => m.PolitiqueConfidentialiteComponent),
   },
+  // ── Réunions ──────────────────────────────────────────────────────────────
+  {
+    path: 'reunions',
+    loadComponent: () => import('./pages/reunions/reunions-list/reunions-list.component')
+      .then(m => m.ReunionsListComponent),
+  },
+  {
+    path: 'reunions/:id/salle',
+    loadComponent: () => import('./pages/reunions/reunion-room/reunion-room.component')
+      .then(m => m.ReunionRoomComponent),
+  },
+
+  // ── Auth membre ───────────────────────────────────────────────────────────
+  {
+    path: 'auth/login',
+    loadComponent: () => import('./pages/auth/login/login.component')
+      .then(m => m.LoginComponent),
+  },
+  {
+    path: 'auth/verify-otp',
+    loadComponent: () => import('./pages/auth/verify-otp/verify-otp.component')
+      .then(m => m.VerifyOtpComponent),
+  },
+  {
+    path: 'auth/register',
+    loadComponent: () => import('./pages/auth/register/register.component')
+      .then(m => m.RegisterComponent),
+  },
+  {
+    path: 'auth/magic-link',
+    loadComponent: () => import('./pages/auth/magic-link/magic-link.component')
+      .then(m => m.MagicLinkComponent),
+  },
+  {
+    path: 'auth/magic-link-sent',
+    loadComponent: () => import('./pages/auth/magic-link/magic-link.component')
+      .then(m => m.MagicLinkComponent),
+  },
+
   { path: '**', redirectTo: '' },
 ];
 
