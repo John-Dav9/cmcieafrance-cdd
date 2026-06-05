@@ -1,0 +1,40 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="assets/images/logo-cmciea-france.png" alt="CMCIEA France" />
+    </div>
+    <h2>Bienvenue !</h2>
+    <p class="auth-subtitle">Remplissez ces informations pour rejoindre la réunion</p>
+
+    <form (ngSubmit)="submit()" class="auth-form">
+      <div class="field">
+        <label>Prénom *</label>
+        <input type="text" [(ngModel)]="form.firstName" name="firstName" placeholder="Votre prénom" required autofocus />
+      </div>
+      <div class="field">
+        <label>Nom *</label>
+        <input type="text" [(ngModel)]="form.lastName" name="lastName" placeholder="Votre nom de famille" required />
+      </div>
+      <div class="field">
+        <label>Numéro de téléphone *</label>
+        <input type="tel" [(ngModel)]="form.phone" name="phone" placeholder="+33 6 12 34 56 78" required />
+      </div>
+      <div class="field">
+        <label>Ville</label>
+        <input type="text" [(ngModel)]="form.city" name="city" placeholder="Paris, Lyon..." />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="form.email" name="email" [readonly]="!!form.email" />
+      </div>
+
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="btn-primary btn-large"
+        [disabled]="loading || !form.firstName || !form.lastName || !form.phone">
+        <span *ngIf="!loading">Rejoindre la réunion →</span>
+        <span *ngIf="loading">Inscription en cours...</span>
+      </button>
+    </form>
+  </div>
+</div>

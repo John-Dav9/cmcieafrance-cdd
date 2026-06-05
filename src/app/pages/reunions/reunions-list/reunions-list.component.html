@@ -1,0 +1,74 @@
+<div class="reunions-page">
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Chargement des réunions...</p>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- ── Réunion EN COURS ──────────────────────────────── -->
+    <div class="meeting-live" *ngIf="current">
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        EN COURS
+      </div>
+      <h2 class="meeting-title">{{ current.title }}</h2>
+      <p class="meeting-time">Depuis {{ formatTime(current.startTime) }}</p>
+      <p class="meeting-participants" *ngIf="current.participantCount > 0">
+        👥 {{ current.participantCount }} participant{{ current.participantCount > 1 ? 's' : '' }}
+      </p>
+      <button class="btn-join btn-join--large" (click)="joinMeeting(current.id)">
+        ▶&nbsp;&nbsp;REJOINDRE
+      </button>
+    </div>
+
+    <!-- ── Aucune réunion en cours ──────────────────────── -->
+    <div class="no-meeting" *ngIf="!current">
+      <div class="no-meeting-icon">🕊️</div>
+      <h2>Aucune réunion en ce moment</h2>
+      <p>La prochaine réunion est affichée ci-dessous.</p>
+    </div>
+
+    <!-- ── Réunions à venir ─────────────────────────────── -->
+    <div class="upcoming-section" *ngIf="upcoming.length > 0">
+      <h3 class="upcoming-title">Réunions à venir</h3>
+      <div class="upcoming-list">
+        <div class="meeting-card" *ngFor="let m of upcoming">
+          <div class="meeting-card__date">
+            <span class="date-today" *ngIf="isToday(m.startTime)">Aujourd'hui</span>
+            <span *ngIf="!isToday(m.startTime)">{{ formatDate(m.startTime) }}</span>
+            <span class="date-time">{{ formatTime(m.startTime) }}</span>
+          </div>
+          <div class="meeting-card__info">
+            <p class="meeting-card__title">{{ m.title }}</p>
+            <p class="meeting-card__desc" *ngIf="m.description">{{ m.description }}</p>
+            <span class="meeting-card__badge" *ngIf="m.isPublic">Public</span>
+            <span class="meeting-card__badge meeting-card__badge--private" *ngIf="!m.isPublic">Membres</span>
+          </div>
+          <button class="btn-join btn-join--small"
+            *ngIf="isToday(m.startTime)"
+            (click)="joinMeeting(m.id)">
+            Rejoindre
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Aucune réunion prévue ────────────────────────── -->
+    <div class="empty-upcoming" *ngIf="upcoming.length === 0 && !current">
+      <p>Aucune réunion programmée pour le moment.</p>
+    </div>
+
+  </ng-container>
+
+  <!-- ── Modal de connexion ───────────────────────────── -->
+  <app-join-modal
+    *ngIf="showJoinModal"
+    [meetingId]="selectedMeetingId"
+    (authSuccess)="onAuthSuccess()"
+    (close)="onModalClose()">
+  </app-join-modal>
+
+</div>

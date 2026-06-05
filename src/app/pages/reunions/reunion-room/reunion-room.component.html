@@ -1,0 +1,49 @@
+<div class="room-wrapper" [class.room-wrapper--floating]="isFloating">
+
+  <!-- ── Indicateur connexion ─────────────────────────── -->
+  <div class="network-indicator" [class]="quality">
+    <span class="net-dot"></span>
+    <span class="net-label">{{ qualityLabel }}</span>
+  </div>
+
+  <!-- ── Barre supérieure (interface complète) ─────────── -->
+  <div class="room-topbar" *ngIf="!isFloating">
+    <h2 class="room-title">{{ jitsiData?.meeting?.title }}</h2>
+    <div class="room-actions">
+      <button class="btn-admin" *ngIf="isAdmin" (click)="toggleAdminPanel()" title="Panneau modérateur">
+        ⚙️ Admin
+      </button>
+      <button class="btn-float" (click)="toggleFloat()" title="Réduire en mini-lecteur">
+        ⬇ Réduire
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Chargement ───────────────────────────────────── -->
+  <div class="room-loading" *ngIf="isConnecting">
+    <div class="spinner"></div>
+    <p>Connexion à la réunion...</p>
+  </div>
+
+  <!-- ── Container Jitsi ─────────────────────────────── -->
+  <div id="jitsi-container" class="jitsi-container" [class.jitsi-container--hidden]="isFloating || isConnecting"></div>
+
+  <!-- ── Panneau admin ────────────────────────────────── -->
+  <app-admin-controls
+    *ngIf="showAdminPanel && isAdmin && jitsiData"
+    [meetingId]="jitsiData.meeting.id"
+    [jitsiApi]="api"
+    (close)="showAdminPanel = false">
+  </app-admin-controls>
+
+</div>
+
+<!-- ── Fenêtre flottante ─────────────────────────────── -->
+<app-floating-window
+  *ngIf="isFloating"
+  [title]="jitsiData?.meeting?.title || ''"
+  (expand)="toggleFloat()"
+  (toggleMic)="toggleMic()"
+  (toggleCam)="toggleCam()"
+  (leave)="leaveReunion()">
+</app-floating-window>

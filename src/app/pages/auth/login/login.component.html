@@ -1,0 +1,32 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="assets/images/logo-cmciea-france.png" alt="CMCIEA France" />
+    </div>
+    <h2>Rejoindre la réunion</h2>
+    <p class="auth-subtitle">Entrez votre adresse email pour continuer</p>
+
+    <form (ngSubmit)="submit()" class="auth-form">
+      <div class="field">
+        <label for="email">Adresse email</label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="votre@email.com"
+          autocomplete="email"
+          autofocus
+          required
+        />
+      </div>
+
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="btn-primary btn-large" [disabled]="loading || !email.trim()">
+        <span *ngIf="!loading">Continuer →</span>
+        <span *ngIf="loading">Vérification...</span>
+      </button>
+    </form>
+  </div>
+</div>

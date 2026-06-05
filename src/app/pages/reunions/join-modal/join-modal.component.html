@@ -1,0 +1,98 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <button class="modal-close" (click)="close.emit()" aria-label="Fermer">✕</button>
+
+    <!-- ── Étape 1 : Email ──────────────────────────────── -->
+    <ng-container *ngIf="step === 'email'">
+      <h2 class="modal-title">Votre adresse email</h2>
+      <p class="modal-subtitle">Pour rejoindre la réunion</p>
+
+      <form (ngSubmit)="submitEmail()" class="modal-form">
+        <input
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="votre@email.com"
+          class="modal-input modal-input--large"
+          autocomplete="email"
+          autofocus
+          required
+        />
+        <div class="error-msg" *ngIf="error">{{ error }}</div>
+        <button type="submit" class="btn-join-modal" [disabled]="loading || !email.trim()">
+          <span *ngIf="!loading">Continuer →</span>
+          <span *ngIf="loading">Vérification...</span>
+        </button>
+      </form>
+    </ng-container>
+
+    <!-- ── Étape 2 : Code OTP ───────────────────────────── -->
+    <ng-container *ngIf="step === 'otp'">
+      <button class="modal-back" (click)="back()">← Retour</button>
+      <h2 class="modal-title">Code SMS</h2>
+      <p class="modal-subtitle">Entrez le code envoyé par SMS à <strong>{{ email }}</strong></p>
+
+      <form (ngSubmit)="submitOtp()" class="modal-form">
+        <input
+          type="tel"
+          [(ngModel)]="code"
+          name="code"
+          placeholder="1234"
+          maxlength="6"
+          class="modal-input modal-input--large modal-input--code"
+          autocomplete="one-time-code"
+          autofocus
+          required
+        />
+        <div class="error-msg" *ngIf="error">{{ error }}</div>
+        <button type="submit" class="btn-join-modal" [disabled]="loading || code.length < 4">
+          <span *ngIf="!loading">Rejoindre →</span>
+          <span *ngIf="loading">Connexion...</span>
+        </button>
+        <button type="button" class="btn-resend" (click)="resendOtp()">Renvoyer le code</button>
+      </form>
+    </ng-container>
+
+    <!-- ── Étape 3 : Formulaire inscription ─────────────── -->
+    <ng-container *ngIf="step === 'register'">
+      <button class="modal-back" (click)="back()">← Retour</button>
+      <h2 class="modal-title">Bienvenue !</h2>
+      <p class="modal-subtitle">Quelques informations pour vous rejoindre</p>
+
+      <form (ngSubmit)="submitRegister()" class="modal-form">
+        <div class="modal-row">
+          <input type="text" [(ngModel)]="form.firstName" name="firstName"
+            placeholder="Prénom *" class="modal-input" required autofocus />
+          <input type="text" [(ngModel)]="form.lastName" name="lastName"
+            placeholder="Nom *" class="modal-input" required />
+        </div>
+        <input type="tel" [(ngModel)]="form.phone" name="phone"
+          placeholder="Téléphone *" class="modal-input" required />
+        <input type="text" [(ngModel)]="form.city" name="city"
+          placeholder="Ville (optionnel)" class="modal-input" />
+
+        <div class="error-msg" *ngIf="error">{{ error }}</div>
+        <button type="submit" class="btn-join-modal"
+          [disabled]="loading || !form.firstName || !form.lastName || !form.phone">
+          <span *ngIf="!loading">Rejoindre la réunion →</span>
+          <span *ngIf="loading">Inscription...</span>
+        </button>
+      </form>
+    </ng-container>
+
+    <!-- ── Lien magique envoyé ─────────────────────────── -->
+    <ng-container *ngIf="step === 'magic_sent'">
+      <div class="magic-sent">
+        <div class="magic-icon">✉️</div>
+        <h2 class="modal-title">Email envoyé !</h2>
+        <p class="modal-subtitle">
+          Vérifiez votre boite mail et cliquez sur le lien de connexion.<br/>
+          Le lien est valable <strong>15 minutes</strong>.
+        </p>
+        <button class="btn-resend" (click)="back()">Utiliser un autre email</button>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

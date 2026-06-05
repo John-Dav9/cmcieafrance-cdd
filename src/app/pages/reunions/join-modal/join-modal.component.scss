@@ -1,0 +1,148 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  &:hover { background: #f0f0f0; color: #333; }
+}
+
+.modal-back {
+  background: none;
+  border: none;
+  color: #1D546C;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 0 16px;
+  display: block;
+  &:hover { text-decoration: underline; }
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modal-input {
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  outline: none;
+
+  &:focus { border-color: #1D546C; }
+
+  &--large {
+    padding: 16px 18px;
+    font-size: 18px;
+  }
+
+  &--code {
+    text-align: center;
+    letter-spacing: 8px;
+    font-weight: 700;
+    font-size: 28px;
+  }
+}
+
+.btn-join-modal {
+  background: #1D546C;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) { background: #123648; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-resend {
+  background: none;
+  border: none;
+  color: #1D546C;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  padding: 8px;
+  &:hover { text-decoration: underline; }
+}
+
+.error-msg {
+  color: #dc2626;
+  font-size: 13px;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border-radius: 8px;
+}
+
+.magic-sent {
+  text-align: center;
+  padding: 8px 0;
+  .magic-icon { font-size: 56px; margin-bottom: 16px; }
+}

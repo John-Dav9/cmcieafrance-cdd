@@ -1,0 +1,41 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="assets/images/logo-cmciea-france.png" alt="CMCIEA France" />
+    </div>
+    <h2>Code de connexion</h2>
+    <p class="auth-subtitle">
+      Entrez le code à 4 chiffres envoyé par SMS au numéro associé à<br/>
+      <strong>{{ email }}</strong>
+    </p>
+
+    <form (ngSubmit)="submit()" class="auth-form">
+      <div class="field">
+        <label for="code">Code SMS</label>
+        <input
+          id="code"
+          type="tel"
+          [(ngModel)]="code"
+          name="code"
+          placeholder="1234"
+          maxlength="6"
+          autocomplete="one-time-code"
+          autofocus
+          class="input-code"
+          required
+        />
+      </div>
+
+      <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="btn-primary btn-large" [disabled]="loading || code.length < 4">
+        <span *ngIf="!loading">Valider le code</span>
+        <span *ngIf="loading">Connexion...</span>
+      </button>
+
+      <button type="button" class="btn-link" (click)="resend()">
+        Renvoyer le code
+      </button>
+    </form>
+  </div>
+</div>
