@@ -119,6 +119,15 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       this.zone.run(() => { this.isConnecting = false; this.startHeartbeat(); });
     });
 
+    this.api.addListener('participantJoined', () => {
+      this.zone.run(() => {
+          if (this.isConnecting) {
+              this.isConnecting = false;
+              this.startHeartbeat();
+          }
+      });
+    });
+
     this.api.addListener('videoConferenceLeft', () => {
       this.zone.run(() => { this.stopHeartbeat(); this.router.navigate(['/reunions']); });
     });
@@ -132,6 +141,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     const base = {
       defaultLanguage: 'fr',
       prejoinPageEnabled: false,
+      prejoinConfig: { enabled: false },
       disableDeepLinking: true,
       startWithAudioMuted: false,
     };
