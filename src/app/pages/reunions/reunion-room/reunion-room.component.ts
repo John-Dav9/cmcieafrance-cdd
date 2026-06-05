@@ -106,14 +106,14 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       },
     });
 
-    setTimeout(() => {
-      this.zone.run(() => {
-        if (this.isConnecting) {
-          this.isConnecting = false;
-          console.warn('[CMCIEA] videoConferenceJoined non reçu après 8s');
-        }
-      });
-    }, 8000);
+    // setTimeout(() => {
+    //   this.zone.run(() => {
+    //     if (this.isConnecting) {
+    //       this.isConnecting = false;
+    //       console.warn('[CMCIEA] videoConferenceJoined non reçu après 8s');
+    //     }
+    //   });
+    // }, 8000);
 
     this.api.addListener('videoConferenceJoined', () => {
       this.zone.run(() => { this.isConnecting = false; this.startHeartbeat(); });
