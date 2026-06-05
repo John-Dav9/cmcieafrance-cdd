@@ -78,6 +78,10 @@
         <span class="badge badge--recurring" *ngIf="m.isRecurring">Récurrent</span>
       </div>
       <div class="meeting-row__actions">
+        <button class="btn-sm btn-sm--join" (click)="joinMeeting(m.id)"
+          *ngIf="m.status === 'scheduled' || m.status === 'live'">
+          ▶ Rejoindre
+        </button>
         <button class="btn-sm" (click)="sendReminders(m.id)" title="Envoyer rappels email"
           *ngIf="m.status === 'scheduled'">
           ✉ Rappels
@@ -135,6 +139,8 @@
 .btn-sm { background: #f3f4f6; border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
 .btn-sm:hover { background: #e5e7eb; }
 .btn-sm--danger:hover { background: #fef2f2; color: #dc2626; }
+.btn-sm--join { background: #1D546C; color: white; font-weight: 600; }
+.btn-sm--join:hover { background: #123648; }
 .error-msg { color: #dc2626; font-size: 13px; padding: 8px 12px; background: #fef2f2; border-radius: 8px; margin-bottom: 12px; }
 .success-msg { color: #16a34a; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
 .empty { text-align: center; color: #9ca3af; padding: 32px; font-size: 14px; }

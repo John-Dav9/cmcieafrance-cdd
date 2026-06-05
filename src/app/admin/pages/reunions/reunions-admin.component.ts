@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Meeting, ReunionsService } from '../../../core/services/reunions.service';
 
 @Component({
@@ -27,7 +28,7 @@ export class ReunionsAdminComponent implements OnInit {
     recurrenceRule: '',
   };
 
-  constructor(private reunionsService: ReunionsService) {}
+  constructor(private reunionsService: ReunionsService, private router: Router) {}
 
   ngOnInit() {
     this.load();
@@ -105,6 +106,15 @@ export class ReunionsAdminComponent implements OnInit {
   cancel(id: string) {
     if (!confirm('Annuler cette réunion ?')) return;
     this.reunionsService.delete(id).subscribe({ next: () => this.load() });
+  }
+
+  joinMeeting(id: string) {
+    this.reunionsService.join(id).subscribe({
+      next: (result) => {
+        this.router.navigate(['/reunions', id, 'salle'], { state: { jitsiData: result } });
+      },
+      error: () => alert('Impossible de rejoindre la réunion.'),
+    });
   }
 
   sendReminders(id: string) {

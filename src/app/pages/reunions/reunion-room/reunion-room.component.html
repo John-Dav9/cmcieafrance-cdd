@@ -19,14 +19,14 @@
     </div>
   </div>
 
-  <!-- ── Chargement ───────────────────────────────────── -->
+  <!-- ── Container Jitsi (toujours visible, Jitsi a besoin du DOM) ────────── -->
+  <div id="jitsi-container" class="jitsi-container" [class.jitsi-container--hidden]="isFloating"></div>
+
+  <!-- ── Overlay de chargement par-dessus Jitsi ────────────────────────── -->
   <div class="room-loading" *ngIf="isConnecting">
     <div class="spinner"></div>
     <p>Connexion à la réunion...</p>
   </div>
-
-  <!-- ── Container Jitsi ─────────────────────────────── -->
-  <div id="jitsi-container" class="jitsi-container" [class.jitsi-container--hidden]="isFloating || isConnecting"></div>
 
   <!-- ── Panneau admin ────────────────────────────────── -->
   <app-admin-controls

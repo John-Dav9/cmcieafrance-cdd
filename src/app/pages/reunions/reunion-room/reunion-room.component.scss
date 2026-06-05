@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   z-index: 500;
+  overflow: hidden;
 }
 
 .room-topbar {
@@ -45,14 +46,17 @@
 }
 
 .room-loading {
-  flex: 1;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: #1a1a2e;
   color: white;
   gap: 16px;
   font-size: 15px;
+  z-index: 10;
 }
 
 .jitsi-container {
