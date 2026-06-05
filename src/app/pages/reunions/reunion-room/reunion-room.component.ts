@@ -26,7 +26,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
   isAdmin = false;
   showAdminPanel = false;
 
-  private api: any = null;
+  api: any = null;
   private heartbeat$: Subscription | null = null;
   private qualityMonitor$: Subscription | null = null;
 
