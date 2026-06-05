@@ -1,49 +1,55 @@
-<div class="room-wrapper" [class.room-wrapper--floating]="isFloating">
+<!-- ══ TOPBAR (barre persistante en haut) ════════════════════ -->
+<div class="room-topbar">
 
-  <!-- ── Indicateur connexion ─────────────────────────── -->
-  <div class="network-indicator" [class]="quality">
-    <span class="net-dot"></span>
-    <span class="net-label">{{ qualityLabel }}</span>
-  </div>
-
-  <!-- ── Barre supérieure (interface complète) ─────────── -->
-  <div class="room-topbar" *ngIf="!isFloating">
-    <h2 class="room-title">{{ jitsiData?.meeting?.title }}</h2>
-    <div class="room-actions">
-      <button class="btn-admin" *ngIf="isAdmin" (click)="toggleAdminPanel()" title="Panneau modérateur">
-        ⚙️ Admin
-      </button>
-      <button class="btn-float" (click)="toggleFloat()" title="Réduire en mini-lecteur">
-        ⬇ Réduire
-      </button>
+  <div class="topbar-left">
+    <div class="topbar-logo">✝</div>
+    <div class="topbar-info">
+      <span class="topbar-title">{{ jitsiData?.meeting?.title }}</span>
+      <span class="topbar-timer">{{ elapsedTime }}</span>
     </div>
   </div>
 
-  <!-- ── Container Jitsi (toujours visible, Jitsi a besoin du DOM) ────────── -->
-  <div id="jitsi-container" class="jitsi-container" [class.jitsi-container--hidden]="isFloating"></div>
+  <div class="topbar-right">
 
-  <!-- ── Overlay de chargement par-dessus Jitsi ────────────────────────── -->
-  <div class="room-loading" *ngIf="isConnecting">
-    <div class="spinner"></div>
-    <p>Connexion à la réunion...</p>
+    <div class="network-pill" [ngClass]="quality" [title]="qualityLabel">
+      <span class="net-dot"></span>
+      <span class="net-text">{{ qualityLabel }}</span>
+    </div>
+
+    <button class="topbar-btn" *ngIf="isAdmin" (click)="toggleAdminPanel()" title="Panneau modérateur">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+      </svg>
+      <span>Admin</span>
+    </button>
+
+    <button class="topbar-btn topbar-btn--float" (click)="toggleFloat()" title="Réduire — continuer à naviguer sur le site">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 3 21 3 21 9"/>
+        <polyline points="9 21 3 21 3 15"/>
+        <line x1="21" y1="3" x2="14" y2="10"/>
+        <line x1="3" y1="21" x2="10" y2="14"/>
+      </svg>
+      <span>Réduire</span>
+    </button>
+
   </div>
-
-  <!-- ── Panneau admin ────────────────────────────────── -->
-  <app-admin-controls
-    *ngIf="showAdminPanel && isAdmin && jitsiData"
-    [meetingId]="jitsiData.meeting.id"
-    [jitsiApi]="api"
-    (close)="showAdminPanel = false">
-  </app-admin-controls>
-
 </div>
 
-<!-- ── Fenêtre flottante ─────────────────────────────── -->
-<app-floating-window
-  *ngIf="isFloating"
-  [title]="jitsiData?.meeting?.title || ''"
-  (expand)="toggleFloat()"
-  (toggleMic)="toggleMic()"
-  (toggleCam)="toggleCam()"
-  (leave)="leaveReunion()">
-</app-floating-window>
+<!-- ══ LOADING (par-dessus le container Jitsi) ═══════════════ -->
+<div class="room-loading" *ngIf="isConnecting">
+  <div class="loading-cross">✝</div>
+  <div class="loading-name">CMCIEA France</div>
+  <div class="loading-spinner"></div>
+  <p class="loading-text">Connexion à la réunion...</p>
+  <span class="loading-meeting">{{ jitsiData?.meeting?.title }}</span>
+</div>
+
+<!-- ══ PANNEAU ADMIN ════════════════════════════════════════ -->
+<app-admin-controls
+  *ngIf="showAdminPanel && isAdmin && jitsiData"
+  [meetingId]="jitsiData.meeting.id"
+  [jitsiApi]="meeting.jitsiApi"
+  (close)="showAdminPanel = false">
+</app-admin-controls>

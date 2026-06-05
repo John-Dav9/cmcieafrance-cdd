@@ -74,6 +74,7 @@
   color: #E2E8F0;
   font-size: 0.85rem;
 }
+
 .footer-legal {
   margin-top: 8px;
   display: flex;
@@ -82,14 +83,17 @@
   gap: 10px;
   font-size: 0.8rem;
 }
+
 .footer-legal a {
   color: rgba(226, 232, 240, 0.7);
   text-decoration: none;
   transition: color 0.2s;
 }
+
 .footer-legal a:hover {
   color: #E2E8F0;
 }
+
 .footer-legal span {
   color: rgba(226, 232, 240, 0.4);
 }
@@ -97,5 +101,75 @@
 @media (max-width: 900px) {
   .footer-inner {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTAINER JITSI PERSISTANT
+   Ne jamais supprimer ce bloc — l'iframe de réunion y vit
+═══════════════════════════════════════════════════════════ */
+
+#jitsi-persistent-container {
+  display: none;
+
+  /* Plein écran pendant la réunion */
+  &.jitsi-active {
+    display: block;
+    position: fixed;
+    top: 52px;   /* hauteur topbar CMCIEA */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9998;
+    background: #0d1b2a;
+
+    iframe {
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      display: block;
+    }
+
+    /* Cache le logo Jitsi dans le coin supérieur gauche */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 90px;
+      height: 44px;
+      background: #0d1b2a;
+      z-index: 5;
+      pointer-events: none;
+    }
+  }
+
+  /* Mini-lecteur flottant (mode réduit) */
+  &.jitsi-pip-active {
+    display: block;
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    width: 280px;
+    height: 158px;
+    z-index: 9997;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    iframe {
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      width: 200px;
+      height: 113px;
+      bottom: 80px;
+      right: 12px;
+    }
   }
 }

@@ -1,0 +1,174 @@
+$accent:       #E8A838;
+$primary-dark: #123648;
+$bg-dark:      #0d1b2a;
+$glass:        rgba(255,255,255,0.08);
+$glass-border: rgba(255,255,255,0.14);
+$white:        #ffffff;
+
+// ── Container Jitsi plein écran (pendant la réunion) ──────────
+.jitsi-host {
+  &.jitsi-fullscreen {
+    position: fixed;
+    inset: 52px 0 0 0; // 52px = hauteur topbar de ReunionRoomComponent
+    z-index: 9998;
+    background: $bg-dark;
+
+    ::ng-deep iframe {
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      display: block;
+    }
+
+    // Masque le logo Jitsi
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 90px; height: 44px;
+      background: $bg-dark;
+      z-index: 5;
+      pointer-events: none;
+    }
+  }
+
+  // Mode mini-lecteur : caché visuellement mais DANS LE DOM
+  &.jitsi-pip {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 280px;
+    height: 158px; // ratio 16:9
+    z-index: 9997;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    border: 1px solid $glass-border;
+
+    ::ng-deep iframe {
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      width: 200px;
+      height: 112px;
+      bottom: 80px;
+      right: 12px;
+    }
+  }
+}
+
+// ── Mini-lecteur flottant ─────────────────────────────────────
+.pip-window {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 280px;
+  z-index: 9999;
+  background: rgba($primary-dark, 0.97);
+  backdrop-filter: blur(16px);
+  border: 1px solid $glass-border;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.65);
+  cursor: grab;
+  user-select: none;
+
+  &:active { cursor: grabbing; }
+
+  @media (max-width: 480px) {
+    width: 220px;
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+.pip-topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid $glass-border;
+}
+
+.pip-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: $white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.pip-timer {
+  font-size: 11px;
+  color: rgba($white, 0.5);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+.pip-net {
+  flex-shrink: 0;
+  &.high   .pip-dot { background: #10b981; }
+  &.medium .pip-dot { background: #f59e0b; }
+  &.low    .pip-dot { background: #ef4444; animation: blink 1s infinite; }
+  &.critical .pip-dot { background: #6b7280; }
+}
+
+.pip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: block;
+}
+
+.pip-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px 12px;
+  gap: 6px;
+}
+
+.pip-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: $glass;
+  border: 1px solid $glass-border;
+  color: $white;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
+
+  &:hover { background: rgba($white, 0.18); }
+  &:active { transform: scale(0.93); }
+
+  &--expand {
+    background: rgba($accent, 0.18);
+    border-color: rgba($accent, 0.38);
+    color: $accent;
+    &:hover { background: rgba($accent, 0.3); }
+  }
+
+  &--leave {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.35);
+    &:hover { background: rgba(239, 68, 68, 0.28); }
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}

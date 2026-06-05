@@ -1,4 +1,5 @@
-<app-navbar></app-navbar>
+<!-- Navbar — cachée pendant une réunion en plein écran -->
+<app-navbar *ngIf="!(meetingActive$ | async) || (meetingFloating$ | async)"></app-navbar>
 
 <main class="main-layout">
   <router-outlet></router-outlet>
@@ -7,7 +8,17 @@
 <app-culte-modal></app-culte-modal>
 <app-chat-widget></app-chat-widget>
 
-<footer class="footer">
+<!-- ══ CONTAINER JITSI PERSISTANT ══════════════════════════ -->
+<!-- Ne JAMAIS supprimer ce div — l'iframe Jitsi y vit       -->
+<div id="jitsi-persistent-container"
+     [class.jitsi-active]="(meetingActive$ | async) && !(meetingFloating$ | async)"
+     [class.jitsi-pip-active]="meetingFloating$ | async">
+</div>
+
+<!-- ══ MINI-LECTEUR FLOTTANT + TOPBAR ══════════════════════ -->
+<!-- <app-meeting-overlay></app-meeting-overlay> -->
+
+<footer class="footer" *ngIf="!(meetingActive$ | async) || (meetingFloating$ | async)">
   <div class="footer-inner">
     <div class="footer-brand">
       <p class="footer-title">CMCIEA-FRANCE</p>
@@ -49,5 +60,3 @@
     </div>
   </div>
 </footer>
-
-
