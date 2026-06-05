@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
@@ -34,6 +34,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     private reunionsService: ReunionsService,
     private memberAuth: MemberAuthService,
     private router: Router,
+    private zone: NgZone,
   ) {}
 
   ngOnInit() {
@@ -63,9 +64,12 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     }
     const domain = this.jitsiData!.jitsiUrl.replace('https://', '').replace('http://', '');
     const script = document.createElement('script');
-    script.src = `https://${domain}/external_api.js`;
-    script.onload = () => this.initJitsi();
-    script.onerror = () => { this.isConnecting = false; };
+    script.src = `https://${domain}/libs/external_api.min.js`;
+    script.onload = () => this.zone.run(() => this.initJitsi());
+    script.onerror = () => this.zone.run(() => {
+      this.isConnecting = false;
+      console.error('Impossible de charger le script Jitsi depuis', script.src);
+    });
     document.head.appendChild(script);
   }
 
@@ -103,17 +107,15 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     });
 
     this.api.addListener('videoConferenceJoined', () => {
-      this.isConnecting = false;
-      this.startHeartbeat();
+      this.zone.run(() => { this.isConnecting = false; this.startHeartbeat(); });
     });
 
     this.api.addListener('videoConferenceLeft', () => {
-      this.stopHeartbeat();
-      this.router.navigate(['/reunions']);
+      this.zone.run(() => { this.stopHeartbeat(); this.router.navigate(['/reunions']); });
     });
 
     this.api.addListener('connectionFailed', () => {
-      this.handleDisconnect();
+      this.zone.run(() => this.handleDisconnect());
     });
   }
 
