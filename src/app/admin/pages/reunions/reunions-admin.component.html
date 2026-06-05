@@ -1,0 +1,142 @@
+<div class="admin-page">
+  <div class="page-header">
+    <h1>Réunions en ligne</h1>
+    <button class="btn-primary" (click)="openForm()">+ Créer une réunion</button>
+  </div>
+
+  <div class="success-msg" *ngIf="success">{{ success }}</div>
+
+  <!-- ── Formulaire création ──────────────────────────── -->
+  <div class="form-card" *ngIf="showForm">
+    <h2>Nouvelle réunion</h2>
+
+    <div class="form-grid">
+      <div class="field field--full">
+        <label>Titre *</label>
+        <input type="text" [(ngModel)]="form.title" placeholder="Ex: Culte du dimanche" />
+      </div>
+      <div class="field field--full">
+        <label>Description</label>
+        <textarea [(ngModel)]="form.description" rows="2" placeholder="Description optionnelle"></textarea>
+      </div>
+      <div class="field">
+        <label>Date *</label>
+        <input type="date" [(ngModel)]="form.startTime" />
+      </div>
+      <div class="field">
+        <label>Heure *</label>
+        <input type="time" [(ngModel)]="form.startHour" />
+      </div>
+      <div class="field">
+        <label>Visibilité</label>
+        <select [(ngModel)]="form.isPublic">
+          <option [ngValue]="true">Public (tout le monde)</option>
+          <option [ngValue]="false">Privé (membres uniquement)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Récurrence</label>
+        <select [(ngModel)]="form.isRecurring">
+          <option [ngValue]="false">Ponctuelle</option>
+          <option [ngValue]="true">Récurrente</option>
+        </select>
+      </div>
+      <div class="field field--full" *ngIf="form.isRecurring">
+        <label>Règle de récurrence (RRULE)</label>
+        <input type="text" [(ngModel)]="form.recurrenceRule" placeholder="Ex: FREQ=WEEKLY;BYDAY=SU" />
+      </div>
+    </div>
+
+    <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+    <div class="form-actions">
+      <button class="btn-secondary" (click)="closeForm()">Annuler</button>
+      <button class="btn-outline" (click)="startNow()" [disabled]="saving || !form.title">
+        ▶ Lancer maintenant
+      </button>
+      <button class="btn-primary" (click)="create()" [disabled]="saving || !form.title || !form.startTime">
+        <span *ngIf="!saving">Créer la réunion</span>
+        <span *ngIf="saving">Création...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Liste des réunions ───────────────────────────── -->
+  <div class="loading" *ngIf="loading">Chargement...</div>
+
+  <div class="meetings-list" *ngIf="!loading">
+    <div class="meeting-row" *ngFor="let m of meetings" [class.meeting-row--live]="m.status === 'live'">
+      <div class="meeting-row__info">
+        <span class="meeting-row__status" [class.live]="m.status === 'live'">
+          {{ statusLabel(m.status) }}
+        </span>
+        <strong>{{ m.title }}</strong>
+        <span class="meeting-row__date">{{ formatDate(m.startTime) }}</span>
+        <span class="badge" [class.badge--private]="!m.isPublic">
+          {{ m.isPublic ? 'Public' : 'Privé' }}
+        </span>
+        <span class="badge badge--recurring" *ngIf="m.isRecurring">Récurrent</span>
+      </div>
+      <div class="meeting-row__actions">
+        <button class="btn-sm" (click)="sendReminders(m.id)" title="Envoyer rappels email"
+          *ngIf="m.status === 'scheduled'">
+          ✉ Rappels
+        </button>
+        <button class="btn-sm btn-sm--danger" (click)="cancel(m.id)"
+          *ngIf="m.status === 'scheduled' || m.status === 'live'">
+          Annuler
+        </button>
+      </div>
+    </div>
+
+    <div class="empty" *ngIf="meetings.length === 0">
+      Aucune réunion. Créez-en une avec le bouton ci-dessus.
+    </div>
+  </div>
+</div>
+
+<style>
+.admin-page { padding: 24px; max-width: 900px; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.page-header h1 { font-size: 22px; margin: 0; }
+.form-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+.form-card h2 { font-size: 18px; margin: 0 0 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field--full { grid-column: 1 / -1; }
+.field label { font-size: 13px; font-weight: 600; color: #374151; }
+.field input, .field select, .field textarea {
+  border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px;
+  font-size: 14px; outline: none; transition: border-color 0.2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: #1D546C; }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.btn-primary { background: #1D546C; color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.btn-primary:hover:not(:disabled) { background: #123648; }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-secondary { background: #f3f4f6; color: #374151; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
+.btn-outline { background: white; color: #1D546C; border: 2px solid #1D546C; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.btn-outline:disabled { opacity: 0.6; cursor: not-allowed; }
+.meetings-list { display: flex; flex-direction: column; gap: 10px; }
+.meeting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: white; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 14px 16px;
+}
+.meeting-row--live { border-color: #ef4444; background: #fff5f5; }
+.meeting-row__info { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.meeting-row__status { font-size: 12px; font-weight: 600; color: #6b7280; }
+.meeting-row__status.live { color: #ef4444; }
+.meeting-row__date { font-size: 13px; color: #6b7280; }
+.meeting-row__actions { display: flex; gap: 8px; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #e0f0f8; color: #1D546C; font-weight: 500; }
+.badge--private { background: #fef2f2; color: #dc2626; }
+.badge--recurring { background: #fef9e7; color: #b45309; }
+.btn-sm { background: #f3f4f6; border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+.btn-sm:hover { background: #e5e7eb; }
+.btn-sm--danger:hover { background: #fef2f2; color: #dc2626; }
+.error-msg { color: #dc2626; font-size: 13px; padding: 8px 12px; background: #fef2f2; border-radius: 8px; margin-bottom: 12px; }
+.success-msg { color: #16a34a; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
+.empty { text-align: center; color: #9ca3af; padding: 32px; font-size: 14px; }
+.loading { padding: 24px; color: #6b7280; }
+</style>

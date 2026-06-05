@@ -11,6 +11,7 @@ export interface Meeting {
   endTime: string;
   isPublic: boolean;
   isRecurring: boolean;
+  recurrenceRule?: string;
   jitsiRoomId: string;
   status: 'scheduled' | 'live' | 'ended' | 'cancelled';
   participantCount: number;
@@ -76,5 +77,9 @@ export class ReunionsService {
 
   getParticipants(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiBase}/reunions/${id}/participants`);
+  }
+
+  sendReminders(id: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiBase}/reunions/${id}/send-reminders`, {});
   }
 }
