@@ -28,10 +28,37 @@ export class MemberAuthService {
     }
   }
 
-  checkEmail(email: string): Observable<{ exists: boolean; hasPhone?: boolean; method?: string; isOpen?: boolean }> {
+  // ── Vérifier si l'email existe en BDD ────────────────────
+  checkEmail(email: string): Observable<{
+    exists: boolean;
+    hasPhone?: boolean;
+    isOpen?: boolean;
+  }> {
     return this.http.post<any>(`${environment.apiBase}/auth/check-email`, { email });
   }
 
+  // ── NOUVEAU : Connexion directe sans OTP ─────────────────
+  // Pour les membres déjà en base de données
+  quickLogin(email: string): Observable<{ access_token: string; member: MemberUser }> {
+    return this.http.post<any>(`${environment.apiBase}/auth/quick-login`, { email }).pipe(
+      tap(res => this.setSession(res)),
+    );
+  }
+
+  // ── Inscription rapide (nouveau membre) ───────────────────
+  register(data: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    city?: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${environment.apiBase}/auth/register`, data).pipe(
+      tap(res => this.setSession(res)),
+    );
+  }
+
+  // ── Anciens endpoints (conservés pour compatibilité) ──────
   sendOtp(email: string): Observable<{ method: string; message: string }> {
     return this.http.post<any>(`${environment.apiBase}/auth/send-otp`, { email });
   }
@@ -48,12 +75,7 @@ export class MemberAuthService {
     );
   }
 
-  register(data: { email: string; firstName: string; lastName: string; phone: string; city?: string }): Observable<any> {
-    return this.http.post<any>(`${environment.apiBase}/auth/register`, data).pipe(
-      tap(res => this.setSession(res)),
-    );
-  }
-
+  // ── Session ───────────────────────────────────────────────
   private setSession(res: { access_token: string; member: MemberUser }) {
     const user: MemberUser = { ...res.member, access_token: res.access_token };
     localStorage.setItem(this.TOKEN_KEY, JSON.stringify(user));

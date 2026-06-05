@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 
-type Step = 'email' | 'otp' | 'register' | 'magic_sent';
+type Step = 'email' | 'register';
 
 @Component({
   selector: 'app-join-modal',
@@ -19,22 +19,26 @@ export class JoinModalComponent {
 
   step: Step = 'email';
   email = '';
-  code = '';
   form = { firstName: '', lastName: '', phone: '', city: '' };
   loading = false;
   error = '';
 
   constructor(private auth: MemberAuthService) {}
 
+  // ── Étape 1 : vérification email ──────────────────────────
   submitEmail() {
-    if (!this.email.trim()) return;
+    const email = this.email.trim().toLowerCase();
+    if (!email) return;
+
     this.loading = true;
     this.error = '';
 
-    this.auth.checkEmail(this.email.trim().toLowerCase()).subscribe({
+    this.auth.checkEmail(email).subscribe({
       next: (res) => {
         this.loading = false;
+
         if (!res.exists) {
+          // Email inconnu → formulaire d'inscription rapide
           if (!res.isOpen) {
             this.error = 'Les inscriptions sont fermées. Contactez-nous.';
             return;
@@ -42,35 +46,44 @@ export class JoinModalComponent {
           this.step = 'register';
           return;
         }
-        this.auth.sendOtp(this.email.trim().toLowerCase()).subscribe({
-          next: (otp) => {
-            this.step = otp.method === 'sms' ? 'otp' : 'magic_sent';
+
+        // Email connu → connexion directe sans OTP
+        this.auth.quickLogin(email).subscribe({
+          next: () => this.authSuccess.emit(),
+          error: () => {
+            this.error = 'Erreur de connexion. Veuillez réessayer.';
           },
-          error: () => this.error = 'Erreur lors de l\'envoi. Réessayez.',
         });
       },
-      error: () => { this.error = 'Erreur de connexion.'; this.loading = false; },
+      error: () => {
+        this.error = 'Erreur de connexion au serveur.';
+        this.loading = false;
+      },
     });
   }
 
-  submitOtp() {
-    if (this.code.length < 4) return;
-    this.loading = true;
-    this.error = '';
-
-    this.auth.verifyOtp(this.email.toLowerCase(), this.code.trim()).subscribe({
-      next: () => { this.loading = false; this.authSuccess.emit(); },
-      error: () => { this.error = 'Code incorrect ou expiré.'; this.loading = false; },
-    });
-  }
-
+  // ── Étape 2 : inscription rapide (nouveau membre) ─────────
   submitRegister() {
-    if (!this.form.firstName || !this.form.lastName || !this.form.phone) return;
+    const { firstName, lastName, phone } = this.form;
+    if (!firstName.trim() || !lastName.trim() || !phone.trim()) {
+      this.error = 'Veuillez remplir les champs obligatoires.';
+      return;
+    }
+
     this.loading = true;
     this.error = '';
 
-    this.auth.register({ email: this.email.toLowerCase(), ...this.form }).subscribe({
-      next: () => { this.loading = false; this.authSuccess.emit(); },
+    this.auth.register({
+      email: this.email.trim().toLowerCase(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      phone: phone.trim(),
+      city: this.form.city.trim(),
+    }).subscribe({
+      next: () => {
+        this.loading = false;
+        this.authSuccess.emit();
+      },
       error: (err) => {
         this.error = err?.error?.message ?? 'Erreur lors de l\'inscription.';
         this.loading = false;
@@ -78,14 +91,8 @@ export class JoinModalComponent {
     });
   }
 
-  resendOtp() {
-    this.code = '';
-    this.auth.sendOtp(this.email.toLowerCase()).subscribe();
-  }
-
   back() {
     this.step = 'email';
     this.error = '';
-    this.code = '';
   }
 }
