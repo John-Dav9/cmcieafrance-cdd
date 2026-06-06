@@ -1,0 +1,64 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Membres ({{ membres.length }})</h2>
+    <div class="header-actions">
+      <button class="btn-secondary" [disabled]="merging" (click)="merge()">
+        {{ merging ? 'Fusion...' : 'Fusionner les bases' }}
+      </button>
+    </div>
+  </div>
+
+  <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <input type="text" [(ngModel)]="search" (ngModelChange)="applyFilter()"
+           placeholder="Rechercher par nom, email, téléphone..." class="search-input" />
+    <select [(ngModel)]="filterRole" (ngModelChange)="applyFilter()">
+      <option value="">Tous les rôles</option>
+      <option *ngFor="let r of roles" [value]="r">{{ roleLabel(r) }}</option>
+    </select>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && filtered.length === 0" class="empty">Aucun membre trouvé.</div>
+
+  <div *ngIf="!loading && filtered.length > 0" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Téléphone</th>
+          <th>Ville</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th>Source</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of filtered" [class.inactive]="!m.isActive">
+          <td><strong>{{ m.firstName }} {{ m.lastName }}</strong></td>
+          <td>{{ m.email }}</td>
+          <td>{{ m.phone || '—' }}</td>
+          <td>{{ m.city || '—' }}</td>
+          <td>
+            <select [ngModel]="m.role" (ngModelChange)="changeRole(m, $event)" class="role-select">
+              <option *ngFor="let r of roles" [value]="r">{{ roleLabel(r) }}</option>
+            </select>
+          </td>
+          <td>
+            <span class="badge" [class.badge-green]="m.isActive" [class.badge-gray]="!m.isActive">
+              {{ m.isActive ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td><span class="badge badge-gray">{{ m.source || '—' }}</span></td>
+          <td class="actions">
+            <button class="btn-del" *ngIf="m.isActive" (click)="deactivate(m)" title="Désactiver">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

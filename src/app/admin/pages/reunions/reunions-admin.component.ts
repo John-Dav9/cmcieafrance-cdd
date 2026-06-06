@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Meeting, ReunionsService } from '../../../core/services/reunions.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-reunions-admin',
@@ -18,6 +19,11 @@ export class ReunionsAdminComponent implements OnInit {
   error = '';
   success = '';
 
+  // Registre de présence
+  selectedMeetingId: string | null = null;
+  attendance: any[] = [];
+  loadingAttendance = false;
+
   form = {
     title: '',
     description: '',
@@ -28,7 +34,7 @@ export class ReunionsAdminComponent implements OnInit {
     recurrenceRule: '',
   };
 
-  constructor(private reunionsService: ReunionsService, private router: Router) {}
+  constructor(private reunionsService: ReunionsService, private router: Router, private api: ApiService) {}
 
   ngOnInit() {
     this.load();
@@ -122,6 +128,25 @@ export class ReunionsAdminComponent implements OnInit {
       next: (res) => alert(res?.message ?? 'Rappels envoyés'),
       error: () => alert('Erreur lors de l\'envoi des rappels'),
     });
+  }
+
+  viewAttendance(meetingId: string) {
+    if (this.selectedMeetingId === meetingId) {
+      this.selectedMeetingId = null;
+      return;
+    }
+    this.selectedMeetingId = meetingId;
+    this.loadingAttendance = true;
+    this.api.getAttendance(meetingId).subscribe({
+      next: (data) => { this.attendance = data; this.loadingAttendance = false; },
+      error: () => { this.loadingAttendance = false; },
+    });
+  }
+
+  formatDuration(minutes: number | null): string {
+    if (!minutes) return '—';
+    if (minutes < 60) return `${minutes} min`;
+    return `${Math.floor(minutes / 60)}h${minutes % 60 > 0 ? String(minutes % 60).padStart(2, '0') : ''}`;
   }
 
   formatDate(d: string) {

@@ -1,0 +1,46 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Paramètres de la communauté</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading">
+
+    <div class="settings-card">
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3 class="setting-title">Mode d'accès</h3>
+          <p class="setting-desc">
+            <strong *ngIf="isOpen" class="open">Communauté ouverte</strong>
+            <strong *ngIf="!isOpen" class="closed">Communauté fermée</strong>
+            —
+            <span *ngIf="isOpen">Les nouveaux visiteurs peuvent s'inscrire et rejoindre les réunions directement.</span>
+            <span *ngIf="!isOpen">Les inscriptions sont fermées. Seuls les membres existants peuvent rejoindre les réunions.</span>
+          </p>
+        </div>
+        <div class="setting-control">
+          <label class="toggle">
+            <input type="checkbox" [(ngModel)]="isOpen" (ngModelChange)="toggleMode()" [disabled]="saving" />
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label" [class.open]="isOpen" [class.closed]="!isOpen">
+            {{ isOpen ? 'Ouvert' : 'Fermé' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="info-box" [class.info-open]="isOpen" [class.info-closed]="!isOpen">
+        <span class="info-icon">{{ isOpen ? 'ℹ️' : '🔒' }}</span>
+        <div>
+          <strong>{{ isOpen ? 'Mode ouvert actif' : 'Mode fermé actif' }}</strong>
+          <p *ngIf="isOpen">Un nouveau visiteur qui saisit son email et remplit le formulaire rejoint immédiatement la communauté.</p>
+          <p *ngIf="!isOpen">Un nouveau visiteur verra le message : "Les inscriptions sont fermées. Contactez-nous." Son email ne sera pas enregistré.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+
+  </div>
+</div>

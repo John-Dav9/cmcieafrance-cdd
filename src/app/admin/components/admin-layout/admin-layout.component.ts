@@ -17,6 +17,8 @@ export class AdminLayoutComponent {
 
   navItems = [
     { label: 'Tableau de bord', icon: '⊞', route: '/espace-admin/dashboard' },
+    { label: 'Membres',          icon: '👥', route: '/espace-admin/membres' },
+    { label: 'Paramètres',       icon: '⚙️', route: '/espace-admin/parametres' },
     { label: 'Inscriptions',    icon: '✎', route: '/espace-admin/inscriptions' },
     { label: 'Annonces',        icon: '📢', route: '/espace-admin/annonces' },
     { label: 'Actualités',      icon: '📰', route: '/espace-admin/actualites' },

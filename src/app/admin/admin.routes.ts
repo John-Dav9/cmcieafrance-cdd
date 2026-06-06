@@ -85,6 +85,16 @@ export const ADMIN_ROUTES: Routes = [
           import('./pages/newsletter/newsletter.component').then((m) => m.AdminNewsletterComponent),
       },
       {
+        path: 'membres',
+        loadComponent: () =>
+          import('./pages/membres/membres.component').then((m) => m.AdminMembresComponent),
+      },
+      {
+        path: 'parametres',
+        loadComponent: () =>
+          import('./pages/parametres/parametres.component').then((m) => m.AdminParametresComponent),
+      },
+      {
         path: 'messages',
         loadComponent: () =>
           import('./pages/messages/messages.component').then((m) => m.AdminMessagesComponent),

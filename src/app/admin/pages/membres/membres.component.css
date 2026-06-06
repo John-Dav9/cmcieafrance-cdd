@@ -1,0 +1,49 @@
+@import '../../admin-shared.css';
+
+.header-actions { display: flex; gap: 8px; }
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: #1D546C; }
+
+select {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.role-select {
+  padding: 4px 8px;
+  font-size: 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+}
+
+tr.inactive { opacity: 0.5; }
+
+.badge-purple { background: #faf5ff; color: #7c3aed; }
+.badge-red    { background: #fef2f2; color: #dc2626; }
+.badge-blue   { background: #eff6ff; color: #1d4ed8; }
+.badge-green  { background: #f0fdf4; color: #16a34a; }
+.badge-gray   { background: #f9fafb; color: #6b7280; }
+
+.actions { display: flex; gap: 6px; }

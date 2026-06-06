@@ -144,6 +144,37 @@ export class ApiService {
     return this.withAuth((h) => this.http.delete(`${this.base}/prieres/${id}`, { headers: h }));
   }
 
+  // Membres
+  getMembres() {
+    return this.withAuth((h) => this.http.get<any[]>(`${this.base}/membres`, { headers: h }));
+  }
+
+  updateMembreRole(id: string, role: string) {
+    return this.withAuth((h) => this.http.put(`${this.base}/membres/${id}/role`, { role }, { headers: h }));
+  }
+
+  desactiverMembre(id: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/membres/${id}`, { headers: h }));
+  }
+
+  mergeBases() {
+    return this.withAuth((h) => this.http.post(`${this.base}/membres/merge`, {}, { headers: h }));
+  }
+
+  // Paramètres communauté
+  getSettings() {
+    return this.withAuth((h) => this.http.get<any>(`${this.base}/membres/settings`, { headers: h }));
+  }
+
+  updateSettings(isOpen: boolean) {
+    return this.withAuth((h) => this.http.put(`${this.base}/membres/settings`, { isOpen }, { headers: h }));
+  }
+
+  // Registre de présence
+  getAttendance(meetingId: string) {
+    return this.withAuth((h) => this.http.get<any[]>(`${this.base}/reunions/${meetingId}/attendance`, { headers: h }));
+  }
+
   // Messages
   getMessagesAdmin() {
     return this.withAuth((h) => this.http.get(`${this.base}/messages/admin/all`, { headers: h }));
