@@ -1,0 +1,33 @@
+<div class="audit-page">
+  <div class="page-header">
+    <h1>Journal d'audit</h1>
+    <div class="filters">
+      <input [(ngModel)]="filterAction" placeholder="Filtrer par action..." (change)="load()">
+      <select [(ngModel)]="filterType" (change)="load()">
+        <option value="">Tous les types</option>
+        <option *ngFor="let t of resourceTypes" [value]="t">{{ t }}</option>
+      </select>
+      <button (click)="load()">↻ Actualiser</button>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">Chargement...</div>
+
+  <div class="log-table" *ngIf="!loading">
+    <table>
+      <thead><tr><th>Date</th><th>Action</th><th>Type</th><th>Utilisateur</th><th>Détails</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td class="date">{{ formatDate(log.createdAt) }}</td>
+          <td><span class="action-badge" [class]="'action-badge--' + actionColor(log.action)">{{ log.action }}</span></td>
+          <td class="type">{{ log.resourceType ?? '—' }}</td>
+          <td class="user">{{ log.userEmail ?? '—' }}</td>
+          <td class="details">{{ log.details ? (log.details | json) : '—' }}</td>
+        </tr>
+        <tr *ngIf="logs.length === 0">
+          <td colspan="5" style="text-align:center;color:#888;padding:32px">Aucun log</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

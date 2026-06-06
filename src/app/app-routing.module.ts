@@ -102,6 +102,18 @@ const routes: Routes = [
       .then(m => m.MagicLinkComponent),
   },
 
+  {
+    path: 'en-direct',
+    loadComponent: () => import('./pages/en-direct/en-direct.component').then(m => m.EnDirectComponent),
+  },
+  {
+    path: 'bible',
+    loadComponent: () => import('./pages/bible/bible.component').then(m => m.BibleComponent),
+  },
+  {
+    path: 'groupes-de-cellule',
+    loadComponent: () => import('./pages/cell-groups-public/cell-groups-public.component').then(m => m.CellGroupsPublicComponent),
+  },
   { path: '**', redirectTo: '' },
 ];
 

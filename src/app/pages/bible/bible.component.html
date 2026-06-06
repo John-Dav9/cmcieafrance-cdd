@@ -1,0 +1,51 @@
+<div class="bible-page">
+
+  <div class="bible-hero">
+    <div class="bible-cross">✝</div>
+    <h1>Bible en ligne</h1>
+    <p>Recherchez un verset, une référence ou un mot-clé</p>
+  </div>
+
+  <div class="bible-search">
+    <input [(ngModel)]="query" placeholder="Jean 3:16 / amour / foi..."
+           (keyup.enter)="search()" class="search-input">
+    <button (click)="search()" class="search-btn" [disabled]="loading">
+      {{ loading ? '…' : '🔍 Chercher' }}
+    </button>
+  </div>
+
+  <!-- Résultats de recherche -->
+  <div class="results-section" *ngIf="results.length">
+    <h2>Résultats ({{ results.length }})</h2>
+    <div class="verse-card" *ngFor="let v of results" (click)="select(v)">
+      <div class="verse-ref">{{ v.reference }}</div>
+      <p class="verse-text">"{{ v.text }}"</p>
+    </div>
+  </div>
+
+  <div class="empty-search" *ngIf="query && results.length === 0 && !loading">
+    <p>Aucun résultat pour "{{ query }}"</p>
+  </div>
+
+  <!-- Versets classiques -->
+  <div class="classics-section" *ngIf="!results.length">
+    <h2>Versets bien-aimés</h2>
+    <div class="verse-grid">
+      <div class="verse-card" *ngFor="let v of classics" (click)="select(v)">
+        <div class="verse-ref">{{ v.reference }}</div>
+        <p class="verse-text">"{{ v.text }}"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal verset sélectionné -->
+  <div class="verse-modal-backdrop" *ngIf="selected" (click)="clearSelected()">
+    <div class="verse-modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="clearSelected()">✕</button>
+      <div class="modal-ref">{{ selected.reference }}</div>
+      <div class="modal-cross">✝</div>
+      <p class="modal-text">"{{ selected.text }}"</p>
+    </div>
+  </div>
+
+</div>

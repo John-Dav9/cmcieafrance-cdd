@@ -82,4 +82,16 @@ export class ReunionsService {
   sendReminders(id: string): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(`${environment.apiBase}/reunions/${id}/send-reminders`, {});
   }
+
+  muteParticipant(id: string, participantJitsiId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiBase}/reunions/${id}/mute/${participantJitsiId}`, {});
+  }
+
+  kickParticipant(id: string, participantId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiBase}/reunions/${id}/kick/${participantId}`, {});
+  }
+
+  grantModerator(id: string, memberId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiBase}/reunions/${id}/grant-moderator/${memberId}`, {});
+  }
 }

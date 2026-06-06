@@ -1,0 +1,45 @@
+<div class="live-page">
+
+  <div class="live-header">
+    <div class="live-badge" *ngIf="meeting?.status === 'live'">
+      <span class="live-dot"></span> EN DIRECT
+    </div>
+    <h1>{{ meeting?.title || 'Réunion CMCIEA France' }}</h1>
+    <p *ngIf="!meeting && !loading">Aucune réunion en cours actuellement.</p>
+  </div>
+
+  <div class="live-loading" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="live-content" *ngIf="meeting && !loading">
+
+    <!-- Viewer Jitsi en lecture seule -->
+    <div class="jitsi-embed" *ngIf="jitsiEmbedUrl">
+      <iframe
+        [src]="jitsiEmbedUrl"
+        allow="camera; microphone; fullscreen; display-capture"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="live-info">
+      <p class="live-description" *ngIf="meeting.description">{{ meeting.description }}</p>
+      <a routerLink="/reunions" class="btn-join">
+        Rejoindre la réunion complète →
+      </a>
+      <p class="live-note">
+        Pour participer activement (micro, caméra), rejoignez la réunion complète.
+        Vous observez ici en mode spectateur.
+      </p>
+    </div>
+  </div>
+
+  <div class="no-meeting" *ngIf="!meeting && !loading">
+    <div class="no-meeting-icon">✝</div>
+    <h2>Pas de réunion en ce moment</h2>
+    <p>Revenez bientôt ou consultez nos réunions programmées.</p>
+    <a routerLink="/reunions" class="btn-join">Voir le calendrier →</a>
+  </div>
+
+</div>

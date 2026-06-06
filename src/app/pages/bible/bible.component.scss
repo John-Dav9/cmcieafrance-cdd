@@ -1,0 +1,56 @@
+$primary: #1D546C; $accent: #E8A838; $bg: #F7F5F0; $dark: #1a1a2e;
+
+.bible-page { max-width: 900px; margin: 0 auto; padding: 32px 16px; }
+
+.bible-hero { text-align: center; margin-bottom: 32px; }
+.bible-cross { font-size: 40px; color: $accent; margin-bottom: 10px; }
+.bible-hero h1 { font-size: 32px; color: $dark; margin: 0 0 8px; }
+.bible-hero p  { color: #666; font-size: 16px; }
+
+.bible-search { display: flex; gap: 8px; margin-bottom: 32px; }
+.search-input {
+  flex: 1; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px;
+  font-size: 15px; transition: border-color 0.2s;
+  &:focus { outline: none; border-color: $primary; }
+}
+.search-btn {
+  padding: 12px 20px; background: $primary; color: white; border: none;
+  border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: background 0.2s; white-space: nowrap;
+  &:hover { background: darken($primary, 8%); }
+  &:disabled { opacity: 0.6; cursor: default; }
+}
+
+h2 { font-size: 20px; color: $dark; margin-bottom: 16px; }
+
+.verse-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+.verse-card {
+  background: white; border-radius: 10px; padding: 16px; cursor: pointer;
+  border: 1px solid #e5e7eb; transition: transform 0.15s, box-shadow 0.15s;
+  &:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: rgba($primary, 0.3); }
+}
+.verse-ref  { font-size: 12px; font-weight: 700; color: $primary; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.verse-text { font-size: 14px; color: #444; line-height: 1.6; margin: 0; font-style: italic; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.empty-search { text-align: center; padding: 32px; color: #888; }
+
+// Modal
+.verse-modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+.verse-modal {
+  background: linear-gradient(135deg, $primary 0%, darken($primary, 12%) 100%);
+  color: white; border-radius: 16px; padding: 40px 32px; max-width: 520px; width: 100%;
+  text-align: center; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: slideUp 0.25s ease;
+}
+.modal-close { position: absolute; top: 14px; right: 16px; background: rgba(white,0.15); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; cursor: pointer; }
+.modal-ref   { font-size: 14px; font-weight: 700; color: $accent; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+.modal-cross { font-size: 36px; color: rgba($accent, 0.8); margin-bottom: 16px; }
+.modal-text  { font-size: 18px; line-height: 1.8; font-style: italic; color: rgba(white, 0.95); }
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

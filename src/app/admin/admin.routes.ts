@@ -104,6 +104,26 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/reunions/reunions-admin.component').then((m) => m.ReunionsAdminComponent),
       },
+      {
+        path: 'replays',
+        loadComponent: () =>
+          import('./pages/replays/replays.component').then((m) => m.AdminReplaysComponent),
+      },
+      {
+        path: 'stats',
+        loadComponent: () =>
+          import('./pages/stats/stats.component').then((m) => m.AdminStatsComponent),
+      },
+      {
+        path: 'audit',
+        loadComponent: () =>
+          import('./pages/audit/audit.component').then((m) => m.AuditComponent),
+      },
+      {
+        path: 'cell-groups',
+        loadComponent: () =>
+          import('./pages/cell-groups/cell-groups.component').then((m) => m.CellGroupsAdminComponent),
+      },
     ],
   },
 ];

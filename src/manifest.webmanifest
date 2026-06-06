@@ -6,7 +6,24 @@
   "background_color": "#f8f9fc",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/",
+  "start_url": "/reunions",
+  "shortcuts": [
+    {
+      "name": "Réunions",
+      "url": "/reunions",
+      "description": "Rejoindre une réunion en ligne"
+    },
+    {
+      "name": "En direct",
+      "url": "/en-direct",
+      "description": "Regarder la réunion en direct"
+    },
+    {
+      "name": "Bible",
+      "url": "/bible",
+      "description": "Rechercher un verset biblique"
+    }
+  ],
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",

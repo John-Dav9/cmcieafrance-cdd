@@ -1,0 +1,96 @@
+<!-- ══ BANNIÈRE STREAMING ════════════════════════════════════ -->
+<div class="streaming-banner" *ngIf="streamingActive">
+  🔴 En direct — {{ streamingPlatform }}
+</div>
+
+<!-- ══ ÉVÉNEMENT SPIRITUEL (verset / cantique / annonce) ════ -->
+<div class="spiritual-overlay" *ngIf="spiritualEvent" [class]="'spiritual-overlay--' + spiritualEvent.type">
+
+  <!-- Verset biblique -->
+  <div *ngIf="spiritualEvent.type === 'verse'" class="spiritual-content verse">
+    <div class="verse-icon">✝</div>
+    <div class="verse-reference">{{ spiritualEvent.title }}</div>
+    <div class="verse-text">"{{ spiritualEvent.content }}"</div>
+    <button class="dismiss-btn" (click)="dismissSpiritual()">✕</button>
+  </div>
+
+  <!-- Paroles de cantique -->
+  <div *ngIf="spiritualEvent.type === 'lyrics'" class="spiritual-content lyrics">
+    <div class="lyrics-title">🎵 {{ spiritualEvent.title }}</div>
+    <div class="lyrics-lines">
+      <p *ngFor="let line of lyricsLines(spiritualEvent.content)">{{ line }}</p>
+    </div>
+    <button class="dismiss-btn" (click)="dismissSpiritual()">✕</button>
+  </div>
+
+  <!-- Annonce -->
+  <div *ngIf="spiritualEvent.type === 'announcement'" class="spiritual-content announcement">
+    <div class="announcement-icon">📢</div>
+    <div class="announcement-text">{{ spiritualEvent.content }}</div>
+    <button class="dismiss-btn" (click)="dismissSpiritual()">✕</button>
+  </div>
+</div>
+
+<!-- ══ SONDAGE ═══════════════════════════════════════════════ -->
+<div class="poll-overlay" *ngIf="activePoll">
+  <div class="poll-card">
+    <div class="poll-header">📊 Sondage</div>
+    <div class="poll-question">{{ activePoll.question }}</div>
+
+    <!-- Avant vote -->
+    <div *ngIf="selectedOption === null && !pollClosed" class="poll-options">
+      <button class="poll-option"
+              *ngFor="let opt of activePoll.options; let i = index"
+              (click)="votePoll(i)">
+        {{ opt }}
+      </button>
+    </div>
+
+    <!-- Résultats en temps réel -->
+    <div *ngIf="selectedOption !== null || pollClosed" class="poll-results">
+      <div class="poll-result-row" *ngFor="let r of pollResults?.results; let i = index"
+           [class.selected]="i === selectedOption">
+        <div class="poll-result-label">{{ r.option }}</div>
+        <div class="poll-result-bar">
+          <div class="poll-result-fill" [style.width.%]="r.percent"></div>
+        </div>
+        <div class="poll-result-pct">{{ r.percent }}%</div>
+      </div>
+      <div class="poll-total">{{ pollResults?.totalVotes ?? 0 }} vote(s)</div>
+      <div *ngIf="pollClosed" class="poll-closed-msg">Sondage terminé</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BOUTON FIL DE PRIÈRE ══════════════════════════════════ -->
+<div class="prayer-fab" (click)="togglePrayerPanel()" title="Soumettre un sujet de prière">
+  🙏
+  <span class="prayer-badge" *ngIf="prayerRequests.length">{{ prayerRequests.length }}</span>
+</div>
+
+<!-- ══ PANNEAU FIL DE PRIÈRE ════════════════════════════════ -->
+<div class="prayer-panel" *ngIf="showPrayerPanel">
+  <div class="prayer-panel-header">
+    <span>🙏 Fil de prière</span>
+    <button (click)="togglePrayerPanel()">✕</button>
+  </div>
+
+  <div class="prayer-input-area">
+    <textarea [(ngModel)]="prayerText" placeholder="Soumettez votre sujet de prière..." rows="2"></textarea>
+    <button (click)="submitPrayer()">Envoyer</button>
+  </div>
+
+  <div class="prayer-list">
+    <div class="prayer-item" *ngFor="let req of prayerRequests">
+      <div class="prayer-author">{{ req.author }}</div>
+      <div class="prayer-text">{{ req.text }}</div>
+      <div class="prayer-support">
+        <button (click)="supportPrayer(req)">🙏 Je prie avec vous</button>
+        <span *ngIf="req.supporters.length" class="support-count">
+          {{ req.supporters.join(', ') }} prie(nt)
+        </span>
+      </div>
+    </div>
+    <p class="prayer-empty" *ngIf="prayerRequests.length === 0">Aucun sujet de prière pour l'instant</p>
+  </div>
+</div>

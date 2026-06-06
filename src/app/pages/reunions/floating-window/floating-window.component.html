@@ -4,7 +4,10 @@
   [class.dragging]="dragging">
 
   <div class="float-header" (mousedown)="onMouseDown($event)">
-    <span class="float-title">🎙 {{ title }}</span>
+    <div class="float-header__left">
+      <span [class]="qualityDotClass" [title]="quality"></span>
+      <span class="float-title">{{ title }}</span>
+    </div>
     <button class="float-expand" (click)="expand.emit()" title="Agrandir">⬆</button>
   </div>
 

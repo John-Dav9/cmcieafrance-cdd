@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { firstValueFrom, interval, Subscription } from 'rxjs';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 import { MeetingService } from '../../../core/services/meeting.service';
+import { MeetingSocketService } from '../../../core/services/meeting-socket.service';
 import { ReunionsService, JoinResult } from '../../../core/services/reunions.service';
 import { AdminControlsComponent } from '../admin-controls/admin-controls.component';
+import { MeetingOverlayComponent } from '../meeting-overlay/meeting-overlay.component';
 
 declare const JitsiMeetExternalAPI: any;
 type ConnectionQuality = 'high' | 'medium' | 'low' | 'critical';
@@ -13,7 +15,7 @@ type ConnectionQuality = 'high' | 'medium' | 'low' | 'critical';
 @Component({
   selector: 'app-reunion-room',
   standalone: true,
-  imports: [CommonModule, AdminControlsComponent],
+  imports: [CommonModule, AdminControlsComponent, MeetingOverlayComponent],
   templateUrl: './reunion-room.component.html',
   styleUrls: ['./reunion-room.component.scss'],
 })
@@ -33,6 +35,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     private memberAuth: MemberAuthService,
     private router: Router,
     private zone: NgZone,
+    private socket: MeetingSocketService,
   ) {}
 
   ngOnInit() {
@@ -47,7 +50,9 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     this.isAdmin = this.jitsiData.isModerator || this.memberAuth.isAdmin();
 
     if (!this.meeting.isActive) {
+      this.meeting.currentMeetingData = this.jitsiData;
       this.meeting.startMeeting(this.jitsiData.meeting.title);
+      this.socket.connect(this.jitsiData.meeting.id);
       this.detectNetworkQuality();
       this.loadJitsiScript();
     } else {
@@ -59,6 +64,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     if (!this.meeting.isFloating) {
       this.heartbeat$?.unsubscribe();
       this.qualityMonitor$?.unsubscribe();
+      if (this.jitsiData) this.socket.disconnect(this.jitsiData.meeting.id);
     }
   }
 

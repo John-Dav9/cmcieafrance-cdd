@@ -32,6 +32,10 @@ export class AdminLayoutComponent {
     { label: 'Newsletter',         icon: '📧', route: '/espace-admin/newsletter' },
     { label: 'Messages / Prédications', icon: '🎙️', route: '/espace-admin/messages' },
     { label: 'Réunions en ligne',   icon: '📹', route: '/espace-admin/reunions' },
+    { label: 'Replays / Sermons',   icon: '▶️', route: '/espace-admin/replays' },
+    { label: 'Groupes de cellule',  icon: '🏘️', route: '/espace-admin/cell-groups' },
+    { label: 'Journal d\'audit',    icon: '📋', route: '/espace-admin/audit' },
+    { label: 'Statistiques',        icon: '📊', route: '/espace-admin/stats' },
     { label: 'Thème & couleurs',   icon: '🎨', route: '/espace-admin/theme' },
     { label: 'Pages & contenu',    icon: '✏️', route: '/espace-admin/pages' },
   ];

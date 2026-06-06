@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import type { JoinResult } from './reunions.service';
 
 @Injectable({ providedIn: 'root' })
 export class MeetingService {
@@ -20,6 +21,7 @@ export class MeetingService {
   quality$      = this._quality.asObservable();
 
   jitsiApi: any = null;
+  currentMeetingData: JoinResult | null = null;
 
   private elapsed = 0;
   private timerRef: any = null;

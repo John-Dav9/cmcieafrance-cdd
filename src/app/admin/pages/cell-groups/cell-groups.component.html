@@ -1,0 +1,57 @@
+<div class="cg-page">
+  <div class="page-header">
+    <h1>Groupes de cellule</h1>
+    <button class="btn-primary" (click)="openCreate()">+ Nouveau groupe</button>
+  </div>
+
+  <div class="loading" *ngIf="loading">Chargement...</div>
+
+  <div class="groups-grid" *ngIf="!loading">
+    <div class="group-card" *ngFor="let g of groups">
+      <div class="group-header">
+        <h3>{{ g.name }}</h3>
+        <div class="group-actions">
+          <button (click)="openEdit(g)">✏️</button>
+          <button (click)="remove(g.id)">🗑️</button>
+        </div>
+      </div>
+      <p class="group-desc" *ngIf="g.description">{{ g.description }}</p>
+      <div class="group-meta">
+        <span *ngIf="g.leaderName">👤 {{ g.leaderName }}</span>
+        <span *ngIf="g.meetingDay">📅 {{ g.meetingDay }} {{ g.meetingTime }}</span>
+        <span>👥 {{ (g.memberIds ?? []).length }} membres</span>
+      </div>
+    </div>
+    <div class="empty" *ngIf="groups.length === 0">Aucun groupe de cellule</div>
+  </div>
+
+  <!-- Formulaire -->
+  <div class="modal-backdrop" *ngIf="showForm" (click)="showForm = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ editing ? 'Modifier le groupe' : 'Nouveau groupe' }}</h2>
+      <label>Nom du groupe *</label>
+      <input [(ngModel)]="form.name" placeholder="Ex : Groupe Belleville">
+      <label>Description</label>
+      <textarea [(ngModel)]="form.description" rows="3"></textarea>
+      <label>Responsable</label>
+      <input [(ngModel)]="form.leaderName" placeholder="Nom du responsable">
+      <div class="form-row">
+        <div>
+          <label>Jour</label>
+          <select [(ngModel)]="form.meetingDay">
+            <option value="">—</option>
+            <option *ngFor="let d of days" [value]="d">{{ d }}</option>
+          </select>
+        </div>
+        <div>
+          <label>Heure</label>
+          <input [(ngModel)]="form.meetingTime" placeholder="20:00">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="showForm = false">Annuler</button>
+        <button class="btn-primary" (click)="save()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>

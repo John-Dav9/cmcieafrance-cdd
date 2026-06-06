@@ -1,0 +1,236 @@
+$accent:  #E8A838;
+$dark:    #202124;
+$white:   #ffffff;
+$muted:   rgba(255,255,255,0.6);
+
+// ── Bannière streaming ────────────────────────────────────────
+.streaming-banner {
+  position: fixed;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(#ea4335, 0.9);
+  color: $white;
+  padding: 6px 18px;
+  border-radius: 0 0 8px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9997;
+  letter-spacing: 0.5px;
+}
+
+// ── Événement spirituel ───────────────────────────────────────
+.spiritual-overlay {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9996;
+  max-width: 520px;
+  width: calc(100vw - 40px);
+  animation: slideUp 0.3s ease;
+
+  &--verse .spiritual-content   { background: linear-gradient(135deg, rgba(#1D546C,0.97) 0%, rgba(#0d1117,0.97) 100%); border: 1px solid rgba($accent, 0.4); }
+  &--lyrics .spiritual-content  { background: rgba(#1a1f2e, 0.97); border: 1px solid rgba($accent, 0.25); }
+  &--announcement .spiritual-content { background: rgba(#2d1a00, 0.97); border: 1px solid rgba($accent, 0.5); }
+}
+
+.spiritual-content {
+  border-radius: 14px;
+  padding: 20px 24px;
+  color: $white;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+
+.dismiss-btn {
+  position: absolute;
+  top: 10px; right: 12px;
+  background: rgba($white,0.1);
+  border: none;
+  color: $muted;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  font-size: 13px;
+  cursor: pointer;
+  &:hover { background: rgba($white,0.2); color: $white; }
+}
+
+// Verset
+.verse-icon { font-size: 28px; text-align: center; margin-bottom: 8px; color: $accent; }
+.verse-reference { font-size: 14px; font-weight: 700; color: $accent; text-align: center; margin-bottom: 10px; }
+.verse-text { font-size: 15px; line-height: 1.7; text-align: center; font-style: italic; color: rgba($white,0.92); }
+
+// Cantique
+.lyrics-title { font-size: 14px; font-weight: 700; color: $accent; margin-bottom: 12px; text-align: center; }
+.lyrics-lines { text-align: center; }
+.lyrics-lines p { font-size: 16px; line-height: 1.9; margin: 0; color: $white; }
+
+// Annonce
+.announcement-icon { font-size: 24px; text-align: center; margin-bottom: 8px; }
+.announcement-text { font-size: 15px; line-height: 1.6; text-align: center; color: $white; font-weight: 500; }
+
+// ── Sondage ───────────────────────────────────────────────────
+.poll-overlay {
+  position: fixed;
+  right: 20px;
+  top: 80px;
+  z-index: 9996;
+  width: 280px;
+  animation: slideIn 0.25s ease;
+}
+
+.poll-card {
+  background: rgba(#28292c, 0.97);
+  border: 1px solid rgba($white,0.12);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  color: $white;
+}
+
+.poll-header { font-size: 11px; font-weight: 700; color: $accent; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.poll-question { font-size: 14px; font-weight: 600; margin-bottom: 12px; line-height: 1.4; }
+
+.poll-options { display: flex; flex-direction: column; gap: 6px; }
+
+.poll-option {
+  padding: 9px 12px;
+  background: rgba($white,0.07);
+  border: 1px solid rgba($white,0.12);
+  color: $white;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  &:hover { background: rgba($accent,0.2); border-color: rgba($accent,0.4); }
+}
+
+.poll-result-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.poll-result-row.selected .poll-result-label { color: $accent; font-weight: 600; }
+.poll-result-label { font-size: 12px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.poll-result-bar { width: 80px; height: 6px; background: rgba($white,0.1); border-radius: 3px; overflow: hidden; }
+.poll-result-fill { height: 100%; background: $accent; border-radius: 3px; transition: width 0.4s ease; }
+.poll-result-pct { font-size: 11px; color: $muted; width: 32px; text-align: right; }
+.poll-total { font-size: 11px; color: $muted; margin-top: 4px; }
+.poll-closed-msg { font-size: 12px; color: rgba($accent,0.8); margin-top: 6px; font-weight: 600; }
+
+// ── Bouton fil de prière ──────────────────────────────────────
+.prayer-fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(#1D546C, 0.9);
+  border: 1px solid rgba($accent, 0.35);
+  color: $white;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9996;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  transition: transform 0.2s, background 0.2s;
+  &:hover { transform: scale(1.1); background: rgba(#2a7a9a, 0.9); }
+}
+
+.prayer-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: $accent;
+  color: #1a1a2e;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ── Panneau fil de prière ─────────────────────────────────────
+.prayer-panel {
+  position: fixed;
+  bottom: 80px;
+  left: 24px;
+  width: 300px;
+  max-height: 420px;
+  background: rgba(#28292c, 0.97);
+  border: 1px solid rgba($white,0.12);
+  border-radius: 12px;
+  z-index: 9996;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  animation: slideUp 0.25s ease;
+}
+
+.prayer-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba($white,0.08);
+  color: $white;
+  font-size: 14px;
+  font-weight: 600;
+  button { background: none; border: none; color: $muted; font-size: 16px; cursor: pointer; }
+}
+
+.prayer-input-area {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba($white,0.08);
+  textarea {
+    width: 100%;
+    background: rgba($white,0.07);
+    border: 1px solid rgba($white,0.12);
+    color: $white;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 13px;
+    resize: none;
+    margin-bottom: 6px;
+    &::placeholder { color: $muted; }
+  }
+  button {
+    width: 100%;
+    padding: 8px;
+    background: rgba($accent,0.2);
+    border: 1px solid rgba($accent,0.4);
+    color: $accent;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    &:hover { background: rgba($accent,0.35); }
+  }
+}
+
+.prayer-list { flex: 1; overflow-y: auto; padding: 10px 14px; }
+.prayer-item {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba($white,0.06);
+  &:last-child { border-bottom: none; }
+}
+.prayer-author { font-size: 11px; font-weight: 700; color: $accent; margin-bottom: 3px; }
+.prayer-text { font-size: 13px; color: rgba($white,0.85); line-height: 1.4; margin-bottom: 6px; }
+.prayer-support {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  button { font-size: 11px; padding: 3px 8px; background: rgba($white,0.07); border: 1px solid rgba($white,0.12); color: $muted; border-radius: 4px; cursor: pointer; &:hover { color: $white; } }
+}
+.support-count { font-size: 11px; color: $muted; font-style: italic; }
+.prayer-empty { font-size: 12px; color: $muted; text-align: center; padding: 16px 0; }
+
+// ── Animations ────────────────────────────────────────────────
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, 16px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}

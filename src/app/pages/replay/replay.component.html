@@ -1,0 +1,95 @@
+<section class="replay-page">
+
+  <!-- Lecteur actif -->
+  <div class="player-wrap" *ngIf="selected && safeUrl">
+    <div class="player-header">
+      <div class="player-info">
+        <h2 class="player-title">{{ selected.title }}</h2>
+        <p class="player-meta" *ngIf="selected.speakerName">
+          🎙️ {{ selected.speakerName }}
+          <span *ngIf="selected.publishedAt"> · {{ formatDate(selected.publishedAt) }}</span>
+        </p>
+      </div>
+      <button class="close-player" (click)="close()">✕ Fermer</button>
+    </div>
+    <div class="player-frame">
+      <iframe [src]="safeUrl" frameborder="0" allowfullscreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+      </iframe>
+    </div>
+    <p class="player-desc" *ngIf="selected.description">{{ selected.description }}</p>
+    <div class="player-tags" *ngIf="selected.tags?.length">
+      <span class="tag" *ngFor="let t of selected.tags">{{ t }}</span>
+    </div>
+
+    <!-- Résumé IA -->
+    <div class="ai-summary-section">
+      <button class="ai-btn" (click)="loadSummary()" *ngIf="!aiSummary && !loadingSummary">
+        🤖 Générer un résumé IA
+      </button>
+      <div class="ai-loading" *ngIf="loadingSummary">🤖 Génération en cours...</div>
+      <div class="ai-summary" *ngIf="aiSummary">
+        <div class="ai-summary-header">🤖 Résumé IA</div>
+        <div class="ai-summary-content" [innerHTML]="aiSummary.replace('\n', '<br>')"></div>
+      </div>
+    </div>
+
+    <!-- Recommandations -->
+    <div class="recommendations" *ngIf="recommendations.length">
+      <h4>À voir ensuite</h4>
+      <div class="rec-grid">
+        <div class="rec-card" *ngFor="let r of recommendations" (click)="open(r)">
+          <img *ngIf="r.thumbnailUrl" [src]="r.thumbnailUrl" [alt]="r.title">
+          <div class="rec-info">
+            <span class="rec-title">{{ r.title }}</span>
+            <span class="rec-speaker" *ngIf="r.speakerName">{{ r.speakerName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- En-tête -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">📺 Bibliothèque de replay</h1>
+      <p class="page-sub">Retrouvez tous les messages et prédications de CMCIEA France</p>
+      <a [href]="podcastUrl" target="_blank" class="podcast-link" title="S'abonner au podcast RSS">
+        🎙️ Podcast RSS
+      </a>
+    </div>
+    <div class="search-wrap">
+      <input type="text" class="search-input" placeholder="Rechercher un message..."
+             [(ngModel)]="search" (ngModelChange)="applySearch()" />
+    </div>
+  </div>
+
+  <!-- Chargement -->
+  <div class="loading" *ngIf="loading">Chargement...</div>
+
+  <!-- Vide -->
+  <div class="empty" *ngIf="!loading && filtered.length === 0">
+    <p>Aucun replay disponible{{ search ? ' pour cette recherche' : '' }}.</p>
+  </div>
+
+  <!-- Grille -->
+  <div class="grid" *ngIf="!loading && filtered.length > 0">
+    <div class="card" *ngFor="let r of filtered" (click)="open(r)">
+      <div class="thumb">
+        <img *ngIf="r.thumbnailUrl" [src]="r.thumbnailUrl" [alt]="r.title" loading="lazy" />
+        <div class="thumb-placeholder" *ngIf="!r.thumbnailUrl">✝</div>
+        <span class="duration" *ngIf="r.durationSeconds">{{ formatDuration(r.durationSeconds) }}</span>
+        <div class="play-overlay">▶</div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">{{ r.title }}</h3>
+        <p class="card-meta" *ngIf="r.speakerName">🎙️ {{ r.speakerName }}</p>
+        <p class="card-date">{{ formatDate(r.publishedAt || r.createdAt) }}</p>
+        <div class="card-tags" *ngIf="r.tags?.length">
+          <span class="tag" *ngFor="let t of r.tags">{{ t }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

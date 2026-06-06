@@ -1,0 +1,32 @@
+<div class="cg-public-page">
+  <div class="cg-hero">
+    <div class="cg-icon">✝</div>
+    <h1>Groupes de cellule</h1>
+    <p>Des espaces intimes de fellowship, d'étude biblique et de prière. Rejoignez une cellule près de chez vous.</p>
+  </div>
+
+  <div class="loading" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div class="groups-grid" *ngIf="!loading">
+    <div class="group-card" *ngFor="let g of groups">
+      <div class="group-icon">🙏</div>
+      <h3>{{ g.name }}</h3>
+      <p *ngIf="g.description">{{ g.description }}</p>
+      <div class="group-meta">
+        <span *ngIf="g.leaderName"><strong>Responsable :</strong> {{ g.leaderName }}</span>
+        <span *ngIf="g.meetingDay"><strong>Réunion :</strong> {{ g.meetingDay }} à {{ g.meetingTime }}</span>
+      </div>
+    </div>
+
+    <div class="empty" *ngIf="groups.length === 0">
+      <p>Les groupes de cellule seront bientôt disponibles.</p>
+      <p>Contactez-nous : <a href="mailto:contact@cmciea-france.com">contact@cmciea-france.com</a></p>
+    </div>
+  </div>
+
+  <div class="cg-cta">
+    <h2>Intéressé(e) ?</h2>
+    <p>Contactez-nous pour rejoindre un groupe de cellule ou en créer un nouveau.</p>
+    <a href="mailto:contact@cmciea-france.com" class="btn-contact">Nous contacter</a>
+  </div>
+</div>

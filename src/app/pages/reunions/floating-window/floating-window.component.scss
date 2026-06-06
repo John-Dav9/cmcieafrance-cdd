@@ -20,6 +20,13 @@
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
+.float-header__left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
 .float-title {
   color: white;
   font-size: 12px;
@@ -27,7 +34,25 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 130px;
+  max-width: 120px;
+}
+
+// Indicateur qualité réseau
+.quality-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--high     { background: #34a853; box-shadow: 0 0 5px rgba(#34a853, 0.7); }
+  &--medium   { background: #fbbc04; box-shadow: 0 0 5px rgba(#fbbc04, 0.6); }
+  &--low      { background: #ea4335; box-shadow: 0 0 5px rgba(#ea4335, 0.6); animation: blink 1.2s ease-in-out infinite; }
+  &--critical { background: #5f6368; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
 }
 
 .float-expand {

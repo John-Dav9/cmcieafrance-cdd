@@ -68,6 +68,14 @@
 <app-admin-controls
   *ngIf="showAdminPanel && isAdmin && jitsiData"
   [meetingId]="jitsiData.meeting.id"
+  [jitsiRoomId]="jitsiData.roomId"
   [jitsiApi]="meeting.jitsiApi"
   (close)="showAdminPanel = false">
 </app-admin-controls>
+
+<!-- ══ OVERLAY SPIRITUEL / SONDAGES / PRIÈRE ═══════════════ -->
+<app-meeting-overlay
+  *ngIf="jitsiData"
+  [meetingId]="jitsiData.meeting.id"
+  [isAdmin]="isAdmin">
+</app-meeting-overlay>

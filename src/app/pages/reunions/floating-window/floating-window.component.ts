@@ -10,10 +10,13 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@a
 })
 export class FloatingWindowComponent implements OnInit {
   @Input() title = '';
+  @Input() quality: 'high' | 'medium' | 'low' | 'critical' = 'high';
+  @Input() set jitsiApi(api: any) {
+    this._jitsiApi = api;
+    if (api) this.syncStateFromApi();
+  }
   @Output() expand = new EventEmitter<void>();
-  @Output() toggleMic = new EventEmitter<void>();
-  @Output() toggleCam = new EventEmitter<void>();
-  @Output() leave = new EventEmitter<void>();
+  @Output() leave  = new EventEmitter<void>();
 
   posX = 20;
   posY = 20;
@@ -24,6 +27,8 @@ export class FloatingWindowComponent implements OnInit {
   private startPosY = 0;
   micOn = true;
   camOn = true;
+
+  _jitsiApi: any = null;
 
   ngOnInit() {
     this.posX = window.innerWidth - 220;
@@ -49,6 +54,26 @@ export class FloatingWindowComponent implements OnInit {
   @HostListener('document:mouseup')
   onMouseUp() { this.dragging = false; }
 
-  clickToggleMic() { this.micOn = !this.micOn; this.toggleMic.emit(); }
-  clickToggleCam() { this.camOn = !this.camOn; this.toggleCam.emit(); }
+  clickToggleMic() {
+    this.micOn = !this.micOn;
+    this._jitsiApi?.executeCommand('toggleAudio');
+  }
+
+  clickToggleCam() {
+    this.camOn = !this.camOn;
+    this._jitsiApi?.executeCommand('toggleVideo');
+  }
+
+  get qualityDotClass(): string {
+    return `quality-dot quality-dot--${this.quality}`;
+  }
+
+  private syncStateFromApi() {
+    try {
+      const status = this._jitsiApi?.getAudioStatus?.();
+      if (status !== undefined) this.micOn = !status.muted;
+      const vstatus = this._jitsiApi?.getVideoStatus?.();
+      if (vstatus !== undefined) this.camOn = !vstatus.muted;
+    } catch { /* pas de données disponibles avant join */ }
+  }
 }

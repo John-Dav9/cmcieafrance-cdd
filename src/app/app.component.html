@@ -20,6 +20,16 @@
      *ngIf="(meetingActive$ | async) && !(meetingFloating$ | async)">
 </div>
 
+<!-- ══ FENÊTRE FLOTTANTE (mode pip) ════════════════════════ -->
+<app-floating-window
+  *ngIf="(meetingFloating$ | async)"
+  [title]="(meetingTitle$ | async) || ''"
+  [quality]="$any(meetingQuality$ | async) || 'high'"
+  [jitsiApi]="meetingService.jitsiApi"
+  (expand)="onFloatExpand()"
+  (leave)="onFloatLeave()">
+</app-floating-window>
+
 <footer class="footer" *ngIf="!(meetingActive$ | async) || (meetingFloating$ | async)">
   <div class="footer-inner">
     <div class="footer-brand">
@@ -43,6 +53,9 @@
       <a routerLink="/ressources/decouvrir">Ressources</a>
       <a routerLink="/departements">Départements</a>
       <a routerLink="/actualites">Actualités</a>
+      <a routerLink="/bible">Bible en ligne</a>
+      <a routerLink="/en-direct">En direct</a>
+      <a routerLink="/groupes-de-cellule">Groupes de cellule</a>
     </div>
 
     <div class="footer-links">
