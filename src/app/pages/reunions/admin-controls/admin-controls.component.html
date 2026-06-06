@@ -1,27 +1,32 @@
 <div class="admin-panel">
+
   <div class="admin-header">
-    <h3>Panneau Modérateur</h3>
+    <h3>Modérateur</h3>
     <button class="admin-close" (click)="close.emit()">✕</button>
   </div>
 
   <div class="admin-actions">
     <button class="admin-btn" [class.admin-btn--active]="recording" (click)="toggleRecording()">
-      {{ recording ? '⏹ Arrêter l\'enregistrement' : '⏺ Enregistrer' }}
+      {{ recording ? '⏹ Arrêter l\'enregistrement' : '⏺ Enregistrer la réunion' }}
     </button>
     <button class="admin-btn admin-btn--danger" (click)="endMeeting()">
-      🔴 Terminer la réunion
+      Terminer pour tous
     </button>
   </div>
 
   <div class="participants-section">
     <h4>Participants ({{ participants.length }})</h4>
+
     <div class="participant-item" *ngFor="let p of participants">
+      <div class="participant-avatar">{{ p.displayName?.charAt(0) || '?' }}</div>
       <span class="participant-name">{{ p.displayName }}</span>
       <div class="participant-actions">
-        <button class="btn-sm" title="Muter" (click)="muteParticipant(p.id)">🔇</button>
+        <button class="btn-sm" title="Couper le micro" (click)="muteParticipant(p.id)">🔇</button>
         <button class="btn-sm btn-sm--danger" title="Exclure" (click)="kickParticipant(p.id)">✕</button>
       </div>
     </div>
+
     <p class="empty" *ngIf="participants.length === 0">Aucun participant</p>
   </div>
+
 </div>

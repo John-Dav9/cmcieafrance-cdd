@@ -116,7 +116,7 @@
   &.jitsi-active {
     display: block;
     position: fixed;
-    top: 52px;   /* hauteur topbar CMCIEA */
+    top: 56px;   /* hauteur topbar reunion-room */
     left: 0;
     right: 0;
     bottom: 0;

@@ -1,52 +1,70 @@
-<!-- ══ TOPBAR (barre persistante en haut) ════════════════════ -->
-<div class="room-topbar">
+<!-- ══ TOPBAR FIXE (au-dessus de Jitsi z-index:9998) ══════════ -->
+<div class="rm-topbar">
 
-  <div class="topbar-left">
-    <div class="topbar-logo">✝</div>
-    <div class="topbar-info">
-      <span class="topbar-title">{{ jitsiData?.meeting?.title }}</span>
-      <span class="topbar-timer">{{ elapsedTime }}</span>
+  <div class="rm-topbar__left">
+    <div class="rm-logo">✝</div>
+    <div class="rm-info">
+      <span class="rm-title">{{ jitsiData?.meeting?.title }}</span>
+      <span class="rm-timer">{{ elapsedTime }}</span>
     </div>
   </div>
 
-  <div class="topbar-right">
+  <div class="rm-topbar__right">
 
-    <div class="network-pill" [ngClass]="quality" [title]="qualityLabel">
-      <span class="net-dot"></span>
-      <span class="net-text">{{ qualityLabel }}</span>
+    <!-- Qualité réseau -->
+    <div class="rm-quality" [ngClass]="quality" [title]="qualityLabel">
+      <span class="rm-quality__dot"></span>
+      <span class="rm-quality__label">{{ qualityLabel }}</span>
     </div>
 
-    <button class="topbar-btn" *ngIf="isAdmin" (click)="toggleAdminPanel()" title="Panneau modérateur">
+    <!-- Participants -->
+    <div class="rm-participants" title="Participants">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
-      <span>Admin</span>
+      <span>{{ participantCount }}</span>
+    </div>
+
+    <!-- Panneau admin (modérateurs uniquement) -->
+    <button class="rm-btn" *ngIf="isAdmin"
+            [class.rm-btn--active]="showAdminPanel"
+            (click)="toggleAdminPanel()"
+            title="Panneau modérateur">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span class="rm-btn__label">Modérateur</span>
     </button>
 
-    <button class="topbar-btn topbar-btn--float" (click)="toggleFloat()" title="Réduire — continuer à naviguer sur le site">
+    <!-- Réduire en mode flottant -->
+    <button class="rm-btn rm-btn--minimize" (click)="toggleFloat()" title="Réduire — continuer à naviguer">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="15 3 21 3 21 9"/>
         <polyline points="9 21 3 21 3 15"/>
         <line x1="21" y1="3" x2="14" y2="10"/>
         <line x1="3" y1="21" x2="10" y2="14"/>
       </svg>
-      <span>Réduire</span>
+      <span class="rm-btn__label">Réduire</span>
     </button>
 
   </div>
 </div>
 
-<!-- ══ LOADING (par-dessus le container Jitsi) ═══════════════ -->
-<div class="room-loading" *ngIf="isConnecting">
-  <div class="loading-cross">✝</div>
-  <div class="loading-name">CMCIEA France</div>
-  <div class="loading-spinner"></div>
-  <p class="loading-text">Connexion à la réunion...</p>
-  <span class="loading-meeting">{{ jitsiData?.meeting?.title }}</span>
+<!-- ══ ÉCRAN DE CHARGEMENT ═══════════════════════════════════ -->
+<div class="rm-loading" *ngIf="isConnecting">
+  <div class="rm-loading__inner">
+    <div class="rm-loading__cross">✝</div>
+    <p class="rm-loading__org">CMCIEA France</p>
+    <div class="rm-loading__spinner"></div>
+    <p class="rm-loading__label">Connexion en cours...</p>
+    <p class="rm-loading__meeting">{{ jitsiData?.meeting?.title }}</p>
+  </div>
 </div>
 
-<!-- ══ PANNEAU ADMIN ════════════════════════════════════════ -->
+<!-- ══ PANNEAU MODÉRATEUR (slide depuis la droite) ══════════ -->
 <app-admin-controls
   *ngIf="showAdminPanel && isAdmin && jitsiData"
   [meetingId]="jitsiData.meeting.id"

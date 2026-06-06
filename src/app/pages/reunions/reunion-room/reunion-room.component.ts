@@ -1,16 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { interval, Subscription } from 'rxjs';
+import { firstValueFrom, interval, Subscription } from 'rxjs';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 import { MeetingService } from '../../../core/services/meeting.service';
 import { ReunionsService, JoinResult } from '../../../core/services/reunions.service';
 import { AdminControlsComponent } from '../admin-controls/admin-controls.component';
-import { MeetingOverlayComponent } from '../../../shared/meeting-overlay/meeting-overlay.component';
- 
+
 declare const JitsiMeetExternalAPI: any;
 type ConnectionQuality = 'high' | 'medium' | 'low' | 'critical';
- 
+
 @Component({
   selector: 'app-reunion-room',
   standalone: true,
@@ -23,10 +22,11 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
   isAdmin = false;
   showAdminPanel = false;
   quality: ConnectionQuality = 'high';
- 
+  participantCount = 1;
+
   private heartbeat$: Subscription | null = null;
   private qualityMonitor$: Subscription | null = null;
- 
+
   constructor(
     public meeting: MeetingService,
     private reunionsService: ReunionsService,
@@ -34,37 +34,34 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     private router: Router,
     private zone: NgZone,
   ) {}
- 
+
   ngOnInit() {
     const state = history.state;
     this.jitsiData = state?.jitsiData ?? null;
- 
+
     if (!this.jitsiData) {
       this.router.navigate(['/reunions']);
       return;
     }
- 
+
     this.isAdmin = this.jitsiData.isModerator || this.memberAuth.isAdmin();
- 
-    // Si réunion déjà active (retour depuis floating), ne pas relancer
+
     if (!this.meeting.isActive) {
       this.meeting.startMeeting(this.jitsiData.meeting.title);
       this.detectNetworkQuality();
       this.loadJitsiScript();
     } else {
-      // Retour à la réunion depuis le mode flottant
       this.meeting.setFloating(false);
     }
   }
- 
+
   ngOnDestroy() {
-    // NE PAS détruire la réunion si on passe en mode flottant
     if (!this.meeting.isFloating) {
       this.heartbeat$?.unsubscribe();
       this.qualityMonitor$?.unsubscribe();
     }
   }
- 
+
   private loadJitsiScript() {
     if (typeof JitsiMeetExternalAPI !== 'undefined') {
       this.initJitsi();
@@ -76,23 +73,18 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     script.onload  = () => this.zone.run(() => this.initJitsi());
     script.onerror = () => this.zone.run(() => {
       this.meeting['_isConnecting'].next(false);
-      console.error('Impossible de charger le script Jitsi');
     });
     document.head.appendChild(script);
   }
- 
+
   private initJitsi() {
     if (!this.jitsiData) return;
     const member = this.memberAuth.member;
     const domain = this.jitsiData.jitsiUrl.replace(/https?:\/\//, '');
- 
-    // Le container Jitsi est dans MeetingOverlayComponent (AppComponent)
+
     const container = document.getElementById('jitsi-persistent-container');
-    if (!container) {
-      console.error('[CMCIEA] Container Jitsi introuvable');
-      return;
-    }
- 
+    if (!container) return;
+
     const api = new JitsiMeetExternalAPI(domain, {
       roomName: this.jitsiData.roomId,
       jwt: this.jitsiData.jitsiToken,
@@ -104,15 +96,15 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
         TOOLBAR_BUTTONS: [
           'microphone', 'camera', 'desktop', 'chat',
           'tileview', 'filmstrip', 'fullscreen', 'hangup',
-          'videoquality', 'closedcaptions', 'raisehand',
-          ...(this.isAdmin ? ['mute-everyone','recording','livestreaming','end-meeting'] : []),
+          'videoquality', 'raisehand',
+          ...(this.isAdmin ? ['mute-everyone', 'end-meeting'] : []),
         ],
         SHOW_JITSI_WATERMARK: false,
         SHOW_BRAND_WATERMARK: false,
         SHOW_POWERED_BY: false,
         HIDE_INVITE_MORE_HEADER: true,
         RECENT_LIST_ENABLED: false,
-        DEFAULT_BACKGROUND: '#0d1b2a',
+        DEFAULT_BACKGROUND: '#202124',
         APP_NAME: 'CMCIEA France',
         NATIVE_APP_NAME: 'CMCIEA France',
         DEFAULT_REMOTE_DISPLAY_NAME: 'Participant',
@@ -122,8 +114,8 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
         email: member?.email ?? '',
       },
     });
- 
-    // Fallback spinner
+
+    // Fallback spinner après 8s
     setTimeout(() => {
       this.zone.run(() => {
         if (!this.meeting.jitsiApi) {
@@ -132,35 +124,46 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
         }
       });
     }, 8000);
- 
+
     api.addListener('videoConferenceJoined', () => {
       this.zone.run(() => {
         this.meeting.onJoined(api);
         this.startHeartbeat();
+        // Récupère le nombre de participants réels à la connexion
+        try {
+          this.participantCount = api.getNumberOfParticipants?.() ?? 1;
+        } catch { this.participantCount = 1; }
       });
     });
- 
+
     api.addListener('participantJoined', () => {
       this.zone.run(() => {
+        this.participantCount++;
         if (!this.meeting.jitsiApi) {
           this.meeting.onJoined(api);
           this.startHeartbeat();
         }
       });
     });
- 
+
+    api.addListener('participantLeft', () => {
+      this.zone.run(() => {
+        this.participantCount = Math.max(1, this.participantCount - 1);
+      });
+    });
+
     api.addListener('videoConferenceLeft', () => {
       this.zone.run(() => {
         this.stopHeartbeat();
         this.meeting.endMeeting();
       });
     });
- 
+
     api.addListener('connectionFailed', () => {
       this.zone.run(() => this.handleDisconnect());
     });
   }
- 
+
   private getJitsiConfig() {
     const base = {
       defaultLanguage: 'fr',
@@ -169,6 +172,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       disableDeepLinking: true,
       startWithAudioMuted: false,
       subject: this.jitsiData?.meeting?.title ?? '',
+      theme: 'dark',
     };
     switch (this.quality) {
       case 'high':   return { ...base, startWithVideoMuted: false, resolution: 720 };
@@ -177,22 +181,22 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       default:       return { ...base, startWithVideoMuted: true };
     }
   }
- 
+
   // ── Actions topbar ──────────────────────────────────────────
   toggleFloat() {
     this.meeting.setFloating(true);
-    this.router.navigate(['/']); // naviguer vers accueil en mode flottant
+    this.router.navigate(['/']);
   }
- 
+
   toggleAdminPanel() { this.showAdminPanel = !this.showAdminPanel; }
- 
+
   get isConnecting()  { return this.meeting['_isConnecting'].value; }
   get elapsedTime()   { return this.meeting['_timer'].value; }
   get qualityLabel()  {
-    const map: Record<string,string> = { high:'Excellente', medium:'Correcte', low:'Faible', critical:'Déconnecté' };
+    const map: Record<string, string> = { high: 'Excellente', medium: 'Correcte', low: 'Faible', critical: 'Déconnecté' };
     return map[this.quality] ?? '';
   }
- 
+
   // ── Heartbeat ───────────────────────────────────────────────
   private startHeartbeat() {
     if (!this.jitsiData) return;
@@ -201,34 +205,34 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       this.reunionsService.heartbeat(id).subscribe()
     );
   }
- 
+
   private stopHeartbeat() { this.heartbeat$?.unsubscribe(); }
- 
+
   // ── Reconnexion ─────────────────────────────────────────────
   private async handleDisconnect() {
     if (!this.jitsiData) return;
     for (let i = 0; i < 3; i++) {
       await new Promise(r => setTimeout(r, 5000));
       try {
-        const res = await this.reunionsService.reconnect(
+        const res = await firstValueFrom(this.reunionsService.reconnect(
           this.jitsiData.meeting.id,
           this.jitsiData.reconnectToken,
-        ).toPromise();
+        ));
         if (res?.restored) { this.loadJitsiScript(); return; }
       } catch { /* continue */ }
     }
   }
- 
+
   // ── Qualité réseau ──────────────────────────────────────────
   private detectNetworkQuality() {
     const conn = (navigator as any).connection;
     if (!conn) return;
     const check = () => {
       const { downlink, effectiveType, rtt } = conn;
-      if (downlink > 2 && rtt < 200)              this.quality = 'high';
+      if (downlink > 2 && rtt < 200)                   this.quality = 'high';
       else if (downlink > 0.5 || effectiveType === '3g') this.quality = 'medium';
       else if (downlink > 0.1 || effectiveType === '2g') this.quality = 'low';
-      else                                         this.quality = 'critical';
+      else                                               this.quality = 'critical';
       this.meeting.setQuality(this.quality);
     };
     check();
