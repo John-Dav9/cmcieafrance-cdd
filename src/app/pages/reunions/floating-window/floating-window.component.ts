@@ -54,6 +54,26 @@ export class FloatingWindowComponent implements OnInit {
   @HostListener('document:mouseup')
   onMouseUp() { this.dragging = false; }
 
+  onTouchStart(e: TouchEvent) {
+    const t = e.touches[0];
+    this.dragging = true;
+    this.startX = t.clientX;
+    this.startY = t.clientY;
+    this.startPosX = this.posX;
+    this.startPosY = this.posY;
+  }
+
+  @HostListener('document:touchmove', ['$event'])
+  onTouchMove(e: TouchEvent) {
+    if (!this.dragging) return;
+    const t = e.touches[0];
+    this.posX = Math.max(0, Math.min(window.innerWidth - 200, this.startPosX + (t.clientX - this.startX)));
+    this.posY = Math.max(0, Math.min(window.innerHeight - 120, this.startPosY + (t.clientY - this.startY)));
+  }
+
+  @HostListener('document:touchend')
+  onTouchEnd() { this.dragging = false; }
+
   clickToggleMic() {
     this.micOn = !this.micOn;
     this._jitsiApi?.executeCommand('toggleAudio');

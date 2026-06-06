@@ -3,22 +3,35 @@
   [style.top.px]="posY"
   [class.dragging]="dragging">
 
-  <div class="float-header" (mousedown)="onMouseDown($event)">
-    <div class="float-header__left">
-      <span [class]="qualityDotClass" [title]="quality"></span>
-      <span class="float-title">{{ title }}</span>
-    </div>
-    <button class="float-expand" (click)="expand.emit()" title="Agrandir">⬆</button>
+  <!-- Header draggable -->
+  <div class="float-header" (mousedown)="onMouseDown($event)" (touchstart)="onTouchStart($event)">
+    <span [class]="qualityDotClass"></span>
+    <span class="float-title">{{ title }}</span>
   </div>
 
+  <!-- Bouton Agrandir bien visible -->
+  <button class="float-expand-btn" (click)="expand.emit()" title="Agrandir — revenir à la salle">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="15 3 21 3 21 9"/>
+      <polyline points="9 21 3 21 3 15"/>
+      <line x1="21" y1="3" x2="14" y2="10"/>
+      <line x1="3" y1="21" x2="10" y2="14"/>
+    </svg>
+    Agrandir
+  </button>
+
+  <!-- Contrôles -->
   <div class="float-controls">
     <button class="float-btn" [class.float-btn--off]="!micOn" (click)="clickToggleMic()" title="Micro">
-      {{ micOn ? '🎤' : '🔇' }}
+      <span>{{ micOn ? '🎤' : '🔇' }}</span>
     </button>
     <button class="float-btn" [class.float-btn--off]="!camOn" (click)="clickToggleCam()" title="Caméra">
-      {{ camOn ? '📷' : '📵' }}
+      <span>{{ camOn ? '📷' : '📵' }}</span>
     </button>
-    <button class="float-btn float-btn--leave" (click)="leave.emit()" title="Quitter">✕</button>
+    <button class="float-btn float-btn--leave" (click)="leave.emit()" title="Quitter la réunion">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5a2 2 0 00-2 2v4h2V5h14v14H5v-4H3v4a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>
+      Quitter
+    </button>
   </div>
 
 </div>

@@ -1,101 +1,113 @@
 .float-window {
   position: fixed;
-  width: 200px;
-  background: #1a1a2e;
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  width: 220px;
+  background: #1e2028;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
   z-index: 9999;
   user-select: none;
-  border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Inter', 'DM Sans', 'Segoe UI', sans-serif;
+  overflow: hidden;
 
-  &.dragging { cursor: grabbing; opacity: 0.9; }
+  &.dragging { cursor: grabbing; opacity: 0.92; }
 }
 
+// ── Header (drag zone) ────────────────────────────────────────
 .float-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px 8px;
+  gap: 7px;
+  padding: 10px 14px 6px;
   cursor: grab;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.float-header__left {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
 }
 
 .float-title {
-  color: white;
+  color: rgba(255,255,255,0.85);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  flex: 1;
 }
 
-// Indicateur qualité réseau
+// ── Bouton Agrandir (priorité visuelle maximale) ──────────────
+.float-expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: calc(100% - 20px);
+  margin: 0 10px 8px;
+  padding: 9px 0;
+  background: #E8A838;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.2px;
+
+  &:hover  { background: #f0b84a; }
+  &:active { transform: scale(0.97); }
+
+  svg { flex-shrink: 0; }
+}
+
+// ── Contrôles micro/cam/quitter ───────────────────────────────
+.float-controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px 12px;
+  gap: 6px;
+}
+
+.float-btn {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.8);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(255,255,255,0.15); }
+
+  &--off {
+    background: rgba(234,67,53,0.2);
+    border-color: rgba(234,67,53,0.35);
+    color: #f28b82;
+  }
+
+  &--leave {
+    background: rgba(234,67,53,0.15);
+    border-color: rgba(234,67,53,0.3);
+    color: #f28b82;
+    &:hover { background: rgba(234,67,53,0.35); }
+  }
+}
+
+// ── Indicateur qualité réseau ─────────────────────────────────
 .quality-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 
-  &--high     { background: #34a853; box-shadow: 0 0 5px rgba(#34a853, 0.7); }
-  &--medium   { background: #fbbc04; box-shadow: 0 0 5px rgba(#fbbc04, 0.6); }
-  &--low      { background: #ea4335; box-shadow: 0 0 5px rgba(#ea4335, 0.6); animation: blink 1.2s ease-in-out infinite; }
+  &--high     { background: #34a853; box-shadow: 0 0 6px rgba(#34a853,0.8); }
+  &--medium   { background: #fbbc04; box-shadow: 0 0 6px rgba(#fbbc04,0.7); }
+  &--low      { background: #ea4335; animation: blink 1.2s ease-in-out infinite; }
   &--critical { background: #5f6368; }
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.25; }
-}
-
-.float-expand {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: white;
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 12px;
-  cursor: pointer;
-  flex-shrink: 0;
-  &:hover { background: rgba(255,255,255,0.2); }
-}
-
-.float-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
-}
-
-.float-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,0.12);
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-
-  &:hover { background: rgba(255,255,255,0.25); }
-
-  &--off { background: rgba(239, 68, 68, 0.3); }
-
-  &--leave {
-    background: rgba(239, 68, 68, 0.5);
-    color: white;
-    font-size: 16px;
-    font-weight: 700;
-    &:hover { background: rgba(239, 68, 68, 0.8); }
-  }
+  50%       { opacity: 0.2; }
 }
