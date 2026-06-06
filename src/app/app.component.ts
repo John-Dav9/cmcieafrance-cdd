@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 // Composants existants
 import { CulteModalComponent } from './shared/culte-modal/culte-modal.component';
 import { ChatWidgetComponent } from './shared/chat-widget/chat-widget.component';
+import { NavbarComponent } from './core/components/navbar/navbar.component';
  
 // NOUVEAU
 import { MeetingService } from './core/services/meeting.service';
@@ -19,6 +20,7 @@ import { MeetingService } from './core/services/meeting.service';
     RouterLink,
     CulteModalComponent,
     ChatWidgetComponent,
+    NavbarComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

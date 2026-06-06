@@ -11,7 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { CulteModalComponent } from './shared/culte-modal/culte-modal.component';
 import { ChatWidgetComponent } from './shared/chat-widget/chat-widget.component';
 
-import { NavbarComponent } from './core/components/navbar/navbar.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AboutComponent } from './pages/about/about.component';
 import { ChurchLifeComponent } from './pages/church-life/church-life.component';
@@ -22,8 +21,6 @@ import { RessourcesDecouvrirComponent } from './pages/ressources-decouvrir/resso
 
 @NgModule({
   declarations: [
-    AppComponent,
-    NavbarComponent,
     HomeComponent,
     AboutComponent,
     ChurchLifeComponent,
@@ -50,6 +47,6 @@ import { RessourcesDecouvrirComponent } from './pages/ressources-decouvrir/resso
       multi: true,
     },
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [],
 })
 export class AppModule {}
