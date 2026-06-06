@@ -43,7 +43,9 @@ export class AppComponent implements OnInit {
 
   onFloatExpand() {
     const data = this.meetingService.currentMeetingData;
-    this.router.navigate(['/reunion-room'], { state: { jitsiData: data } });
+    if (!data) return;
+    this.meetingService.setFloating(false);
+    this.router.navigate(['/reunions', data.meeting.id, 'salle'], { state: { jitsiData: data } });
   }
 
   onFloatLeave() {
