@@ -105,6 +105,22 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
+   MASQUE LOGO JITSI
+   Div dédié positionné au-dessus de l'iframe pour cacher le logo
+═══════════════════════════════════════════════════════════ */
+
+.jitsi-logo-mask {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: 120px;
+  height: 52px;
+  background: #202124;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
    CONTAINER JITSI PERSISTANT
    Ne jamais supprimer ce bloc — l'iframe de réunion y vit
 ═══════════════════════════════════════════════════════════ */
@@ -130,18 +146,6 @@
       display: block;
     }
 
-    /* Cache le logo Jitsi dans le coin supérieur gauche */
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 90px;
-      height: 44px;
-      background: #0d1b2a;
-      z-index: 5;
-      pointer-events: none;
-    }
   }
 
   /* Mini-lecteur flottant (mode réduit) */

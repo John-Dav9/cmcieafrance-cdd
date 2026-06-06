@@ -15,8 +15,10 @@
      [class.jitsi-pip-active]="meetingFloating$ | async">
 </div>
 
-<!-- ══ MINI-LECTEUR FLOTTANT + TOPBAR ══════════════════════ -->
-<!-- <app-meeting-overlay></app-meeting-overlay> -->
+<!-- ══ MASQUE LOGO JITSI ═══════════════════════════════════ -->
+<div class="jitsi-logo-mask"
+     *ngIf="(meetingActive$ | async) && !(meetingFloating$ | async)">
+</div>
 
 <footer class="footer" *ngIf="!(meetingActive$ | async) || (meetingFloating$ | async)">
   <div class="footer-inner">
