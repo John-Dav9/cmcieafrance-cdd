@@ -6,7 +6,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { ThemeService } from './core/services/theme.service';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
-import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CulteModalComponent } from './shared/culte-modal/culte-modal.component';
 import { ChatWidgetComponent } from './shared/chat-widget/chat-widget.component';
