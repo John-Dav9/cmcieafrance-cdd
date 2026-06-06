@@ -85,6 +85,11 @@ export const ADMIN_ROUTES: Routes = [
           import('./pages/newsletter/newsletter.component').then((m) => m.AdminNewsletterComponent),
       },
       {
+        path: 'messages',
+        loadComponent: () =>
+          import('./pages/messages/messages.component').then((m) => m.AdminMessagesComponent),
+      },
+      {
         path: 'reunions',
         loadComponent: () =>
           import('./pages/reunions/reunions-admin.component').then((m) => m.ReunionsAdminComponent),

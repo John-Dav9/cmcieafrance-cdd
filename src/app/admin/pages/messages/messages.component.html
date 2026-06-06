@@ -1,0 +1,77 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Messages / Prédications</h2>
+  </div>
+
+  <div class="form-card">
+    <h3>{{ editId ? 'Modifier le message' : 'Nouveau message' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="two-cols">
+        <div class="field">
+          <label>Titre *</label>
+          <input type="text" formControlName="title" placeholder="Espérer en Dieu en toute saison" />
+        </div>
+        <div class="field">
+          <label>Prédicateur *</label>
+          <input type="text" formControlName="speaker" placeholder="Pasteur Fernand" />
+        </div>
+      </div>
+      <div class="two-cols">
+        <div class="field">
+          <label>Date *</label>
+          <input type="date" formControlName="date" />
+        </div>
+        <div class="field">
+          <label>ID vidéo YouTube *</label>
+          <input type="text" formControlName="videoId" placeholder="dQw4w9WgXcQ" />
+        </div>
+      </div>
+      <div class="field" style="justify-content:flex-end">
+        <label class="check-label">
+          <input type="checkbox" formControlName="publie" />
+          Publier immédiatement
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || saving">
+          {{ saving ? 'Enregistrement...' : (editId ? 'Mettre à jour' : 'Créer') }}
+        </button>
+        <button type="button" class="btn-secondary" *ngIf="editId" (click)="cancelEdit()">Annuler</button>
+      </div>
+      <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && messages.length === 0" class="empty">Aucun message.</div>
+
+  <div *ngIf="!loading && messages.length > 0" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Prédicateur</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of messages">
+          <td><strong>{{ m.title }}</strong></td>
+          <td>{{ m.speaker }}</td>
+          <td>{{ m.date | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button class="toggle-btn" [class.publie]="m.publie" (click)="togglePublie(m)">
+              {{ m.publie ? 'Publié' : 'Brouillon' }}
+            </button>
+          </td>
+          <td class="actions">
+            <button class="btn-edit" (click)="edit(m)">✎</button>
+            <button class="btn-del" (click)="delete(m.id)">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

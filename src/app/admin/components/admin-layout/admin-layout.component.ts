@@ -28,6 +28,7 @@ export class AdminLayoutComponent {
     { label: 'Modèles d\'emails',  icon: '✉️', route: '/espace-admin/email-templates' },
     { label: 'Demandes de prière', icon: '🙏', route: '/espace-admin/prieres' },
     { label: 'Newsletter',         icon: '📧', route: '/espace-admin/newsletter' },
+    { label: 'Messages / Prédications', icon: '🎙️', route: '/espace-admin/messages' },
     { label: 'Réunions en ligne',   icon: '📹', route: '/espace-admin/reunions' },
     { label: 'Thème & couleurs',   icon: '🎨', route: '/espace-admin/theme' },
     { label: 'Pages & contenu',    icon: '✏️', route: '/espace-admin/pages' },

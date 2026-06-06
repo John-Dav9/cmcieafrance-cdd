@@ -6,11 +6,12 @@ import { environment } from '../../../environments/environment';
 const API_BASE = environment.apiBase;
 
 export interface Message {
-  id: number;
+  id: string;
   title: string;
   speaker: string;
   date: string;
   videoId: string;
+  publie: boolean;
 }
 
 @Injectable({ providedIn: 'root' })

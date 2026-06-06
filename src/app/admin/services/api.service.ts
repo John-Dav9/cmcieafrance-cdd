@@ -144,6 +144,23 @@ export class ApiService {
     return this.withAuth((h) => this.http.delete(`${this.base}/prieres/${id}`, { headers: h }));
   }
 
+  // Messages
+  getMessagesAdmin() {
+    return this.withAuth((h) => this.http.get(`${this.base}/messages/admin/all`, { headers: h }));
+  }
+
+  createMessage(data: any) {
+    return this.withAuth((h) => this.http.post(`${this.base}/messages`, data, { headers: h }));
+  }
+
+  updateMessage(id: string, data: any) {
+    return this.withAuth((h) => this.http.patch(`${this.base}/messages/${id}`, data, { headers: h }));
+  }
+
+  deleteMessage(id: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/messages/${id}`, { headers: h }));
+  }
+
   // Newsletter
   getNewsletterSubscribers() {
     return this.withAuth((h) => this.http.get(`${this.base}/newsletter/subscribers`, { headers: h }));
