@@ -67,6 +67,34 @@
   <!-- ══ Dashboard (après identification) ═══════════════════════════════════ -->
   <div class="dash-body" *ngIf="identified && dashboard">
 
+    <section class="dash-section mentorship-section">
+      <div class="mentorship-intro">
+        <span>Accompagnement</span>
+        <h2>Demander un mentor</h2>
+        <p>Expliquez brièvement le domaine dans lequel vous souhaitez être accompagné. L’équipe vous mettra en relation avec un mentor.</p>
+      </div>
+      <div class="mentorship-form">
+        <input [(ngModel)]="mentorshipTopic" maxlength="160" placeholder="Sujet: foi, famille, études, service…">
+        <textarea [(ngModel)]="mentorshipMessage" maxlength="3000" rows="4" placeholder="Votre besoin et vos disponibilités"></textarea>
+        <button [disabled]="mentorshipLoading || !mentorshipTopic.trim() || !mentorshipMessage.trim()"
+                (click)="submitMentorship()">
+          {{ mentorshipLoading ? 'Envoi…' : 'Envoyer la demande' }}
+        </button>
+        <small *ngIf="mentorshipNotice">{{ mentorshipNotice }}</small>
+      </div>
+      <div class="mentorship-history" *ngIf="mentorshipRequests.length">
+        <article *ngFor="let request of mentorshipRequests">
+          <div>
+            <strong>{{ request.topic }}</strong>
+            <span>{{ request.mentor ? 'Mentor: ' + request.mentor.firstName + ' ' + request.mentor.lastName : 'En attente d’affectation' }}</span>
+          </div>
+          <em [class.assigned]="request.status === 'assigned'" [class.closed]="request.status === 'closed'">
+            {{ request.status === 'pending' ? 'En attente' : (request.status === 'assigned' ? 'Assigné' : 'Clôturé') }}
+          </em>
+        </article>
+      </div>
+    </section>
+
     <!-- ── Stats globales ──────────────────────────────────────────────────── -->
     <section class="dash-section">
       <div class="stats-grid">

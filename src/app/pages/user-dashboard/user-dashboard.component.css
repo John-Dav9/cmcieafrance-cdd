@@ -346,3 +346,31 @@
 @media (max-width: 640px) {
   .push-card { align-items: stretch; flex-direction: column; }
 }
+.mentorship-section {
+  display: grid; grid-template-columns: .8fr 1.2fr; gap: 28px;
+  padding: 26px; border: 1px solid #e4e8ed; border-radius: 18px; background: #fff;
+}
+.mentorship-intro > span { color: #b57918; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
+.mentorship-intro h2 { margin: 7px 0; color: #163e50; }
+.mentorship-intro p { color: #66717d; line-height: 1.6; }
+.mentorship-form { display: flex; flex-direction: column; gap: 9px; }
+.mentorship-form input, .mentorship-form textarea {
+  padding: 11px 12px; border: 1px solid #d9dfe5; border-radius: 9px; font: inherit;
+}
+.mentorship-form button {
+  align-self: flex-start; padding: 10px 15px; border: 0; border-radius: 9px;
+  color: #fff; background: #1d546c; font-weight: 700; cursor: pointer;
+}
+.mentorship-history { grid-column: 1 / -1; display: grid; gap: 8px; }
+.mentorship-history article {
+  display: flex; justify-content: space-between; gap: 16px; padding: 12px;
+  border-radius: 10px; background: #f5f7f9;
+}
+.mentorship-history article div { display: flex; flex-direction: column; gap: 3px; }
+.mentorship-history article span { color: #727c87; font-size: 12px; }
+.mentorship-history em { color: #9a6a19; font-size: 12px; font-style: normal; }
+.mentorship-history em.assigned { color: #14733b; }
+.mentorship-history em.closed { color: #68717a; }
+@media (max-width: 760px) {
+  .mentorship-section { grid-template-columns: 1fr; }
+}

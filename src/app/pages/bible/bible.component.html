@@ -14,6 +14,43 @@
     </button>
   </div>
 
+  <section class="quiz-launch" *ngIf="quiz.length === 0">
+    <div>
+      <span>Apprendre en jouant</span>
+      <h2>Quiz biblique</h2>
+      <p>Testez votre connaissance des références et des versets en cinq questions.</p>
+    </div>
+    <button type="button" (click)="startQuiz()">Commencer le quiz</button>
+  </section>
+
+  <section class="quiz-card" *ngIf="quiz.length && !quizFinished">
+    <div class="quiz-head">
+      <span>Question {{ quizIndex + 1 }} / {{ quiz.length }}</span>
+      <strong>{{ quizScore }} point{{ quizScore > 1 ? 's' : '' }}</strong>
+    </div>
+    <h2>{{ quiz[quizIndex].question }}</h2>
+    <blockquote>“{{ quiz[quizIndex].excerpt }}”</blockquote>
+    <div class="quiz-options">
+      <button *ngFor="let option of quiz[quizIndex].options; let i = index"
+              [class.correct]="quizAnswer !== null && i === quiz[quizIndex].answerIndex"
+              [class.wrong]="quizAnswer === i && i !== quiz[quizIndex].answerIndex"
+              [disabled]="quizAnswer !== null" (click)="answerQuiz(i)">
+        {{ option }}
+      </button>
+    </div>
+    <button class="quiz-next" *ngIf="quizAnswer !== null" (click)="nextQuizQuestion()">
+      {{ quizIndex + 1 === quiz.length ? 'Voir mon résultat' : 'Question suivante' }}
+    </button>
+  </section>
+
+  <section class="quiz-card quiz-result" *ngIf="quizFinished">
+    <span>Quiz terminé</span>
+    <h2>{{ quizScore }} / {{ quiz.length }}</h2>
+    <p>{{ quizScore >= 4 ? 'Excellent résultat.' : 'Continuez à explorer les versets proposés ci-dessous.' }}</p>
+    <button class="quiz-next" (click)="startQuiz()">Recommencer</button>
+    <button class="quiz-close" (click)="closeQuiz()">Fermer</button>
+  </section>
+
   <!-- Résultats de recherche -->
   <div class="results-section" *ngIf="results.length">
     <h2>Résultats ({{ results.length }})</h2>

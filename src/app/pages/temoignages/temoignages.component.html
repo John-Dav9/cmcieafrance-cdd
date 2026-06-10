@@ -5,15 +5,15 @@
       <p>Des vies transformées par la grâce de Dieu. Partagez votre témoignage et encouragez la communauté.</p>
     </div>
 
-    <!-- Liste des témoignages -->
+    <!-- Liste des témoignages approuvés -->
     <div class="loading" *ngIf="loading">Chargement...</div>
 
     <div class="temoignages-grid" *ngIf="!loading && temoignages.length > 0">
       <div class="temoignage-card" *ngFor="let t of temoignages">
-        <h3>{{ t.sujet }}</h3>
-        <p class="temoignage-message">{{ t.message }}</p>
+        <p class="temoignage-contenu">{{ t.contenu }}</p>
         <div class="temoignage-footer">
-          <span class="auteur">— {{ t.anonyme ? 'Anonyme' : (t.prenom || 'Un membre') }}</span>
+          <span class="auteur">— {{ t.nom || 'Anonyme' }}</span>
+          <span class="ville" *ngIf="t.ville">· {{ t.ville }}</span>
           <span class="date">{{ t.createdAt | date:'dd/MM/yyyy' }}</span>
         </div>
       </div>
@@ -29,19 +29,6 @@
       <p class="form-intro">Votre témoignage sera relu par notre équipe avant publication.</p>
 
       <form class="temoignage-form" (ngSubmit)="submit()">
-        <div class="field">
-          <label>Votre prénom (optionnel)</label>
-          <input type="text" [(ngModel)]="form.prenom" name="prenom" placeholder="Prénom..." />
-        </div>
-        <div class="field">
-          <label>Sujet *</label>
-          <input type="text" [(ngModel)]="form.sujet" name="sujet" placeholder="Guérison, délivrance, bénédiction..." required />
-        </div>
-        <div class="field">
-          <label>Votre témoignage *</label>
-          <textarea [(ngModel)]="form.message" name="message" rows="6"
-            placeholder="Partagez comment Dieu a travaillé dans votre vie..." required></textarea>
-        </div>
         <div class="field check-field">
           <label>
             <input type="checkbox" [(ngModel)]="form.anonyme" name="anonyme" />
@@ -49,10 +36,28 @@
           </label>
         </div>
 
+        <div class="field" *ngIf="!form.anonyme">
+          <label>Votre nom (optionnel)</label>
+          <input type="text" [(ngModel)]="form.nom" name="nom" placeholder="Prénom et nom..." maxlength="100" />
+        </div>
+
+        <div class="field">
+          <label>Ville (optionnel)</label>
+          <input type="text" [(ngModel)]="form.ville" name="ville" placeholder="Paris, Lyon, Yaoundé..." maxlength="100" />
+        </div>
+
+        <div class="field">
+          <label>Votre témoignage *</label>
+          <textarea [(ngModel)]="form.contenu" name="contenu" rows="7"
+            placeholder="Partagez comment Dieu a travaillé dans votre vie — guérison, délivrance, bénédiction, conversion..."
+            required maxlength="5000"></textarea>
+          <span class="char-count">{{ form.contenu.length }} / 5000</span>
+        </div>
+
         <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
         <p class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</p>
 
-        <button type="submit" class="btn-submit" [disabled]="sending || !form.sujet || !form.message">
+        <button type="submit" class="btn-submit" [disabled]="sending || !form.contenu">
           {{ sending ? 'Envoi en cours...' : 'Envoyer mon témoignage' }}
         </button>
       </form>

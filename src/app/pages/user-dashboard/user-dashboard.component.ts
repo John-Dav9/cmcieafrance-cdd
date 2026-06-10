@@ -38,6 +38,11 @@ export class UserDashboardComponent implements OnInit {
   pushSubscribed = false;
   pushLoading = false;
   pushMessage = '';
+  mentorshipTopic = '';
+  mentorshipMessage = '';
+  mentorshipRequests: any[] = [];
+  mentorshipLoading = false;
+  mentorshipNotice = '';
 
   readonly scopeLabels = SCOPE_LABELS;
 
@@ -142,11 +147,40 @@ export class UserDashboardComponent implements OnInit {
         this.dashboard  = data;
         this.identified = true;
         this.loading    = false;
+        this.loadMentorship();
       },
       error: (err) => {
         this.loading    = false;
         this.emailError = err?.error?.message ?? 'Aucun compte trouv\u00e9 pour cet email.';
       },
+    });
+  }
+
+  submitMentorship(): void {
+    if (!this.mentorshipTopic.trim() || !this.mentorshipMessage.trim()) return;
+    this.mentorshipLoading = true;
+    this.mentorshipNotice = '';
+    this.http.post(`${this.base}/mentorship`, {
+      topic: this.mentorshipTopic,
+      message: this.mentorshipMessage,
+    }).subscribe({
+      next: () => {
+        this.mentorshipTopic = '';
+        this.mentorshipMessage = '';
+        this.mentorshipLoading = false;
+        this.mentorshipNotice = 'Votre demande a été transmise.';
+        this.loadMentorship();
+      },
+      error: () => {
+        this.mentorshipLoading = false;
+        this.mentorshipNotice = 'Impossible d’envoyer la demande.';
+      },
+    });
+  }
+
+  private loadMentorship(): void {
+    this.http.get<any[]>(`${this.base}/mentorship/mine`).subscribe({
+      next: requests => this.mentorshipRequests = requests,
     });
   }
 

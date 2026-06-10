@@ -18,8 +18,8 @@ export class TemoignagesComponent implements OnInit {
   temoignages: any[] = [];
   loading = true;
 
-  // Form
-  form = { prenom: '', sujet: '', message: '', anonyme: false };
+  // Form matches backend entity: nom, contenu, ville
+  form = { nom: '', contenu: '', ville: '', anonyme: false };
   sending = false;
   successMsg = '';
   errorMsg = '';
@@ -32,15 +32,22 @@ export class TemoignagesComponent implements OnInit {
   }
 
   submit() {
-    if (!this.form.sujet || !this.form.message) return;
+    if (!this.form.contenu) return;
     this.sending = true;
     this.successMsg = '';
     this.errorMsg = '';
-    this.http.post(`${this.base}/temoignages`, this.form).subscribe({
+
+    const payload = {
+      nom: this.form.anonyme ? 'Anonyme' : (this.form.nom || 'Anonyme'),
+      contenu: this.form.contenu,
+      ville: this.form.ville || undefined,
+    };
+
+    this.http.post(`${this.base}/temoignages`, payload).subscribe({
       next: () => {
         this.successMsg = 'Merci pour votre témoignage ! Il sera publié après modération.';
         this.sending = false;
-        this.form = { prenom: '', sujet: '', message: '', anonyme: false };
+        this.form = { nom: '', contenu: '', ville: '', anonyme: false };
       },
       error: (err: any) => {
         this.errorMsg = err?.error?.message ?? 'Une erreur est survenue. Réessayez dans quelques instants.';

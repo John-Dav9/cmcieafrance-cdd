@@ -124,6 +124,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/cell-groups/cell-groups.component').then((m) => m.CellGroupsAdminComponent),
       },
+      {
+        path: 'mentorship',
+        loadComponent: () =>
+          import('./pages/mentorship/mentorship.component').then((m) => m.MentorshipAdminComponent),
+      },
     ],
   },
 ];

@@ -34,6 +34,7 @@ export class AdminLayoutComponent {
     { label: 'Réunions en ligne',   icon: '📹', route: '/espace-admin/reunions' },
     { label: 'Replays / Sermons',   icon: '▶️', route: '/espace-admin/replays' },
     { label: 'Groupes de cellule',  icon: '🏘️', route: '/espace-admin/cell-groups' },
+    { label: 'Mentorat',             icon: '🤝', route: '/espace-admin/mentorship' },
     { label: 'Journal d\'audit',    icon: '📋', route: '/espace-admin/audit' },
     { label: 'Statistiques',        icon: '📊', route: '/espace-admin/stats' },
     { label: 'Thème & couleurs',   icon: '🎨', route: '/espace-admin/theme' },

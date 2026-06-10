@@ -5,6 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 
 interface BibleResult { reference: string; text: string; }
+interface QuizQuestion {
+  id: string;
+  question: string;
+  excerpt: string;
+  options: string[];
+  answerIndex: number;
+}
 
 @Component({
   selector: 'app-bible',
@@ -19,6 +26,11 @@ export class BibleComponent implements OnInit {
   classics: BibleResult[] = [];
   selected: BibleResult | null = null;
   loading = false;
+  quiz: QuizQuestion[] = [];
+  quizIndex = 0;
+  quizScore = 0;
+  quizAnswer: number | null = null;
+  quizFinished = false;
 
   constructor(private http: HttpClient) {}
 
@@ -39,4 +51,36 @@ export class BibleComponent implements OnInit {
 
   select(v: BibleResult) { this.selected = v; }
   clearSelected() { this.selected = null; }
+
+  startQuiz() {
+    this.http.get<QuizQuestion[]>(`${environment.apiBase}/bible/quiz?count=5`).subscribe({
+      next: questions => {
+        this.quiz = questions;
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizAnswer = null;
+        this.quizFinished = false;
+      },
+    });
+  }
+
+  answerQuiz(index: number) {
+    if (this.quizAnswer !== null) return;
+    this.quizAnswer = index;
+    if (index === this.quiz[this.quizIndex].answerIndex) this.quizScore++;
+  }
+
+  nextQuizQuestion() {
+    if (this.quizIndex + 1 >= this.quiz.length) {
+      this.quizFinished = true;
+      return;
+    }
+    this.quizIndex++;
+    this.quizAnswer = null;
+  }
+
+  closeQuiz() {
+    this.quiz = [];
+    this.quizFinished = false;
+  }
 }
