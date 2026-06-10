@@ -1,0 +1,98 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Bibliothèque de replay</h2>
+  </div>
+
+  <div class="form-card">
+    <h3>{{ editId ? 'Modifier le replay' : 'Ajouter un replay' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="two-cols">
+        <div class="field">
+          <label>Titre *</label>
+          <input type="text" formControlName="title" placeholder="Culte du dimanche 5 juin" />
+        </div>
+        <div class="field">
+          <label>Prédicateur</label>
+          <input type="text" formControlName="speakerName" placeholder="Pasteur Fernand" />
+        </div>
+      </div>
+      <div class="field">
+        <label>URL vidéo * (YouTube, Vimeo ou lien direct)</label>
+        <input type="url" formControlName="videoUrl" placeholder="https://youtube.com/watch?v=..." />
+      </div>
+      <div class="two-cols">
+        <div class="field">
+          <label>URL miniature</label>
+          <input type="url" formControlName="thumbnailUrl" placeholder="https://img.youtube.com/vi/..." />
+        </div>
+        <div class="field">
+          <label>Durée (secondes)</label>
+          <input type="number" formControlName="durationSeconds" placeholder="3600" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea formControlName="description" placeholder="Résumé du message..." style="min-height:80px"></textarea>
+      </div>
+      <div class="two-cols">
+        <div class="field">
+          <label>Tags (virgule séparés)</label>
+          <input type="text" formControlName="tags" placeholder="prière, foi, guérison" />
+        </div>
+        <div class="field" style="justify-content:flex-end">
+          <label class="check-label">
+            <input type="checkbox" formControlName="isPublic" />
+            Publier immédiatement
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || saving">
+          {{ saving ? 'Enregistrement...' : (editId ? 'Mettre à jour' : 'Ajouter') }}
+        </button>
+        <button type="button" class="btn-secondary" *ngIf="editId" (click)="cancelEdit()">Annuler</button>
+      </div>
+      <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  <div *ngIf="!loading && replays.length === 0" class="empty">Aucun replay.</div>
+
+  <div *ngIf="!loading && replays.length > 0" class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Prédicateur</th>
+          <th>Durée</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of replays">
+          <td>
+            <strong>{{ r.title }}</strong>
+            <div class="tags" *ngIf="r.tags?.length">
+              <span class="tag" *ngFor="let t of r.tags">{{ t }}</span>
+            </div>
+          </td>
+          <td>{{ r.speakerName || '—' }}</td>
+          <td>{{ formatDuration(r.durationSeconds) }}</td>
+          <td>
+            <button class="toggle-btn" [class.publie]="r.isPublic" (click)="togglePublic(r)">
+              {{ r.isPublic ? 'Publié' : 'Brouillon' }}
+            </button>
+          </td>
+          <td>{{ r.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="edit(r)">✎</button>
+            <button class="btn-del" (click)="delete(r.id)">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

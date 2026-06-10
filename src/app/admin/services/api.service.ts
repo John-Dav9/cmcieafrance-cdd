@@ -144,6 +144,32 @@ export class ApiService {
     return this.withAuth((h) => this.http.delete(`${this.base}/prieres/${id}`, { headers: h }));
   }
 
+  // Replays
+  getReplaysAdmin() {
+    return this.withAuth((h) => this.http.get<any[]>(`${this.base}/replays/admin/all`, { headers: h }));
+  }
+
+  createReplay(data: any) {
+    return this.withAuth((h) => this.http.post(`${this.base}/replays`, data, { headers: h }));
+  }
+
+  updateReplay(id: string, data: any) {
+    return this.withAuth((h) => this.http.patch(`${this.base}/replays/${id}`, data, { headers: h }));
+  }
+
+  toggleReplayPublic(id: string) {
+    return this.withAuth((h) => this.http.patch(`${this.base}/replays/${id}/toggle-public`, {}, { headers: h }));
+  }
+
+  deleteReplay(id: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/replays/${id}`, { headers: h }));
+  }
+
+  // Statistiques
+  getStatsOverview() {
+    return this.withAuth((h) => this.http.get<any>(`${this.base}/stats/overview`, { headers: h }));
+  }
+
   // Membres
   getMembres() {
     return this.withAuth((h) => this.http.get<any[]>(`${this.base}/membres`, { headers: h }));

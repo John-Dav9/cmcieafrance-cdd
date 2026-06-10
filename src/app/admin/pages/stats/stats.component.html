@@ -1,0 +1,92 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Statistiques</h2>
+    <button class="btn-secondary" (click)="load()">Actualiser</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Chargement...</div>
+
+  <div *ngIf="!loading && data">
+
+    <!-- Réunion en cours -->
+    <div class="live-banner" *ngIf="data.isLive">
+      <span class="live-dot"></span>
+      Réunion en cours : <strong>{{ data.liveMeetingTitle }}</strong>
+    </div>
+
+    <!-- Cartes totaux -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-value">{{ data.totals.members }}</div>
+        <div class="kpi-label">Membres actifs</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">{{ data.totals.meetings }}</div>
+        <div class="kpi-label">Réunions organisées</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">{{ data.totals.participations }}</div>
+        <div class="kpi-label">Participations totales</div>
+      </div>
+      <div class="kpi-card" *ngIf="data.totals.meetings > 0">
+        <div class="kpi-value">{{ (data.totals.participations / data.totals.meetings) | number:'1.0-1' }}</div>
+        <div class="kpi-label">Moyenne par réunion</div>
+      </div>
+    </div>
+
+    <!-- Graphique participations par réunion -->
+    <div class="chart-card" *ngIf="data.recentMeetings?.length">
+      <h3 class="chart-title">Participants par réunion (8 dernières semaines)</h3>
+      <div class="bar-chart">
+        <div class="bar-item" *ngFor="let m of data.recentMeetings">
+          <div class="bar-wrap">
+            <span class="bar-value">{{ m.participants }}</span>
+            <div class="bar" [style.height.%]="barHeight(m.participants)"
+                 [class.bar--live]="m.status === 'live'"
+                 [class.bar--ended]="m.status === 'ended'">
+            </div>
+          </div>
+          <div class="bar-label" [title]="m.title">{{ formatDate(m.date) }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+
+      <!-- Membres par source -->
+      <div class="chart-card" *ngIf="data.membersBySource?.length">
+        <h3 class="chart-title">Membres par source d'inscription</h3>
+        <div class="source-list">
+          <div class="source-item" *ngFor="let s of data.membersBySource">
+            <div class="source-header">
+              <span class="source-label">{{ sourceLabel(s.source) }}</span>
+              <span class="source-count">{{ s.count }}</span>
+            </div>
+            <div class="source-bar-bg">
+              <div class="source-bar"
+                   [style.width.%]="(s.count / data.totals.members) * 100"
+                   [style.background]="sourceColor(s.source)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Croissance membres par mois -->
+      <div class="chart-card" *ngIf="data.membersByMonth?.length">
+        <h3 class="chart-title">Nouveaux membres (6 derniers mois)</h3>
+        <div class="bar-chart bar-chart--small">
+          <div class="bar-item" *ngFor="let m of data.membersByMonth">
+            <div class="bar-wrap">
+              <span class="bar-value">{{ m.count }}</span>
+              <div class="bar bar--accent" [style.height.%]="(m.count / maxMonthCount) * 100"></div>
+            </div>
+            <div class="bar-label">{{ monthLabel(m.month) }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
