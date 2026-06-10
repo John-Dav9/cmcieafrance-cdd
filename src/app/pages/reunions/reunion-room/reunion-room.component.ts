@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom, interval, Subscription } from 'rxjs';
+import { AuthService } from '../../../core/services/auth.service';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 import { MeetingService } from '../../../core/services/meeting.service';
 import { MeetingSocketService } from '../../../core/services/meeting-socket.service';
@@ -33,6 +34,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     public meeting: MeetingService,
     private reunionsService: ReunionsService,
     private memberAuth: MemberAuthService,
+    private adminAuth: AuthService,
     private router: Router,
     private zone: NgZone,
     private socket: MeetingSocketService,
@@ -47,7 +49,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isAdmin = this.jitsiData.isModerator || this.memberAuth.isAdmin();
+    this.isAdmin = this.jitsiData.isModerator || this.memberAuth.isAdmin() || this.adminAuth.isAdmin();
 
     if (!this.meeting.isActive) {
       this.meeting.currentMeetingData = this.jitsiData;

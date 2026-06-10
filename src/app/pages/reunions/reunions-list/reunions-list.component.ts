@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
+import { AuthService } from '../../../core/services/auth.service';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 import { Meeting, ReunionsService } from '../../../core/services/reunions.service';
 import { JoinModalComponent } from '../join-modal/join-modal.component';
@@ -24,6 +25,7 @@ export class ReunionsListComponent implements OnInit, OnDestroy {
   constructor(
     private reunionsService: ReunionsService,
     private memberAuth: MemberAuthService,
+    private adminAuth: AuthService,
     private router: Router,
   ) {}
 
@@ -43,7 +45,7 @@ export class ReunionsListComponent implements OnInit, OnDestroy {
 
   joinMeeting(meetingId: string) {
     this.selectedMeetingId = meetingId;
-    if (this.memberAuth.isLoggedIn()) {
+    if (this.adminAuth.isLoggedIn() || this.memberAuth.isLoggedIn()) {
       this.doJoin(meetingId);
     } else {
       this.showJoinModal = true;

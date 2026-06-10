@@ -11,7 +11,8 @@ export class AuthInterceptor implements HttpInterceptor {
     private memberAuth: MemberAuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this.memberAuth.getToken() || this.auth.getToken();
+    // Admin token takes priority so site admins get moderator rights in meetings
+    const token = this.auth.getToken() || this.memberAuth.getToken();
     if (!token) return next.handle(req);
 
     return next.handle(req.clone({
