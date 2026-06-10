@@ -1,0 +1,81 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Catalogue de cantiques</h2>
+      <p class="page-copy">Ajoutez uniquement des paroles que la CMCIEA est autorisée à diffuser.</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3>{{ form.id ? 'Modifier le cantique' : 'Ajouter un cantique' }}</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Titre *</label>
+        <input [(ngModel)]="form.title" placeholder="Titre du cantique">
+      </div>
+      <div class="field">
+        <label>Numéro</label>
+        <input [(ngModel)]="form.number" placeholder="Ex. 125">
+      </div>
+      <div class="field">
+        <label>Auteur</label>
+        <input [(ngModel)]="form.author" placeholder="Auteur ou compositeur">
+      </div>
+      <div class="field">
+        <label>Recueil / source</label>
+        <input [(ngModel)]="form.source" placeholder="Nom du recueil">
+      </div>
+    </div>
+    <div class="field">
+      <label>Paroles *</label>
+      <textarea [(ngModel)]="form.lyrics" rows="10" placeholder="Une ligne par ligne..."></textarea>
+    </div>
+    <div class="field">
+      <label>Mentions de droits</label>
+      <input [(ngModel)]="form.rightsNote" placeholder="Domaine public, autorisation, licence...">
+    </div>
+    <div class="form-actions">
+      <button class="btn-primary" [disabled]="saving" (click)="save()">
+        {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+      <button class="btn-secondary" *ngIf="form.id" (click)="reset()">Annuler</button>
+    </div>
+    <p class="success-msg" *ngIf="message">{{ message }}</p>
+  </div>
+
+  <div class="catalog-search">
+    <input [(ngModel)]="search" (keyup.enter)="load()" placeholder="Rechercher dans le catalogue">
+    <button class="btn-secondary" (click)="load()">Rechercher</button>
+  </div>
+
+  <div class="loading" *ngIf="loading">Chargement...</div>
+  <div class="empty" *ngIf="!loading && !cantiques.length">Aucun cantique enregistré.</div>
+
+  <div class="table-wrap" *ngIf="!loading && cantiques.length">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Titre</th>
+          <th>Auteur</th>
+          <th>Source</th>
+          <th>Droits</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cantique of cantiques">
+          <td>{{ cantique.number || '-' }}</td>
+          <td><strong>{{ cantique.title }}</strong></td>
+          <td>{{ cantique.author || '-' }}</td>
+          <td>{{ cantique.source || '-' }}</td>
+          <td>{{ cantique.rightsNote || 'Non renseignés' }}</td>
+          <td class="actions">
+            <button class="btn-secondary btn-small" (click)="edit(cantique)">Modifier</button>
+            <button class="btn-del" (click)="remove(cantique)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

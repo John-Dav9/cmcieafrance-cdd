@@ -135,7 +135,17 @@
         <input [value]="inviteLink" readonly (click)="$any($event.target).select()">
         <button class="btn-secondary" (click)="copyInvite()">{{ inviteCopied ? 'Copié' : 'Copier' }}</button>
       </div>
-      <small>Ce lien est limité à cette réunion et peut être révoqué depuis l’API d’administration.</small>
+      <div class="invite-list" *ngIf="meetingInvites[m.id]?.length">
+        <div *ngFor="let invite of meetingInvites[m.id]">
+          <span>
+            {{ invite.member?.firstName }} {{ invite.member?.lastName }}
+            · {{ invite.revokedAt ? 'Révoqué' : 'Actif' }}
+          </span>
+          <button class="btn-sm btn-sm--danger" *ngIf="!invite.revokedAt"
+                  (click)="revokeInvite(m.id, invite.id)">Révoquer</button>
+        </div>
+      </div>
+      <small>Le lien est limité à cette réunion. Révoquez-le immédiatement si le téléphone est perdu.</small>
     </div>
 
     <!-- Registre de présence (inline) -->
@@ -238,6 +248,11 @@
   flex: 1; min-width: 0; padding: 10px; border: 1px solid #ccd6dc; border-radius: 8px; background: white;
 }
 .invite-panel small { display: block; margin-top: 10px; color: #77818b; }
+.invite-list { margin-top: 12px; display: grid; gap: 6px; }
+.invite-list > div {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 8px 10px; border-radius: 8px; background: white; font-size: 12px;
+}
 .attendance-header {
   display: flex;
   justify-content: space-between;

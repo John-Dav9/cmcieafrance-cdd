@@ -29,6 +29,7 @@ export class ReunionsAdminComponent implements OnInit {
   inviteLink = '';
   inviteLoading = false;
   inviteCopied = false;
+  meetingInvites: Record<string, any[]> = {};
 
   form = {
     title: '',
@@ -53,6 +54,19 @@ export class ReunionsAdminComponent implements OnInit {
     this.inviteMemberId = '';
     this.inviteLink = '';
     this.inviteCopied = false;
+    if (this.inviteMeetingId) this.loadInvites(meetingId);
+  }
+
+  loadInvites(meetingId: string) {
+    this.reunionsService.getModeratorInvites(meetingId).subscribe({
+      next: invites => this.meetingInvites[meetingId] = invites,
+    });
+  }
+
+  revokeInvite(meetingId: string, inviteId: string) {
+    this.reunionsService.revokeModeratorInvite(meetingId, inviteId).subscribe({
+      next: () => this.loadInvites(meetingId),
+    });
   }
 
   createInvite(meetingId: string) {
@@ -63,6 +77,7 @@ export class ReunionsAdminComponent implements OnInit {
         this.inviteLink = `${window.location.origin}/reunions/invitation?token=${encodeURIComponent(result.token)}`;
         this.inviteLoading = false;
         this.copyInvite();
+        this.loadInvites(meetingId);
       },
       error: err => {
         this.error = err?.error?.message ?? 'Impossible de créer le lien.';

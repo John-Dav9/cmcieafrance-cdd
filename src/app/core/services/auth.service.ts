@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 
 export interface AuthUser {
   email: string;
+  fullName?: string;
   role: string;
   access_token: string;
 }
@@ -80,6 +81,14 @@ export class AuthService {
   isAdmin(): boolean {
     const role = this.currentUser$.value?.role;
     return role === 'admin' || role === 'super_admin';
+  }
+
+  isSuperAdmin(): boolean {
+    return this.currentUser$.value?.role === 'super_admin';
+  }
+
+  get user(): AuthUser | null {
+    return this.currentUser$.value;
   }
 
   get user$(): Observable<AuthUser | null> {

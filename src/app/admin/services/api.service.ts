@@ -204,6 +204,26 @@ export class ApiService {
     return this.withAuth((h) => this.http.post(`${this.base}/membres/merge`, {}, { headers: h }));
   }
 
+  // Cantiques
+  getCantiques(query = '') {
+    return this.withAuth((h) => this.http.get<any[]>(
+      `${this.base}/cantiques?q=${encodeURIComponent(query)}`,
+      { headers: h },
+    ));
+  }
+
+  createCantique(data: any) {
+    return this.withAuth((h) => this.http.post(`${this.base}/cantiques`, data, { headers: h }));
+  }
+
+  updateCantique(id: string, data: any) {
+    return this.withAuth((h) => this.http.put(`${this.base}/cantiques/${id}`, data, { headers: h }));
+  }
+
+  deleteCantique(id: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/cantiques/${id}`, { headers: h }));
+  }
+
   // Paramètres communauté
   getSettings() {
     return this.withAuth((h) => this.http.get<any>(`${this.base}/membres/settings`, { headers: h }));

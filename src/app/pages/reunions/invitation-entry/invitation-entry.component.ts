@@ -44,6 +44,7 @@ export class InvitationEntryComponent implements OnInit {
       this.fail('Le lien d’invitation est incomplet.');
       return;
     }
+    history.replaceState({}, '', '/reunions/invitation');
     this.auth.acceptMeetingInvite(token).subscribe({
       next: session => {
         this.reunions.join(session.meetingId).subscribe({

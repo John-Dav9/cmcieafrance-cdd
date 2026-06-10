@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-admin-membres',
@@ -12,6 +13,7 @@ import { ApiService } from '../../services/api.service';
 })
 export class AdminMembresComponent implements OnInit {
   private api = inject(ApiService);
+  private auth = inject(AuthService);
 
   membres: any[] = [];
   filtered: any[] = [];
@@ -21,7 +23,11 @@ export class AdminMembresComponent implements OnInit {
   filterRole = '';
   successMsg = '';
 
-  readonly roles = ['member', 'admin', 'super_admin', 'visitor'];
+  readonly roles = ['member', 'admin', 'visitor'];
+
+  get canManageRoles(): boolean {
+    return this.auth.isSuperAdmin();
+  }
 
   ngOnInit() { this.load(); }
 
@@ -47,8 +53,14 @@ export class AdminMembresComponent implements OnInit {
   }
 
   changeRole(membre: any, role: string) {
+    if (!this.canManageRoles || role === membre.role) return;
+    const action = role === 'admin'
+      ? `promouvoir ${membre.firstName} ${membre.lastName} comme administrateur`
+      : `attribuer le rôle « ${this.roleLabel(role)} » à ${membre.firstName} ${membre.lastName}`;
+    if (!confirm(`Confirmer : ${action} ?`)) return;
     this.api.updateMembreRole(membre.id, role).subscribe({
       next: () => { membre.role = role; this.flash('Rôle mis à jour.'); },
+      error: () => this.flash('La modification du rôle a échoué.'),
     });
   }
 

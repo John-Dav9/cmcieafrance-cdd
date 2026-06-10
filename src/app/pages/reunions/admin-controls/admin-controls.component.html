@@ -100,6 +100,24 @@
 
       <div class="spiritual-section">
         <h4><span>02</span> Paroles de cantique</h4>
+        <div class="search-row">
+          <input class="admin-input"
+                 [(ngModel)]="cantiqueQuery"
+                 placeholder="Numéro, titre ou paroles..."
+                 (keyup.enter)="searchCantiques()">
+          <button class="btn-primary btn-primary--compact" (click)="searchCantiques()">Chercher</button>
+        </div>
+        <div class="bible-results" *ngIf="cantiqueResults.length">
+          <div class="bible-result" *ngFor="let cantique of cantiqueResults">
+            <div class="bible-ref">
+              {{ cantique.number ? cantique.number + ' · ' : '' }}{{ cantique.title }}
+            </div>
+            <div class="bible-text">
+              {{ cantique.author || 'Auteur non renseigné' }}
+            </div>
+            <button class="btn-send" (click)="selectCantique(cantique)">Charger</button>
+          </div>
+        </div>
         <input class="admin-input" [(ngModel)]="lyricsTitle" placeholder="Titre du cantique">
         <textarea class="admin-textarea" [(ngModel)]="lyricsText" placeholder="Paroles (une ligne par ligne)..." rows="5"></textarea>
         <button class="btn-primary" (click)="sendLyrics()">Diffuser les paroles ▶</button>

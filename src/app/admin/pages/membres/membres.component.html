@@ -9,6 +9,10 @@
   </div>
 
   <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+  <p class="role-help" *ngIf="canManageRoles">
+    En tant qu’administrateur principal, vous pouvez promouvoir un membre comme administrateur
+    ou lui retirer ce rôle. La modification est permanente jusqu’à votre prochaine décision.
+  </p>
 
   <!-- Filtres -->
   <div class="filters">
@@ -44,9 +48,15 @@
           <td>{{ m.phone || '—' }}</td>
           <td>{{ m.city || '—' }}</td>
           <td>
-            <select [ngModel]="m.role" (ngModelChange)="changeRole(m, $event)" class="role-select">
+            <select *ngIf="canManageRoles; else roleBadge"
+                    [ngModel]="m.role"
+                    (ngModelChange)="changeRole(m, $event)"
+                    class="role-select">
               <option *ngFor="let r of roles" [value]="r">{{ roleLabel(r) }}</option>
             </select>
+            <ng-template #roleBadge>
+              <span class="badge" [ngClass]="roleClass(m.role)">{{ roleLabel(m.role) }}</span>
+            </ng-template>
           </td>
           <td>
             <span class="badge" [class.badge-green]="m.isActive" [class.badge-gray]="!m.isActive">

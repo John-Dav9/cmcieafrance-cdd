@@ -23,6 +23,7 @@ export class AdminLayoutComponent {
     { label: 'Annonces',        icon: '📢', route: '/espace-admin/annonces' },
     { label: 'Actualités',      icon: '📰', route: '/espace-admin/actualites' },
     { label: 'Bibliothèque',    icon: '📖', route: '/espace-admin/bibliotheque' },
+    { label: 'Cantiques',        icon: '♫', route: '/espace-admin/cantiques' },
     { label: 'Témoignages',     icon: '💬', route: '/espace-admin/temoignages' },
     { label: 'Marathons bibliques', icon: '📅', route: '/espace-admin/marathon' },
     { label: 'Horaires des cultes', icon: '🕐', route: '/espace-admin/cultes' },

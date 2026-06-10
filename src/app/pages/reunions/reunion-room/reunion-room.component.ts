@@ -118,7 +118,6 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
 
   private initJitsi() {
     if (!this.jitsiData) return;
-    const member = this.memberAuth.member;
     const domain = this.jitsiData.jitsiUrl.replace(/https?:\/\//, '');
 
     const container = document.getElementById('jitsi-persistent-container');
@@ -148,8 +147,8 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
         DISABLE_VIDEO_BACKGROUND: false,
       },
       userInfo: {
-        displayName: member ? `${member.firstName} ${member.lastName}` : 'Participant',
-        email: member?.email ?? '',
+        displayName: this.jitsiData.displayName || 'Participant',
+        email: this.jitsiData.email || '',
       },
     });
 

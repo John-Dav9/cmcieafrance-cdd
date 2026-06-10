@@ -24,6 +24,9 @@ export interface JoinResult {
   jitsiUrl: string;
   roomId: string;
   isModerator: boolean;
+  displayName: string;
+  email: string;
+  role: string;
   reconnectToken: string;
   participantId: string;
   dialIn?: { number: string; pin: string | null } | null;

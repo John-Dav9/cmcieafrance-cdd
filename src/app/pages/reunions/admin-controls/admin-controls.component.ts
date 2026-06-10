@@ -37,6 +37,14 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   // Spirituel
   bibleResults: { reference: string; text: string }[] = [];
   bibleQuery = '';
+  cantiqueQuery = '';
+  cantiqueResults: {
+    id: string;
+    title: string;
+    number?: string;
+    author?: string;
+    lyrics: string;
+  }[] = [];
   lyricsTitle = '';
   lyricsText = '';
   announcementText = '';
@@ -235,6 +243,24 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   sendVerse(v: { reference: string; text: string }) {
     this.socket.showVerse(this.meetingId, v.reference, v.text);
     this.showToast(`Verset "${v.reference}" diffusé`, 'success');
+  }
+
+  searchCantiques() {
+    const query = this.cantiqueQuery.trim();
+    this.http.get<any[]>(
+      `${environment.apiBase}/cantiques/meeting/${this.meetingId}?q=${encodeURIComponent(query)}`,
+    ).subscribe({
+      next: results => this.cantiqueResults = results,
+      error: () => this.showToast('Catalogue de cantiques indisponible', 'error'),
+    });
+  }
+
+  selectCantique(cantique: { title: string; number?: string; lyrics: string }) {
+    this.lyricsTitle = cantique.number
+      ? `${cantique.number} - ${cantique.title}`
+      : cantique.title;
+    this.lyricsText = cantique.lyrics;
+    this.showToast('Cantique chargé, prêt à être diffusé', 'success');
   }
 
   sendLyrics() {

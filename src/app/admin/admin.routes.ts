@@ -40,6 +40,11 @@ export const ADMIN_ROUTES: Routes = [
           import('./pages/bibliotheque/bibliotheque.component').then((m) => m.BibliothequeComponent),
       },
       {
+        path: 'cantiques',
+        loadComponent: () =>
+          import('./pages/cantiques/cantiques.component').then((m) => m.AdminCantiquesComponent),
+      },
+      {
         path: 'temoignages',
         loadComponent: () =>
           import('./pages/temoignages/temoignages.component').then((m) => m.TemoignagesComponent),

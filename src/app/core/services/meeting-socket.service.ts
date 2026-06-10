@@ -65,7 +65,7 @@ export class MeetingSocketService implements OnDestroy {
     if (this.socket?.connected) return;
 
     const wsUrl = environment.apiBase.replace('/api', '');
-    const token = this.memberAuth.getToken() || this.auth.getToken();
+    const token = this.auth.getToken() || this.memberAuth.getToken();
     this.socket = io(`${wsUrl}/meetings`, {
       transports: ['websocket'],
       auth: { token },

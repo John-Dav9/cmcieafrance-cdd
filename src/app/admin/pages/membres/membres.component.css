@@ -2,6 +2,17 @@
 
 .header-actions { display: flex; gap: 8px; }
 
+.role-help {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a5f;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .filters {
   display: flex;
   gap: 12px;

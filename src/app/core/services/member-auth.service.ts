@@ -10,6 +10,7 @@ export interface MemberUser {
   email: string;
   role: string;
   access_token: string;
+  meetingModeratorFor?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -60,7 +61,10 @@ export class MemberAuthService {
     return this.http.post<any>(
       `${environment.apiBase}/reunions/invitations/accept`,
       { token },
-    ).pipe(tap(res => this.setSession(res)));
+    ).pipe(tap(res => this.setSession({
+      ...res,
+      member: { ...res.member, meetingModeratorFor: res.meetingId },
+    })));
   }
 
   // ── Anciens endpoints (conservés pour compatibilité) ──────

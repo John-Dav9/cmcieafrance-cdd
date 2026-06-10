@@ -153,6 +153,12 @@ export class ReunionsListComponent implements OnInit, OnDestroy {
       ? this.current
       : this.upcoming.find(meeting => meeting.id === meetingId);
     this.selectedMeetingPublic = selected?.isPublic ?? false;
+    const member = this.memberAuth.member;
+    if (member?.role === 'meeting_moderator' && member.meetingModeratorFor !== meetingId) {
+      this.memberAuth.logout();
+      this.showJoinModal = true;
+      return;
+    }
     if (this.adminAuth.isLoggedIn() || this.memberAuth.isLoggedIn()) {
       this.doJoin(meetingId);
     } else {
