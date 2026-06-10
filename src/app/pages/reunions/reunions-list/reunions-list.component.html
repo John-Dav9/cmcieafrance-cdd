@@ -102,6 +102,7 @@
   <app-join-modal
     *ngIf="showJoinModal"
     [meetingId]="selectedMeetingId"
+    [publicMeeting]="selectedMeetingPublic"
     (authSuccess)="onAuthSuccess()"
     (close)="onModalClose()">
   </app-join-modal>

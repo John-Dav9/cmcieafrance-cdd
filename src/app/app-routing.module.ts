@@ -71,6 +71,11 @@ const routes: Routes = [
       .then(m => m.ReunionsListComponent),
   },
   {
+    path: 'reunions/invitation',
+    loadComponent: () => import('./pages/reunions/invitation-entry/invitation-entry.component')
+      .then(m => m.InvitationEntryComponent),
+  },
+  {
     path: 'reunions/:id/salle',
     loadComponent: () => import('./pages/reunions/reunion-room/reunion-room.component')
       .then(m => m.ReunionRoomComponent),

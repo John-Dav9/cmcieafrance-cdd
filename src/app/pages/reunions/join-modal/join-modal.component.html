@@ -28,6 +28,28 @@
           </span>
         </button>
       </form>
+      <div class="guest-access" *ngIf="publicMeeting">
+        <span>ou</span>
+        <button type="button" (click)="step = 'guest'">Continuer comme visiteur</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="step === 'guest'">
+      <div class="modal-icon">▶</div>
+      <h2 class="modal-title">Entrer dans la réunion</h2>
+      <p class="modal-subtitle">Écrivez simplement votre nom. Aucun code n’est nécessaire.</p>
+      <form (ngSubmit)="submitGuest()" class="modal-form">
+        <input type="text" [(ngModel)]="guestName" name="guestName" maxlength="100"
+               placeholder="Votre prénom et votre nom" class="modal-input modal-input--large"
+               autocomplete="name" autofocus required>
+        <div class="error-msg" *ngIf="error">{{ error }}</div>
+        <button type="submit" class="btn-join-modal" [disabled]="loading || guestName.trim().length < 2">
+          {{ loading ? 'Ouverture…' : 'ENTRER MAINTENANT' }}
+        </button>
+        <button type="button" class="modal-link member-access-link" (click)="useMemberAccess()">
+          Je suis membre ou responsable
+        </button>
+      </form>
     </ng-container>
 
     <ng-container *ngIf="step === 'otp'">

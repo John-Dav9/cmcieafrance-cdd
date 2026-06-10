@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { AdminLoginChallenge, AuthService, AuthUser } from '../../core/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -19,6 +19,7 @@ export class AdminAuthService {
   }
 
   async logout() {
+    await firstValueFrom(this.authService.revokeSession()).catch(() => undefined);
     this.authService.logout();
     this.router.navigate(['/espace-admin/login']);
   }

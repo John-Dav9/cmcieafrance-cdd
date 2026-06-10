@@ -26,6 +26,7 @@ export interface JoinResult {
   isModerator: boolean;
   reconnectToken: string;
   participantId: string;
+  dialIn?: { number: string; pin: string | null } | null;
   meeting: { id: string; title: string; status: string };
 }
 
@@ -176,5 +177,19 @@ export class ReunionsService {
 
   grantModerator(id: string, memberId: string): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(`${environment.apiBase}/reunions/${id}/grant-moderator/${memberId}`, {});
+  }
+
+  createModeratorInvite(id: string, memberId: string): Observable<any> {
+    return this.http.post(`${environment.apiBase}/reunions/${id}/invitations`, { memberId });
+  }
+
+  getModeratorInvites(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiBase}/reunions/${id}/invitations`);
+  }
+
+  revokeModeratorInvite(id: string, inviteId: string): Observable<{ revoked: boolean }> {
+    return this.http.delete<{ revoked: boolean }>(
+      `${environment.apiBase}/reunions/${id}/invitations/${inviteId}`,
+    );
   }
 }

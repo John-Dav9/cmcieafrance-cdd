@@ -178,7 +178,7 @@
         </div>
         <input *ngIf="hasPlatform('facebook')" class="admin-input" [(ngModel)]="streamFacebookKey" placeholder="Clé de streaming Facebook">
 
-        <p class="empty">Une seule destination peut être diffusée à la fois par Jitsi.</p>
+        <p class="empty">Plusieurs destinations utilisent automatiquement le relais RTMP configuré.</p>
         <button class="btn-primary" (click)="startStreaming()">▶ Démarrer le streaming</button>
       </div>
       <div *ngIf="isStreaming">

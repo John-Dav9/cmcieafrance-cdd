@@ -54,6 +54,10 @@ export class AuthService {
     this.currentUser$.next(null);
   }
 
+  revokeSession(): Observable<{ loggedOut: boolean }> {
+    return this.http.post<{ loggedOut: boolean }>(`${environment.apiBase}/auth/logout`, {});
+  }
+
   getToken(): string | null {
     return this.currentUser$.value?.access_token ?? null;
   }

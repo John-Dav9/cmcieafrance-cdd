@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 
-type Step = 'email' | 'otp' | 'magic-link' | 'register';
+type Step = 'email' | 'otp' | 'magic-link' | 'register' | 'guest';
 
 @Component({
   selector: 'app-join-modal',
@@ -12,8 +12,9 @@ type Step = 'email' | 'otp' | 'magic-link' | 'register';
   templateUrl: './join-modal.component.html',
   styleUrls: ['./join-modal.component.scss'],
 })
-export class JoinModalComponent {
+export class JoinModalComponent implements OnInit {
   @Input() meetingId = '';
+  @Input() publicMeeting = false;
   @Output() authSuccess = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
 
@@ -21,10 +22,18 @@ export class JoinModalComponent {
   email = '';
   code = '';
   form = { firstName: '', lastName: '', phone: '', city: '' };
+  guestName = '';
   loading = false;
   error = '';
 
   constructor(private auth: MemberAuthService) {}
+
+  ngOnInit() {
+    if (this.publicMeeting) {
+      this.step = 'guest';
+      this.guestName = localStorage.getItem('cmciea_guest_name') ?? '';
+    }
+  }
 
   // ── Étape 1 : vérification email ──────────────────────────
   submitEmail() {
@@ -129,6 +138,28 @@ export class JoinModalComponent {
   back() {
     this.step = 'email';
     this.code = '';
+    this.error = '';
+  }
+
+  submitGuest() {
+    if (this.guestName.trim().length < 2) return;
+    this.loading = true;
+    this.error = '';
+    this.auth.guest(this.guestName.trim()).subscribe({
+      next: () => {
+        localStorage.setItem('cmciea_guest_name', this.guestName.trim());
+        this.loading = false;
+        this.authSuccess.emit();
+      },
+      error: err => {
+        this.loading = false;
+        this.error = err?.error?.message ?? 'Accès visiteur impossible.';
+      },
+    });
+  }
+
+  useMemberAccess() {
+    this.step = 'email';
     this.error = '';
   }
 }

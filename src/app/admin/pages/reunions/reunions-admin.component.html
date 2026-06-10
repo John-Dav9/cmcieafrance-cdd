@@ -96,6 +96,10 @@
           *ngIf="m.status === 'scheduled' || m.status === 'live'">
           ▶ Rejoindre
         </button>
+        <button class="btn-sm" (click)="openInvite(m.id)"
+          *ngIf="m.status === 'scheduled' || m.status === 'live'">
+          🔗 Lien responsable
+        </button>
         <button class="btn-sm" (click)="sendReminders(m.id)" title="Envoyer rappels email"
           *ngIf="m.status === 'scheduled'">
           ✉ Rappels
@@ -109,6 +113,29 @@
           👥 Présence
         </button>
       </div>
+    </div>
+
+    <div class="invite-panel" *ngIf="inviteMeetingId === m.id">
+      <div>
+        <strong>Accès simplifié pour un responsable</strong>
+        <p>Le responsable clique sur le lien reçu et entre directement dans cette réunion avec la régie.</p>
+      </div>
+      <div class="invite-row">
+        <select [(ngModel)]="inviteMemberId">
+          <option value="">Choisir le responsable</option>
+          <option *ngFor="let member of members" [value]="member.id">
+            {{ member.firstName }} {{ member.lastName }} · {{ member.email }}
+          </option>
+        </select>
+        <button class="btn-primary" [disabled]="!inviteMemberId || inviteLoading" (click)="createInvite(m.id)">
+          {{ inviteLoading ? 'Création…' : 'Créer et copier le lien' }}
+        </button>
+      </div>
+      <div class="invite-result" *ngIf="inviteLink">
+        <input [value]="inviteLink" readonly (click)="$any($event.target).select()">
+        <button class="btn-secondary" (click)="copyInvite()">{{ inviteCopied ? 'Copié' : 'Copier' }}</button>
+      </div>
+      <small>Ce lien est limité à cette réunion et peut être révoqué depuis l’API d’administration.</small>
     </div>
 
     <!-- Registre de présence (inline) -->
@@ -201,6 +228,16 @@
   padding: 16px;
   margin-top: -2px;
 }
+.invite-panel {
+  padding: 16px; margin-top: -2px; border: 1px solid #d9e2e7; border-top: 0;
+  border-radius: 0 0 10px 10px; background: #f4f8fa;
+}
+.invite-panel p { margin: 4px 0 12px; color: #66717b; font-size: 13px; }
+.invite-row, .invite-result { display: flex; gap: 9px; margin-top: 10px; }
+.invite-row select, .invite-result input {
+  flex: 1; min-width: 0; padding: 10px; border: 1px solid #ccd6dc; border-radius: 8px; background: white;
+}
+.invite-panel small { display: block; margin-top: 10px; color: #77818b; }
 .attendance-header {
   display: flex;
   justify-content: space-between;

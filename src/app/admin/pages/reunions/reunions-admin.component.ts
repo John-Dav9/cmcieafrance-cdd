@@ -23,6 +23,12 @@ export class ReunionsAdminComponent implements OnInit {
   selectedMeetingId: string | null = null;
   attendance: any[] = [];
   loadingAttendance = false;
+  members: any[] = [];
+  inviteMeetingId: string | null = null;
+  inviteMemberId = '';
+  inviteLink = '';
+  inviteLoading = false;
+  inviteCopied = false;
 
   form = {
     title: '',
@@ -39,6 +45,40 @@ export class ReunionsAdminComponent implements OnInit {
 
   ngOnInit() {
     this.load();
+    this.api.getMembres().subscribe({ next: members => this.members = members });
+  }
+
+  openInvite(meetingId: string) {
+    this.inviteMeetingId = this.inviteMeetingId === meetingId ? null : meetingId;
+    this.inviteMemberId = '';
+    this.inviteLink = '';
+    this.inviteCopied = false;
+  }
+
+  createInvite(meetingId: string) {
+    if (!this.inviteMemberId) return;
+    this.inviteLoading = true;
+    this.reunionsService.createModeratorInvite(meetingId, this.inviteMemberId).subscribe({
+      next: result => {
+        this.inviteLink = `${window.location.origin}/reunions/invitation?token=${encodeURIComponent(result.token)}`;
+        this.inviteLoading = false;
+        this.copyInvite();
+      },
+      error: err => {
+        this.error = err?.error?.message ?? 'Impossible de créer le lien.';
+        this.inviteLoading = false;
+      },
+    });
+  }
+
+  async copyInvite() {
+    if (!this.inviteLink) return;
+    try {
+      await navigator.clipboard.writeText(this.inviteLink);
+      this.inviteCopied = true;
+    } catch {
+      this.inviteCopied = false;
+    }
   }
 
   load() {

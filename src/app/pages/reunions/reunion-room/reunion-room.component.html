@@ -35,6 +35,16 @@
 
   <div class="meeting-stage-frame" [class.with-panel]="showAdminPanel"></div>
 
+  <aside class="bandwidth-alert" *ngIf="lowBandwidthMode">
+    <div>
+      <strong>Mode connexion faible activé</strong>
+      <span>La vidéo a été coupée pour préserver le son.</span>
+    </div>
+    <a *ngIf="quality === 'critical' && dialIn" [href]="'tel:' + dialIn.number">
+      Appeler {{ dialIn.number }}<span *ngIf="dialIn.pin"> · code {{ dialIn.pin }}</span>
+    </a>
+  </aside>
+
   <nav class="meeting-dock" aria-label="Contrôles de la réunion">
     <button class="dock-control" [class.is-off]="micMuted" (click)="toggleMicrophone()">
       <span class="dock-icon">

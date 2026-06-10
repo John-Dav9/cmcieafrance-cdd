@@ -30,6 +30,7 @@ export class ReunionsListComponent implements OnInit, OnDestroy {
   loading = true;
   showJoinModal = false;
   selectedMeetingId = '';
+  selectedMeetingPublic = false;
   waitingMeeting: { id: string; title: string } | null = null;
   waitingRejected = false;
   private refresh$: Subscription | null = null;
@@ -148,6 +149,10 @@ export class ReunionsListComponent implements OnInit, OnDestroy {
 
   joinMeeting(meetingId: string) {
     this.selectedMeetingId = meetingId;
+    const selected = this.current?.id === meetingId
+      ? this.current
+      : this.upcoming.find(meeting => meeting.id === meetingId);
+    this.selectedMeetingPublic = selected?.isPublic ?? false;
     if (this.adminAuth.isLoggedIn() || this.memberAuth.isLoggedIn()) {
       this.doJoin(meetingId);
     } else {

@@ -252,3 +252,11 @@ $muted:        #6b7280;
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+.guest-access {
+  margin-top: 18px; display: flex; flex-direction: column; align-items: center; gap: 9px;
+  span { color: $muted; font-size: 11px; text-transform: uppercase; }
+  button {
+    border: 0; color: $primary; background: transparent; font-weight: 700; cursor: pointer;
+  }
+}
+.member-access-link { margin-top: 8px; font-size: 12px; }

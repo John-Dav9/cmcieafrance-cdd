@@ -33,6 +33,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
   sharingScreen = false;
   handRaised = false;
   tileView = false;
+  lowBandwidthMode = false;
 
   private qualitySubscription: Subscription | null = null;
 
@@ -63,6 +64,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     this.qualitySubscription = this.networkQuality.quality$.subscribe(quality => {
       this.quality = quality;
       this.meeting.setQuality(quality);
+      this.applyNetworkMode(quality);
     });
 
     if (!this.meeting.isActive) {
@@ -72,6 +74,23 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       this.loadJitsiScript();
     } else {
       this.meeting.setFloating(false);
+    }
+  }
+
+  private applyNetworkMode(quality: ConnectionQuality) {
+    const shouldReduce = quality === 'low' || quality === 'critical';
+    if (shouldReduce && !this.lowBandwidthMode) {
+      this.lowBandwidthMode = true;
+      try {
+        if (!this.cameraMuted) this.meeting.jitsiApi?.executeCommand('toggleVideo');
+        this.meeting.jitsiApi?.executeCommand('overwriteConfig', {
+          startWithVideoMuted: true,
+          enableLayerSuspension: true,
+          p2p: { enabled: false },
+        });
+      } catch {}
+    } else if (!shouldReduce) {
+      this.lowBandwidthMode = false;
     }
   }
 
@@ -288,6 +307,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     const map: Record<string, string> = { high: 'Excellente', medium: 'Correcte', low: 'Faible', critical: 'Déconnecté' };
     return map[this.quality] ?? '';
   }
+  get dialIn() { return this.jitsiData?.dialIn ?? null; }
 
   private startReconnectSession() {
     if (!this.jitsiData) return;

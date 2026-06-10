@@ -50,6 +50,19 @@ export class MemberAuthService {
     );
   }
 
+  guest(displayName: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiBase}/auth/guest`, { displayName }).pipe(
+      tap(res => this.setSession(res)),
+    );
+  }
+
+  acceptMeetingInvite(token: string): Observable<{ access_token: string; meetingId: string; member: MemberUser }> {
+    return this.http.post<any>(
+      `${environment.apiBase}/reunions/invitations/accept`,
+      { token },
+    ).pipe(tap(res => this.setSession(res)));
+  }
+
   // ── Anciens endpoints (conservés pour compatibilité) ──────
   sendOtp(email: string): Observable<{ method: string; message: string }> {
     return this.http.post<any>(`${environment.apiBase}/auth/send-otp`, { email });
