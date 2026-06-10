@@ -1,192 +1,111 @@
-// ─────────────────────────────────────────────────────────────
-// Salle de réunion — style Google Meet
-// ─────────────────────────────────────────────────────────────
+$accent: #e8a838;
+$dark: #111318;
+$panel: rgba(22, 25, 31, 0.92);
+$white: #fff;
+$muted: #aab0bb;
+$danger: #e5484d;
 
-$topbar-h:  56px;
-$dark:      #202124;
-$dark-mid:  #2d2f33;
-$accent:    #E8A838;
-$danger:    #ea4335;
-$white:     #ffffff;
-$muted:     rgba(255, 255, 255, 0.55);
-$glass:     rgba(255, 255, 255, 0.08);
-$glass-b:   rgba(255, 255, 255, 0.12);
-
-// ── Topbar ────────────────────────────────────────────────────
-.rm-topbar {
+.meeting-shell {
   position: fixed;
-  top: 0; left: 0; right: 0;
-  height: $topbar-h;
+  inset: 0;
   z-index: 9999;
-  background: $dark;
+  pointer-events: none;
+  color: $white;
+  font-family: Inter, "Segoe UI", sans-serif;
+}
+
+.meeting-header {
+  position: absolute;
+  inset: 0 0 auto;
+  min-height: 72px;
+  padding: 12px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
-  font-family: 'Inter', 'DM Sans', 'Segoe UI', sans-serif;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 18px;
+  background: linear-gradient(180deg, rgba(10, 12, 16, .96), rgba(10, 12, 16, .82));
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(18px);
+  pointer-events: auto;
 }
 
-// ── Gauche : logo + titre + timer ────────────────────────────
-.rm-topbar__left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  flex: 1;
+.meeting-identity, .meeting-status, .meeting-eyebrow, .status-chip,
+.header-action, .meeting-dock, .dock-control { display: flex; align-items: center; }
+.meeting-identity { gap: 12px; min-width: 0; }
+.meeting-brand {
+  width: 42px; height: 42px; border-radius: 13px;
+  display: grid; place-items: center; flex: 0 0 auto;
+  color: #17120a; background: linear-gradient(145deg, #f5c15d, $accent);
+  font-family: Georgia, serif; font-weight: 800; font-size: 21px;
+  box-shadow: 0 8px 24px rgba(232,168,56,.18);
 }
-
-.rm-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: rgba($accent, 0.15);
-  border: 1px solid rgba($accent, 0.35);
-  color: $accent;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.meeting-copy { min-width: 0; }
+.meeting-copy h1 {
+  margin: 2px 0 0; font-size: 16px; line-height: 1.2; font-weight: 650;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 360px;
 }
-
-.rm-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
+.meeting-eyebrow {
+  gap: 7px; color: $muted; font-size: 10px; font-weight: 700;
+  letter-spacing: .11em; text-transform: uppercase;
 }
-
-.rm-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: $white;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 280px;
-
-  @media (max-width: 540px) {
-    max-width: 130px;
-    font-size: 13px;
-  }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #38c172; box-shadow: 0 0 0 4px rgba(56,193,114,.12); }
+.meeting-status { gap: 8px; flex: 0 0 auto; }
+.status-chip, .header-action {
+  height: 38px; gap: 8px; padding: 0 12px; border-radius: 11px;
+  border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.065);
+  color: #e7e9ed; font-size: 12px; font-weight: 600;
 }
-
-.rm-timer {
-  font-size: 11px;
-  color: $muted;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.8px;
-  font-weight: 500;
+.status-chip svg, .header-action svg, .dock-control svg {
+  width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
 }
+.header-action { cursor: pointer; pointer-events: auto; transition: .18s ease; }
+.header-action:hover, .header-action.is-active { background: rgba(232,168,56,.13); border-color: rgba(232,168,56,.35); color: #f2c66f; }
+.header-action--admin { color: #f2c66f; }
+.quality-bars { display: flex; align-items: end; gap: 2px; height: 13px; }
+.quality-bars i { width: 3px; border-radius: 2px; background: #3fd17d; }
+.quality-bars i:nth-child(1){height:5px}.quality-bars i:nth-child(2){height:9px}.quality-bars i:nth-child(3){height:13px}
+.status-chip--medium .quality-bars i:nth-child(3), .status-chip--low .quality-bars i:nth-child(n+2) { background: rgba(255,255,255,.2); }
+.status-chip--medium .quality-bars i { background: #f4bd50; }
+.status-chip--low .quality-bars i:first-child { background: $danger; }
+.status-chip--critical .quality-bars i { background: rgba(255,255,255,.2); }
 
-// ── Droite : indicateurs + boutons ───────────────────────────
-.rm-topbar__right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+.meeting-stage-frame {
+  position: absolute; inset: 72px 0 86px;
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: inset 0 0 90px rgba(0,0,0,.12);
+  transition: right .25s ease;
 }
+.meeting-stage-frame.with-panel { right: 390px; }
 
-// ── Qualité réseau ────────────────────────────────────────────
-.rm-quality {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background: $glass;
-  font-size: 11px;
-  color: $muted;
-  cursor: default;
-  user-select: none;
-
-  @media (max-width: 600px) {
-    .rm-quality__label { display: none; }
-    padding: 7px;
-    border-radius: 50%;
-  }
-
-  &.high   .rm-quality__dot { background: #34a853; box-shadow: 0 0 6px rgba(#34a853, 0.6); }
-  &.medium .rm-quality__dot { background: #fbbc04; box-shadow: 0 0 6px rgba(#fbbc04, 0.5); }
-  &.low    .rm-quality__dot { background: $danger;  box-shadow: 0 0 6px rgba($danger, 0.5); animation: blink 1.2s ease-in-out infinite; }
-  &.critical .rm-quality__dot { background: #5f6368; }
+.meeting-dock {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  gap: 6px; padding: 7px;
+  max-width: calc(100vw - 24px);
+  border-radius: 18px; background: rgba(15,17,22,.92);
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 16px 50px rgba(0,0,0,.44);
+  backdrop-filter: blur(20px); pointer-events: auto;
 }
-
-.rm-quality__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  transition: background 0.3s, box-shadow 0.3s;
+.dock-control {
+  flex-direction: column; justify-content: center; gap: 4px;
+  min-width: 64px; height: 58px; padding: 5px 8px;
+  border: 0; border-radius: 12px; background: transparent; color: #d9dce2;
+  cursor: pointer; font-size: 10px; font-weight: 600; transition: .16s ease;
 }
-
-// ── Compteur participants ─────────────────────────────────────
-.rm-participants {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background: $glass;
-  font-size: 12px;
-  font-weight: 500;
-  color: $white;
-  cursor: default;
-  user-select: none;
-
-  svg { opacity: 0.75; flex-shrink: 0; }
-
-  @media (max-width: 480px) { display: none; }
-}
-
-// ── Boutons topbar ────────────────────────────────────────────
-.rm-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: $glass;
-  border: 1px solid $glass-b;
-  color: $white;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  white-space: nowrap;
-  user-select: none;
-
-  svg { flex-shrink: 0; }
-
-  &:hover { background: rgba($white, 0.14); }
-  &:active { transform: scale(0.95); }
-
-  &--active {
-    background: rgba($accent, 0.2);
-    border-color: rgba($accent, 0.4);
-    color: $accent;
-    &:hover { background: rgba($accent, 0.3); }
-  }
-
-  &--minimize {
-    background: rgba($accent, 0.12);
-    border-color: rgba($accent, 0.3);
-    color: $accent;
-    &:hover { background: rgba($accent, 0.22); }
-  }
-
-  @media (max-width: 540px) {
-    padding: 7px;
-    .rm-btn__label { display: none; }
-  }
-}
+.dock-control:hover, .dock-control.is-active { background: rgba(255,255,255,.1); color: $white; }
+.dock-control.is-off { background: rgba(229,72,77,.17); color: #ff8589; }
+.dock-control--secondary { color: #b9bec8; }
+.dock-control--leave { margin-left: 4px; min-width: 74px; background: $danger; color: $white; }
+.dock-control--leave:hover { background: #f05b60; }
+.dock-icon { display: grid; place-items: center; width: 25px; height: 25px; }
+.dock-icon svg { width: 22px; height: 22px; }
 
 // ── Écran de chargement ───────────────────────────────────────
 .rm-loading {
   position: fixed;
-  inset: $topbar-h 0 0 0;
-  z-index: 9998;
+  inset: 72px 0 0;
+  z-index: 10001;
   background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
   display: flex;
   align-items: center;
@@ -256,9 +175,30 @@ $glass-b:   rgba(255, 255, 255, 0.12);
   50%       { opacity: 0.25; }
 }
 
-// ── Mobile ────────────────────────────────────────────────────
-@media (max-width: 480px) {
-  .rm-topbar { padding: 0 10px; height: 50px; }
-  .rm-logo   { width: 30px; height: 30px; font-size: 14px; }
-  .rm-title  { font-size: 13px; }
+@media (max-width: 900px) {
+  .meeting-header { min-height: 64px; padding: 9px 12px; }
+  .meeting-brand { width: 38px; height: 38px; border-radius: 11px; }
+  .meeting-copy h1 { max-width: 210px; font-size: 14px; }
+  .status-label, .header-action span, .status-chip--timer svg { display: none; }
+  .status-chip, .header-action { width: 38px; padding: 0; justify-content: center; }
+  .status-chip--timer { width: auto; padding: 0 10px; }
+  .meeting-stage-frame { inset: 64px 0 82px; }
+  .meeting-stage-frame.with-panel { right: 0; }
+  .rm-loading { inset: 64px 0 0; }
+  .meeting-dock {
+    bottom: max(10px, env(safe-area-inset-bottom)); gap: 3px; padding: 6px;
+    width: calc(100vw - 16px); justify-content: space-between; overflow-x: auto;
+  }
+  .dock-control { min-width: 56px; height: 56px; flex: 0 0 56px; }
+  .dock-control--secondary { display: none; }
+  .dock-control--leave { min-width: 62px; flex-basis: 62px; }
+}
+
+@media (max-width: 520px) {
+  .meeting-eyebrow { display: none; }
+  .meeting-copy h1 { max-width: 120px; }
+  .meeting-status { gap: 5px; }
+  .status-chip:nth-of-type(3) { display: none; }
+  .dock-control { min-width: 52px; flex-basis: 52px; font-size: 9px; }
+  .dock-control:nth-child(3) { display: none; }
 }

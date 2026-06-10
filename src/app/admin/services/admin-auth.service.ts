@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService, AuthUser } from '../../core/services/auth.service';
+import { AdminLoginChallenge, AuthService, AuthUser } from '../../core/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminAuthService {
@@ -10,8 +10,12 @@ export class AdminAuthService {
 
   readonly user$ = this.authService.user$;
 
-  login(email: string, password: string): Observable<AuthUser> {
+  login(email: string, password: string): Observable<AuthUser | AdminLoginChallenge> {
     return this.authService.login(email, password);
+  }
+
+  verifyLogin(challenge: string, code: string): Observable<AuthUser> {
+    return this.authService.verifyAdminLogin(challenge, code);
   }
 
   async logout() {

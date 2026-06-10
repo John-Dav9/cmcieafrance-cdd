@@ -2,6 +2,8 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { io, Socket } from 'socket.io-client';
+import { AuthService } from './auth.service';
+import { MemberAuthService } from './member-auth.service';
 
 export interface SpiritualEvent {
   type: 'verse' | 'lyrics' | 'announcement';
@@ -29,6 +31,9 @@ export interface PrayerReceived {
   text: string;
 }
 
+export type MediaMode = 'file' | 'stream';
+export type MediaStatus = 'idle' | 'starting' | 'active' | 'stopping' | 'failed';
+
 @Injectable({ providedIn: 'root' })
 export class MeetingSocketService implements OnDestroy {
   private socket: Socket | null = null;
@@ -41,14 +46,30 @@ export class MeetingSocketService implements OnDestroy {
   pollClosed$       = new Subject<PollResult>();
   prayerReceived$   = new Subject<PrayerReceived>();
   prayerSupport$    = new Subject<{ prayerId: string; author: string }>();
-  streamingStatus$  = new Subject<{ status: 'started' | 'stopped'; platform?: string }>();
+  recordingStatus$  = new Subject<{ status: MediaStatus; error?: string }>();
+  streamingStatus$  = new Subject<{ status: MediaStatus; error?: string }>();
+  mediaCommand$     = new Subject<{
+    meetingId: string;
+    action: 'start' | 'stop';
+    mode: MediaMode;
+    streamKey?: string;
+  }>();
   meetingEnded$     = new Subject<void>();
+
+  constructor(
+    private readonly auth: AuthService,
+    private readonly memberAuth: MemberAuthService,
+  ) {}
 
   connect(meetingId: string) {
     if (this.socket?.connected) return;
 
     const wsUrl = environment.apiBase.replace('/api', '');
-    this.socket = io(`${wsUrl}/meetings`, { transports: ['websocket'] });
+    const token = this.memberAuth.getToken() || this.auth.getToken();
+    this.socket = io(`${wsUrl}/meetings`, {
+      transports: ['websocket'],
+      auth: { token },
+    });
 
     this.socket.on('connect', () => {
       this.socket!.emit('join-meeting', { meetingId });
@@ -86,8 +107,16 @@ export class MeetingSocketService implements OnDestroy {
       this.prayerSupport$.next(d);
     });
 
-    this.socket.on('streaming-status', (d: { status: 'started' | 'stopped'; platform?: string }) => {
+    this.socket.on('recording-status', (d: { status: MediaStatus; error?: string }) => {
+      this.recordingStatus$.next(d);
+    });
+
+    this.socket.on('streaming-status', (d: { status: MediaStatus; error?: string }) => {
       this.streamingStatus$.next(d);
+    });
+
+    this.socket.on('media-command', (command) => {
+      this.mediaCommand$.next(command);
     });
 
     this.socket.on('meeting-ended', () => {
@@ -140,6 +169,15 @@ export class MeetingSocketService implements OnDestroy {
 
   closePoll(meetingId: string) {
     this.socket?.emit('close-poll', { meetingId });
+  }
+
+  reportMediaStatus(
+    meetingId: string,
+    mode: MediaMode,
+    status: MediaStatus,
+    error?: string,
+  ) {
+    this.socket?.emit('media-status', { meetingId, mode, status, error });
   }
 
   ngOnDestroy() {

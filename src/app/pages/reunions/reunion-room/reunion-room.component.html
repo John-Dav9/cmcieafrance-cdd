@@ -1,57 +1,80 @@
-<!-- ══ TOPBAR FIXE (au-dessus de Jitsi z-index:9998) ══════════ -->
-<div class="rm-topbar">
-
-  <div class="rm-topbar__left">
-    <div class="rm-logo">✝</div>
-    <div class="rm-info">
-      <span class="rm-title">{{ jitsiData?.meeting?.title }}</span>
-      <span class="rm-timer">{{ elapsedTime }}</span>
-    </div>
-  </div>
-
-  <div class="rm-topbar__right">
-
-    <!-- Qualité réseau -->
-    <div class="rm-quality" [ngClass]="quality" [title]="qualityLabel">
-      <span class="rm-quality__dot"></span>
-      <span class="rm-quality__label">{{ qualityLabel }}</span>
+<section class="meeting-shell">
+  <header class="meeting-header">
+    <div class="meeting-identity">
+      <div class="meeting-brand" aria-hidden="true">C</div>
+      <div class="meeting-copy">
+        <div class="meeting-eyebrow">
+          <span class="live-dot"></span>
+          Réunion en cours
+        </div>
+        <h1>{{ jitsiData?.meeting?.title }}</h1>
+      </div>
     </div>
 
-    <!-- Participants -->
-    <div class="rm-participants" title="Participants">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-      <span>{{ participantCount }}</span>
+    <div class="meeting-status">
+      <div class="status-chip status-chip--timer">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        {{ elapsedTime }}
+      </div>
+      <app-network-indicator [quality]="quality"></app-network-indicator>
+      <div class="status-chip">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        {{ participantCount }}
+      </div>
+      <button class="header-action header-action--admin" *ngIf="isAdmin"
+              [class.is-active]="showAdminPanel" (click)="toggleAdminPanel()">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Régie</span>
+      </button>
+      <button class="header-action" (click)="toggleFloat()">
+        <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 21h3a2 2 0 0 0 2-2v-3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        <span>Réduire</span>
+      </button>
     </div>
+  </header>
 
-    <!-- Panneau admin (modérateurs uniquement) -->
-    <button class="rm-btn" *ngIf="isAdmin"
-            [class.rm-btn--active]="showAdminPanel"
-            (click)="toggleAdminPanel()"
-            title="Panneau modérateur">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      </svg>
-      <span class="rm-btn__label">Modérateur</span>
+  <div class="meeting-stage-frame" [class.with-panel]="showAdminPanel"></div>
+
+  <nav class="meeting-dock" aria-label="Contrôles de la réunion">
+    <button class="dock-control" [class.is-off]="micMuted" (click)="toggleMicrophone()">
+      <span class="dock-icon">
+        <svg *ngIf="!micMuted" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8"/></svg>
+        <svg *ngIf="micMuted" viewBox="0 0 24 24"><path d="m3 3 18 18M9 9v2a3 3 0 0 0 5.1 2.1M15 9V5a3 3 0 0 0-5.8-1M17 16.8A7 7 0 0 0 19 10M5 10a7 7 0 0 0 10 6.3M12 17v4M8 21h8"/></svg>
+      </span>
+      <span>{{ micMuted ? 'Activer' : 'Micro' }}</span>
     </button>
-
-    <!-- Réduire en mode flottant -->
-    <button class="rm-btn rm-btn--minimize" (click)="toggleFloat()" title="Réduire — continuer à naviguer">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="15 3 21 3 21 9"/>
-        <polyline points="9 21 3 21 3 15"/>
-        <line x1="21" y1="3" x2="14" y2="10"/>
-        <line x1="3" y1="21" x2="10" y2="14"/>
-      </svg>
-      <span class="rm-btn__label">Réduire</span>
+    <button class="dock-control" [class.is-off]="cameraMuted" (click)="toggleCamera()">
+      <span class="dock-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>
+      </span>
+      <span>{{ cameraMuted ? 'Activer' : 'Caméra' }}</span>
     </button>
-
-  </div>
-</div>
+    <button class="dock-control" [class.is-active]="sharingScreen" (click)="toggleScreenShare()">
+      <span class="dock-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4M8 10l4-4 4 4M12 6v7"/></svg></span>
+      <span>Présenter</span>
+    </button>
+    <button class="dock-control" (click)="toggleChat()">
+      <span class="dock-icon"><svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M8 9h8M8 13h5"/></svg></span>
+      <span>Discussion</span>
+    </button>
+    <button class="dock-control dock-control--secondary" [class.is-active]="handRaised" (click)="toggleRaiseHand()">
+      <span class="dock-icon"><svg viewBox="0 0 24 24"><path d="M7 11V6a2 2 0 0 1 4 0v4-6a2 2 0 0 1 4 0v6-4a2 2 0 0 1 4 0v8a8 8 0 0 1-8 8h-1a8 8 0 0 1-7-4l-2-4a2 2 0 0 1 3.4-2l2.6 3"/></svg></span>
+      <span>Main</span>
+    </button>
+    <button class="dock-control dock-control--secondary" [class.is-active]="tileView" (click)="toggleTileView()">
+      <span class="dock-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+      <span>Grille</span>
+    </button>
+    <button class="dock-control dock-control--secondary" (click)="toggleFullscreen()">
+      <span class="dock-icon"><svg viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></span>
+      <span>Plein écran</span>
+    </button>
+    <button class="dock-control dock-control--leave" (click)="leaveMeeting()">
+      <span class="dock-icon"><svg viewBox="0 0 24 24"><path d="M4 14c5-4 11-4 16 0l-3 4-3-2v-3a12 12 0 0 0-4 0v3l-3 2z"/></svg></span>
+      <span>Quitter</span>
+    </button>
+  </nav>
+</section>
 
 <!-- ══ ÉCRAN DE CHARGEMENT ═══════════════════════════════════ -->
 <div class="rm-loading" *ngIf="isConnecting">

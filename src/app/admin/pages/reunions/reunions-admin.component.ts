@@ -30,8 +30,9 @@ export class ReunionsAdminComponent implements OnInit {
     startTime: '',
     startHour: '10:00',
     isPublic: true,
+    lobbyEnabled: false,
     isRecurring: false,
-    recurrenceRule: '',
+    recurrenceRule: 'FREQ=WEEKLY;INTERVAL=1',
   };
 
   constructor(private reunionsService: ReunionsService, private router: Router, private api: ApiService) {}
@@ -41,7 +42,7 @@ export class ReunionsAdminComponent implements OnInit {
   }
 
   load() {
-    this.reunionsService.getAll().subscribe({
+    this.reunionsService.getAllAdmin().subscribe({
       next: (m) => { this.meetings = m; this.loading = false; },
       error: () => this.loading = false,
     });
@@ -58,7 +59,16 @@ export class ReunionsAdminComponent implements OnInit {
 
   closeForm() {
     this.showForm = false;
-    this.form = { title: '', description: '', startTime: '', startHour: '10:00', isPublic: true, isRecurring: false, recurrenceRule: '' };
+    this.form = {
+      title: '',
+      description: '',
+      startTime: '',
+      startHour: '10:00',
+      isPublic: true,
+      lobbyEnabled: false,
+      isRecurring: false,
+      recurrenceRule: 'FREQ=WEEKLY;INTERVAL=1',
+    };
   }
 
   create() {
@@ -73,6 +83,7 @@ export class ReunionsAdminComponent implements OnInit {
       description: this.form.description,
       startTime: startTime as any,
       isPublic: this.form.isPublic,
+      lobbyEnabled: this.form.lobbyEnabled,
       isRecurring: this.form.isRecurring,
       recurrenceRule: this.form.isRecurring ? this.form.recurrenceRule : undefined,
     }).subscribe({
@@ -98,6 +109,7 @@ export class ReunionsAdminComponent implements OnInit {
       description: this.form.description,
       startTime: startTime as any,
       isPublic: this.form.isPublic,
+      lobbyEnabled: this.form.lobbyEnabled,
     }).subscribe({
       next: () => {
         this.saving = false;
@@ -117,7 +129,9 @@ export class ReunionsAdminComponent implements OnInit {
   joinMeeting(id: string) {
     this.reunionsService.join(id).subscribe({
       next: (result) => {
-        this.router.navigate(['/reunions', id, 'salle'], { state: { jitsiData: result } });
+        if ('jitsiToken' in result) {
+          this.router.navigate(['/reunions', id, 'salle'], { state: { jitsiData: result } });
+        }
       },
       error: () => alert('Impossible de rejoindre la réunion.'),
     });

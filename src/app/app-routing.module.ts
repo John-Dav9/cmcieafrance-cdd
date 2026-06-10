@@ -7,6 +7,7 @@ import { MessagesComponent } from './pages/messages/messages.component';
 import { MarathonBibliqueComponent } from './pages/marathon-biblique/marathon-biblique.component';
 import { PremiereVisiteComponent } from './pages/premiere-visite/premiere-visite.component';
 import { RessourcesDecouvrirComponent } from './pages/ressources-decouvrir/ressources-decouvrir.component';
+import { authenticatedGuard } from './core/guards/authenticated.guard';
 
 
 
@@ -116,6 +117,7 @@ const routes: Routes = [
   },
   {
     path: 'replays',
+    canActivate: [authenticatedGuard],
     loadComponent: () => import('./pages/replay/replay.component').then(m => m.ReplayComponent),
   },
   {

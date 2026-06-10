@@ -6,7 +6,7 @@ $muted:   rgba(255,255,255,0.6);
 // ── Bannière streaming ────────────────────────────────────────
 .streaming-banner {
   position: fixed;
-  top: 56px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(#ea4335, 0.9);
@@ -22,7 +22,7 @@ $muted:   rgba(255,255,255,0.6);
 // ── Événement spirituel ───────────────────────────────────────
 .spiritual-overlay {
   position: fixed;
-  bottom: 80px;
+  bottom: 96px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9996;
@@ -74,7 +74,7 @@ $muted:   rgba(255,255,255,0.6);
 .poll-overlay {
   position: fixed;
   right: 20px;
-  top: 80px;
+  top: 90px;
   z-index: 9996;
   width: 280px;
   animation: slideIn 0.25s ease;
@@ -119,7 +119,7 @@ $muted:   rgba(255,255,255,0.6);
 // ── Bouton fil de prière ──────────────────────────────────────
 .prayer-fab {
   position: fixed;
-  bottom: 24px;
+  bottom: 94px;
   left: 24px;
   width: 48px; height: 48px;
   border-radius: 50%;
@@ -154,7 +154,7 @@ $muted:   rgba(255,255,255,0.6);
 // ── Panneau fil de prière ─────────────────────────────────────
 .prayer-panel {
   position: fixed;
-  bottom: 80px;
+  bottom: 152px;
   left: 24px;
   width: 300px;
   max-height: 420px;
@@ -233,4 +233,26 @@ $muted:   rgba(255,255,255,0.6);
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(16px); }
   to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 900px) {
+  .streaming-banner { top: 64px; border-radius: 0 0 10px 10px; }
+  .spiritual-overlay {
+    bottom: 88px;
+    width: calc(100vw - 20px);
+  }
+  .spiritual-content { padding: 17px 18px; border-radius: 14px; }
+  .verse-text, .lyrics-lines p { font-size: 14px; line-height: 1.6; }
+  .poll-overlay {
+    top: auto; right: 10px; bottom: 88px;
+    width: calc(100vw - 20px);
+  }
+  .poll-card { border-radius: 14px; }
+  .prayer-fab {
+    left: 12px; bottom: 91px; width: 44px; height: 44px;
+  }
+  .prayer-panel {
+    left: 8px; right: 8px; bottom: 88px;
+    width: auto; max-height: 58vh; border-radius: 16px;
+  }
 }

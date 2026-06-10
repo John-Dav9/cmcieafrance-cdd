@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 
-type Step = 'email' | 'register';
+type Step = 'email' | 'otp' | 'magic-link' | 'register';
 
 @Component({
   selector: 'app-join-modal',
@@ -19,6 +19,7 @@ export class JoinModalComponent {
 
   step: Step = 'email';
   email = '';
+  code = '';
   form = { firstName: '', lastName: '', phone: '', city: '' };
   loading = false;
   error = '';
@@ -47,17 +48,51 @@ export class JoinModalComponent {
           return;
         }
 
-        // Email connu → connexion directe sans OTP
-        this.auth.quickLogin(email).subscribe({
-          next: () => this.authSuccess.emit(),
-          error: () => {
-            this.error = 'Erreur de connexion. Veuillez réessayer.';
+        this.auth.sendOtp(email).subscribe({
+          next: (result) => {
+            this.loading = false;
+            this.step = result.method === 'sms' ? 'otp' : 'magic-link';
+          },
+          error: (err) => {
+            this.loading = false;
+            this.error = err?.error?.message ?? 'Impossible d’envoyer le code de connexion.';
           },
         });
       },
       error: () => {
         this.error = 'Erreur de connexion au serveur.';
         this.loading = false;
+      },
+    });
+  }
+
+  submitOtp() {
+    if (this.code.trim().length < 4) return;
+    this.loading = true;
+    this.error = '';
+    this.auth.verifyOtp(this.email.trim().toLowerCase(), this.code.trim()).subscribe({
+      next: () => {
+        this.loading = false;
+        this.authSuccess.emit();
+      },
+      error: () => {
+        this.loading = false;
+        this.error = 'Code incorrect ou expiré. Vérifiez puis réessayez.';
+      },
+    });
+  }
+
+  resendOtp() {
+    this.loading = true;
+    this.error = '';
+    this.auth.sendOtp(this.email.trim().toLowerCase()).subscribe({
+      next: () => {
+        this.loading = false;
+        this.code = '';
+      },
+      error: () => {
+        this.loading = false;
+        this.error = 'Le code n’a pas pu être renvoyé.';
       },
     });
   }
@@ -93,6 +128,7 @@ export class JoinModalComponent {
 
   back() {
     this.step = 'email';
+    this.code = '';
     this.error = '';
   }
 }

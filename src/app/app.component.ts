@@ -22,7 +22,7 @@ import { MeetingService } from './core/services/meeting.service';
     FloatingWindowComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   currentYear = new Date().getFullYear();

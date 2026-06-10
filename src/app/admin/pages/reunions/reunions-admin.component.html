@@ -41,9 +41,21 @@
           <option [ngValue]="true">Récurrente</option>
         </select>
       </div>
+      <div class="field">
+        <label>Salle d’attente</label>
+        <select [(ngModel)]="form.lobbyEnabled">
+          <option [ngValue]="false">Accès direct</option>
+          <option [ngValue]="true">Admission par un modérateur</option>
+        </select>
+      </div>
       <div class="field field--full" *ngIf="form.isRecurring">
-        <label>Règle de récurrence (RRULE)</label>
-        <input type="text" [(ngModel)]="form.recurrenceRule" placeholder="Ex: FREQ=WEEKLY;BYDAY=SU" />
+        <label>Fréquence</label>
+        <select [(ngModel)]="form.recurrenceRule">
+          <option value="FREQ=DAILY;INTERVAL=1">Tous les jours</option>
+          <option value="FREQ=WEEKLY;INTERVAL=1">Toutes les semaines</option>
+          <option value="FREQ=WEEKLY;INTERVAL=2">Toutes les deux semaines</option>
+          <option value="FREQ=MONTHLY;INTERVAL=1">Tous les mois</option>
+        </select>
       </div>
     </div>
 
@@ -77,6 +89,7 @@
           {{ m.isPublic ? 'Public' : 'Privé' }}
         </span>
         <span class="badge badge--recurring" *ngIf="m.isRecurring">Récurrent</span>
+        <span class="badge badge--recurring" *ngIf="m.lobbyEnabled">Salle d’attente</span>
       </div>
       <div class="meeting-row__actions">
         <button class="btn-sm btn-sm--join" (click)="joinMeeting(m.id)"

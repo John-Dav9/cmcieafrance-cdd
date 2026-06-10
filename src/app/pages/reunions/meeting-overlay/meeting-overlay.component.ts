@@ -32,7 +32,6 @@ export class MeetingOverlayComponent implements OnInit, OnDestroy {
 
   // Streaming banner
   streamingActive = false;
-  streamingPlatform = '';
 
   private subs: Subscription[] = [];
 
@@ -66,8 +65,7 @@ export class MeetingOverlayComponent implements OnInit, OnDestroy {
         if (req && !req.supporters.includes(s.author)) req.supporters.push(s.author);
       }),
       this.socket.streamingStatus$.subscribe(s => {
-        this.streamingActive = s.status === 'started';
-        this.streamingPlatform = s.platform ?? '';
+        this.streamingActive = s.status === 'starting' || s.status === 'active';
       }),
     );
   }

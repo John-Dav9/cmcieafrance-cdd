@@ -1,22 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { firstValueFrom, interval, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
+import { MeetingReconnectService } from '../../../core/services/meeting-reconnect.service';
 import { MeetingService } from '../../../core/services/meeting.service';
 import { MeetingSocketService } from '../../../core/services/meeting-socket.service';
+import { ConnectionQuality, NetworkQualityService } from '../../../core/services/network-quality.service';
 import { ReunionsService, JoinResult } from '../../../core/services/reunions.service';
 import { AdminControlsComponent } from '../admin-controls/admin-controls.component';
 import { MeetingOverlayComponent } from '../meeting-overlay/meeting-overlay.component';
+import { NetworkIndicatorComponent } from '../network-indicator/network-indicator.component';
 
 declare const JitsiMeetExternalAPI: any;
-type ConnectionQuality = 'high' | 'medium' | 'low' | 'critical';
 
 @Component({
   selector: 'app-reunion-room',
   standalone: true,
-  imports: [CommonModule, AdminControlsComponent, MeetingOverlayComponent],
+  imports: [CommonModule, AdminControlsComponent, MeetingOverlayComponent, NetworkIndicatorComponent],
   templateUrl: './reunion-room.component.html',
   styleUrls: ['./reunion-room.component.scss'],
 })
@@ -26,9 +28,13 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
   showAdminPanel = false;
   quality: ConnectionQuality = 'high';
   participantCount = 1;
+  micMuted = false;
+  cameraMuted = false;
+  sharingScreen = false;
+  handRaised = false;
+  tileView = false;
 
-  private heartbeat$: Subscription | null = null;
-  private qualityMonitor$: Subscription | null = null;
+  private qualitySubscription: Subscription | null = null;
 
   constructor(
     public meeting: MeetingService,
@@ -38,6 +44,8 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     private router: Router,
     private zone: NgZone,
     private socket: MeetingSocketService,
+    private networkQuality: NetworkQualityService,
+    private reconnectService: MeetingReconnectService,
   ) {}
 
   ngOnInit() {
@@ -51,12 +59,16 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     }
 
     this.isAdmin = this.jitsiData.isModerator || this.memberAuth.isAdmin() || this.adminAuth.isAdmin();
+    this.networkQuality.start();
+    this.qualitySubscription = this.networkQuality.quality$.subscribe(quality => {
+      this.quality = quality;
+      this.meeting.setQuality(quality);
+    });
 
     if (!this.meeting.isActive) {
       this.meeting.currentMeetingData = this.jitsiData;
       this.meeting.startMeeting(this.jitsiData.meeting.title);
       this.socket.connect(this.jitsiData.meeting.id);
-      this.detectNetworkQuality();
       this.loadJitsiScript();
     } else {
       this.meeting.setFloating(false);
@@ -65,8 +77,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (!this.meeting.isFloating) {
-      this.heartbeat$?.unsubscribe();
-      this.qualityMonitor$?.unsubscribe();
+      this.qualitySubscription?.unsubscribe();
       if (this.jitsiData) this.socket.disconnect(this.jitsiData.meeting.id);
     }
   }
@@ -102,12 +113,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       height: '100%',
       configOverwrite: this.getJitsiConfig(),
       interfaceConfigOverwrite: {
-        TOOLBAR_BUTTONS: [
-          'microphone', 'camera', 'desktop', 'chat',
-          'hangup',
-          'videoquality',
-          ...(this.isAdmin ? ['mute-everyone'] : []),
-        ],
+        TOOLBAR_BUTTONS: [],
         SHOW_JITSI_WATERMARK: false,
         SHOW_BRAND_WATERMARK: false,
         SHOW_POWERED_BY: false,
@@ -120,6 +126,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
         NATIVE_APP_NAME: 'CMCIEA France',
         DEFAULT_REMOTE_DISPLAY_NAME: 'Participant',
         TOOLBAR_ALWAYS_VISIBLE: false,
+        DISABLE_VIDEO_BACKGROUND: false,
       },
       userInfo: {
         displayName: member ? `${member.firstName} ${member.lastName}` : 'Participant',
@@ -132,27 +139,29 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       this.zone.run(() => {
         if (!this.meeting.jitsiApi) {
           this.meeting.onJoined(api);
-          this.startHeartbeat();
+          this.startReconnectSession();
         }
       });
     }, 8000);
 
-    api.addListener('videoConferenceJoined', () => {
+    api.addListener('videoConferenceJoined', (event: { id?: string }) => {
       this.zone.run(() => {
         this.meeting.onJoined(api);
-        this.startHeartbeat();
+        this.startReconnectSession();
+        if (event?.id && this.jitsiData?.participantId) {
+          this.reunionsService.registerParticipantSession(
+            this.jitsiData.meeting.id,
+            this.jitsiData.participantId,
+            event.id,
+          ).subscribe({ error: () => undefined });
+        }
         try {
           this.participantCount = api.getNumberOfParticipants?.() ?? 1;
         } catch { this.participantCount = 1; }
         // Apply config overrides post-join in case Jitsi ignored them at init
         try {
-          const toolbarButtons = [
-            'microphone', 'camera', 'desktop', 'chat',
-            'hangup', 'videoquality',
-            ...(this.isAdmin ? ['mute-everyone'] : []),
-          ];
           api.executeCommand('overwriteConfig', {
-            toolbarButtons,
+            toolbarButtons: [],
             hideConferenceSubject: true,
             hideConferenceTimer: true,
           });
@@ -166,7 +175,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
         this.participantCount++;
         if (!this.meeting.jitsiApi) {
           this.meeting.onJoined(api);
-          this.startHeartbeat();
+          this.startReconnectSession();
         }
       });
     });
@@ -179,7 +188,8 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
 
     api.addListener('videoConferenceLeft', () => {
       this.zone.run(() => {
-        this.stopHeartbeat();
+        this.reconnectService.stop();
+        this.networkQuality.stop();
         this.meeting.endMeeting();
       });
     });
@@ -187,14 +197,25 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     api.addListener('connectionFailed', () => {
       this.zone.run(() => this.handleDisconnect());
     });
+
+    api.addListener('audioMuteStatusChanged', (event: { muted: boolean }) => {
+      this.zone.run(() => this.micMuted = event.muted);
+    });
+
+    api.addListener('videoMuteStatusChanged', (event: { muted: boolean }) => {
+      this.zone.run(() => this.cameraMuted = event.muted);
+    });
+
+    api.addListener('screenSharingStatusChanged', (event: { on: boolean }) => {
+      this.zone.run(() => this.sharingScreen = event.on);
+    });
+
+    api.addListener('tileViewChanged', (event: { enabled: boolean }) => {
+      this.zone.run(() => this.tileView = event.enabled);
+    });
   }
 
   private getJitsiConfig() {
-    const toolbarButtons = [
-      'microphone', 'camera', 'desktop', 'chat',
-      'hangup', 'videoquality',
-      ...(this.isAdmin ? ['mute-everyone'] : []),
-    ];
     const base = {
       defaultLanguage: 'fr',
       prejoinPageEnabled: false,
@@ -205,7 +226,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       hideConferenceSubject: true,
       hideConferenceTimer: true,
       // Modern Jitsi: toolbar buttons in configOverwrite (interfaceConfigOverwrite.TOOLBAR_BUTTONS is deprecated)
-      toolbarButtons,
+      toolbarButtons: [],
       theme: 'dark',
     };
     switch (this.quality) {
@@ -224,6 +245,43 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
 
   toggleAdminPanel() { this.showAdminPanel = !this.showAdminPanel; }
 
+  toggleMicrophone() {
+    this.meeting.jitsiApi?.executeCommand('toggleAudio');
+    this.micMuted = !this.micMuted;
+  }
+
+  toggleCamera() {
+    this.meeting.jitsiApi?.executeCommand('toggleVideo');
+    this.cameraMuted = !this.cameraMuted;
+  }
+
+  toggleScreenShare() {
+    this.meeting.jitsiApi?.executeCommand('toggleShareScreen');
+  }
+
+  toggleChat() {
+    this.meeting.jitsiApi?.executeCommand('toggleChat');
+  }
+
+  toggleRaiseHand() {
+    this.meeting.jitsiApi?.executeCommand('toggleRaiseHand');
+    this.handRaised = !this.handRaised;
+  }
+
+  toggleTileView() {
+    this.meeting.jitsiApi?.executeCommand('toggleTileView');
+    this.tileView = !this.tileView;
+  }
+
+  toggleFullscreen() {
+    this.meeting.jitsiApi?.executeCommand('toggleFilmStrip');
+    document.documentElement.requestFullscreen?.();
+  }
+
+  leaveMeeting() {
+    this.meeting.hangup();
+  }
+
   get isConnecting()  { return this.meeting['_isConnecting'].value; }
   get elapsedTime()   { return this.meeting['_timer'].value; }
   get qualityLabel()  {
@@ -231,54 +289,25 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
     return map[this.quality] ?? '';
   }
 
-  // ── Heartbeat ───────────────────────────────────────────────
-  private startHeartbeat() {
+  private startReconnectSession() {
     if (!this.jitsiData) return;
-    const id = this.jitsiData.meeting.id;
-    this.heartbeat$ = interval(15000).subscribe(() =>
-      this.reunionsService.heartbeat(id).subscribe()
+    this.reconnectService.start(
+      this.jitsiData.meeting.id,
+      this.jitsiData.participantId,
+      this.jitsiData.reconnectToken,
     );
   }
-
-  private stopHeartbeat() { this.heartbeat$?.unsubscribe(); }
 
   // ── Reconnexion ─────────────────────────────────────────────
   private async handleDisconnect() {
     if (!this.jitsiData) return;
-    for (let i = 0; i < 3; i++) {
-      await new Promise(r => setTimeout(r, 5000));
-      try {
-        const res = await firstValueFrom(this.reunionsService.reconnect(
-          this.jitsiData.meeting.id,
-          this.jitsiData.reconnectToken,
-        ));
-        if (res?.restored) { this.loadJitsiScript(); return; }
-      } catch { /* continue */ }
+    this.reconnectService.stop(false);
+    const restored = await this.reconnectService.reconnect(
+      this.jitsiData.meeting.id,
+      this.jitsiData.reconnectToken,
+    );
+    if (restored) {
+      this.loadJitsiScript();
     }
-  }
-
-  // ── Qualité réseau ──────────────────────────────────────────
-  private detectNetworkQuality() {
-    const conn = (navigator as any).connection;
-    if (!conn) return;
-    const check = () => {
-      const { downlink, effectiveType, rtt } = conn;
-      if (downlink > 2 && rtt < 200)                   this.quality = 'high';
-      else if (downlink > 0.5 || effectiveType === '3g') this.quality = 'medium';
-      else if (downlink > 0.1 || effectiveType === '2g') this.quality = 'low';
-      else                                               this.quality = 'critical';
-      this.meeting.setQuality(this.quality);
-    };
-    check();
-    conn.addEventListener('change', check);
-    this.qualityMonitor$ = interval(30000).subscribe(async () => {
-      const t = Date.now();
-      try {
-        await fetch('/api/health', { cache: 'no-store' });
-        const ms = Date.now() - t;
-        this.quality = ms > 800 ? 'low' : ms > 300 ? 'medium' : 'high';
-        this.meeting.setQuality(this.quality);
-      } catch { this.quality = 'critical'; this.meeting.setQuality('critical'); }
-    });
   }
 }

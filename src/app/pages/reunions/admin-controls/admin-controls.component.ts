@@ -4,7 +4,11 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormsModule } from '@angular/forms';
 import { interval, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { MeetingSocketService } from '../../../core/services/meeting-socket.service';
+import {
+  MediaMode,
+  MediaStatus,
+  MeetingSocketService,
+} from '../../../core/services/meeting-socket.service';
 import { ReunionsService } from '../../../core/services/reunions.service';
 
 type AdminTab = 'participants' | 'spiritual' | 'poll' | 'prayer' | 'streaming';
@@ -24,7 +28,9 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
 
   activeTab: AdminTab = 'participants';
   participants: any[] = [];
+  waitingParticipants: any[] = [];
   recording = false;
+  recordingPending = false;
   toast: { msg: string; type: 'success' | 'error' } | null = null;
   loadingActions: Record<string, boolean> = {};
 
@@ -49,7 +55,14 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   isStreaming = false;
 
   private refresh$: Subscription | null = null;
+  private socketSubscriptions = new Subscription();
   private toastTimer: any = null;
+  private readonly recordingStatusHandler = (event: any) => {
+    const mode = event?.mode as MediaMode;
+    if (mode !== 'file' && mode !== 'stream') return;
+    const status: MediaStatus = event?.error ? 'failed' : event?.on ? 'active' : 'idle';
+    this.socket.reportMediaStatus(this.meetingId, mode, status, event?.error);
+  };
 
   constructor(
     private reunionsService: ReunionsService,
@@ -61,17 +74,48 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
     this.loadParticipants();
     this.refresh$ = interval(10000).subscribe(() => this.loadParticipants());
 
-    this.socket.pollStarted$.subscribe(p => { this.activePoll = p; this.pollResults = null; });
-    this.socket.pollResults$.subscribe(r => this.pollResults = r);
-    this.socket.pollClosed$.subscribe(r => { this.pollResults = r; this.activePoll = null; });
-    this.socket.streamingStatus$.subscribe(s => {
-      this.isStreaming = s.status === 'started';
-      this.showToast(s.status === 'started' ? 'Streaming démarré !' : 'Streaming arrêté', 'success');
+    this.socketSubscriptions.add(this.socket.pollStarted$.subscribe(p => {
+      this.activePoll = p;
+      this.pollResults = null;
+    }));
+    this.socketSubscriptions.add(this.socket.pollResults$.subscribe(r => this.pollResults = r));
+    this.socketSubscriptions.add(this.socket.pollClosed$.subscribe(r => {
+      this.pollResults = r;
+      this.activePoll = null;
+    }));
+    this.socketSubscriptions.add(this.socket.recordingStatus$.subscribe(s => {
+      this.recordingPending = s.status === 'starting' || s.status === 'stopping';
+      this.recording = s.status === 'active' || s.status === 'starting';
+      if (s.status === 'active') this.showToast('Enregistrement confirmé par Jitsi', 'success');
+      if (s.status === 'failed') this.showToast(s.error || 'Échec de l’enregistrement', 'error');
+    }));
+    this.socketSubscriptions.add(this.socket.streamingStatus$.subscribe(s => {
+      this.isStreaming = s.status === 'active' || s.status === 'starting';
+      if (s.status === 'active') this.showToast('Diffusion confirmée par Jitsi', 'success');
+      if (s.status === 'failed') this.showToast(s.error || 'Échec de la diffusion', 'error');
+    }));
+    this.socketSubscriptions.add(this.socket.mediaCommand$.subscribe(command => {
+      if (command.meetingId === this.meetingId) this.executeMediaCommand(command);
+    }));
+    this.jitsiApi?.addListener?.('recordingStatusChanged', this.recordingStatusHandler);
+
+    this.reunionsService.getRecordingStatus(this.meetingId).subscribe({
+      next: state => {
+        this.recording = state.status === 'active' || state.status === 'starting';
+        this.recordingPending = state.status === 'starting' || state.status === 'stopping';
+      },
+    });
+    this.http.get<{ status: MediaStatus }>(
+      `${environment.apiBase}/streaming/${this.meetingId}/status`,
+    ).subscribe({
+      next: state => this.isStreaming = state.status === 'active' || state.status === 'starting',
     });
   }
 
   ngOnDestroy() {
     this.refresh$?.unsubscribe();
+    this.socketSubscriptions.unsubscribe();
+    this.jitsiApi?.removeListener?.('recordingStatusChanged', this.recordingStatusHandler);
     clearTimeout(this.toastTimer);
   }
 
@@ -81,13 +125,51 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
 
   loadParticipants() {
     this.reunionsService.getParticipants(this.meetingId).subscribe({ next: p => this.participants = p });
+    this.reunionsService.getWaitingParticipants(this.meetingId).subscribe({
+      next: p => this.waitingParticipants = p,
+    });
+  }
+
+  admitParticipant(p: any) {
+    const key = `admit-${p.id}`;
+    this.loadingActions[key] = true;
+    this.reunionsService.admitParticipant(this.meetingId, p.id).subscribe({
+      next: () => {
+        this.waitingParticipants = this.waitingParticipants.filter(item => item.id !== p.id);
+        this.showToast(`${p.displayName} peut rejoindre la réunion`, 'success');
+        delete this.loadingActions[key];
+      },
+      error: () => {
+        this.showToast('Admission impossible', 'error');
+        delete this.loadingActions[key];
+      },
+    });
+  }
+
+  rejectParticipant(p: any) {
+    const key = `reject-${p.id}`;
+    this.loadingActions[key] = true;
+    this.reunionsService.rejectParticipant(this.meetingId, p.id).subscribe({
+      next: () => {
+        this.waitingParticipants = this.waitingParticipants.filter(item => item.id !== p.id);
+        delete this.loadingActions[key];
+      },
+      error: () => {
+        this.showToast('Refus impossible', 'error');
+        delete this.loadingActions[key];
+      },
+    });
   }
 
   muteParticipant(p: any) {
+    if (!p.jitsiParticipantId) {
+      this.showToast('Identifiant Jitsi du participant indisponible', 'error');
+      return;
+    }
     const key = `mute-${p.id}`;
     this.loadingActions[key] = true;
-    this.jitsiApi?.executeCommand('muteParticipant', p.id);
-    this.reunionsService.muteParticipant(this.meetingId, p.id).subscribe({
+    this.jitsiApi?.executeCommand('muteParticipant', p.jitsiParticipantId);
+    this.reunionsService.muteParticipant(this.meetingId, p.jitsiParticipantId).subscribe({
       next: () => { this.showToast(`${p.displayName} coupé`, 'success'); delete this.loadingActions[key]; },
       error: () => { this.showToast(`${p.displayName} coupé (local)`, 'success'); delete this.loadingActions[key]; },
     });
@@ -95,10 +177,14 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
 
   kickParticipant(p: any) {
     if (!confirm(`Exclure ${p.displayName} ?`)) return;
+    if (!p.jitsiParticipantId) {
+      this.showToast('Identifiant Jitsi du participant indisponible', 'error');
+      return;
+    }
     const key = `kick-${p.id}`;
     this.loadingActions[key] = true;
-    this.jitsiApi?.executeCommand('kickParticipant', p.id);
-    this.reunionsService.kickParticipant(this.meetingId, p.id).subscribe({
+    this.jitsiApi?.executeCommand('kickParticipant', p.jitsiParticipantId);
+    this.reunionsService.kickParticipant(this.meetingId, p.jitsiParticipantId).subscribe({
       next: () => { this.participants = this.participants.filter(x => x.id !== p.id); this.showToast(`${p.displayName} exclu`, 'success'); delete this.loadingActions[key]; },
       error: () => { this.participants = this.participants.filter(x => x.id !== p.id); delete this.loadingActions[key]; },
     });
@@ -106,7 +192,11 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
 
   grantModerator(p: any) {
     if (!confirm(`Promouvoir ${p.displayName} modérateur ?`)) return;
-    const memberId = p.member?.id ?? p.id;
+    const memberId = p.member?.id;
+    if (!memberId) {
+      this.showToast('Ce participant doit être lié à un compte membre', 'error');
+      return;
+    }
     this.reunionsService.grantModerator(this.meetingId, memberId).subscribe({
       next: () => { p.wasAdmin = true; this.showToast(`${p.displayName} est modérateur`, 'success'); },
       error: () => this.showToast('Impossible de promouvoir', 'error'),
@@ -114,14 +204,18 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   }
 
   toggleRecording() {
-    if (this.recording) {
-      this.jitsiApi?.executeCommand('stopRecording', 'file');
-      this.showToast('Enregistrement arrêté', 'success');
-    } else {
-      this.jitsiApi?.executeCommand('startRecording', { mode: 'file' });
-      this.showToast('Enregistrement démarré', 'success');
-    }
-    this.recording = !this.recording;
+    if (this.recordingPending) return;
+    this.recordingPending = true;
+    const request = this.recording
+      ? this.reunionsService.stopRecording(this.meetingId)
+      : this.reunionsService.startRecording(this.meetingId);
+    request.subscribe({
+      next: res => this.showToast(res.message, 'success'),
+      error: err => {
+        this.recordingPending = false;
+        this.showToast(err?.error?.message ?? 'Commande d’enregistrement impossible', 'error');
+      },
+    });
   }
 
   endMeeting() {
@@ -203,16 +297,43 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
     this.http.post(`${environment.apiBase}/streaming/start`, {
       meetingId: this.meetingId, jitsiRoomId: this.jitsiRoomId, targets,
     }).subscribe({
-      next: () => this.showToast('Streaming démarré', 'success'),
-      error: () => this.showToast('Erreur streaming', 'error'),
+      next: () => this.showToast('Démarrage de la diffusion demandé', 'success'),
+      error: err => this.showToast(err?.error?.message ?? 'Erreur de diffusion', 'error'),
     });
   }
 
   stopStreaming() {
     this.http.post(`${environment.apiBase}/streaming/stop`, { meetingId: this.meetingId }).subscribe({
-      next: () => this.showToast('Streaming arrêté', 'success'),
-      error: () => this.showToast('Erreur', 'error'),
+      next: () => this.showToast('Arrêt de la diffusion demandé', 'success'),
+      error: err => this.showToast(err?.error?.message ?? 'Erreur de diffusion', 'error'),
     });
+  }
+
+  private executeMediaCommand(command: {
+    action: 'start' | 'stop';
+    mode: MediaMode;
+    streamKey?: string;
+  }) {
+    try {
+      if (!this.jitsiApi) throw new Error('Interface Jitsi indisponible');
+      if (command.action === 'start') {
+        const options = command.mode === 'stream'
+          ? { mode: 'stream', rtmpStreamKey: command.streamKey }
+          : { mode: 'file' };
+        this.jitsiApi.executeCommand('startRecording', options);
+        this.socket.reportMediaStatus(this.meetingId, command.mode, 'starting');
+      } else {
+        this.jitsiApi.executeCommand('stopRecording', command.mode);
+        this.socket.reportMediaStatus(this.meetingId, command.mode, 'stopping');
+      }
+    } catch (error: any) {
+      this.socket.reportMediaStatus(
+        this.meetingId,
+        command.mode,
+        'failed',
+        error?.message ?? 'Commande Jitsi impossible',
+      );
+    }
   }
 
   // ── Toast ──────────────────────────────────────────────────────────────────

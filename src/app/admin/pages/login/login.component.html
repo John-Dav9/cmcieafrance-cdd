@@ -6,20 +6,35 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
-      <div class="field">
+      <div class="field" *ngIf="!waitingForCode">
         <label>Email</label>
         <input type="email" formControlName="email" placeholder="admin@cmciea-france.com" autocomplete="email" />
       </div>
 
-      <div class="field">
+      <div class="field" *ngIf="!waitingForCode">
         <label>Mot de passe</label>
         <input type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password" />
       </div>
 
+      <ng-container *ngIf="waitingForCode">
+        <p>Un code de sécurité a été envoyé à <strong>{{ emailHint }}</strong>.</p>
+        <div class="field">
+          <label>Code de sécurité</label>
+          <input type="text" formControlName="code" inputmode="numeric" maxlength="6"
+                 placeholder="000000" autocomplete="one-time-code" autofocus />
+        </div>
+      </ng-container>
+
       <p class="error" *ngIf="error">{{ error }}</p>
 
-      <button type="submit" [disabled]="loading || form.invalid" class="btn-login">
-        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      <button type="submit"
+              [disabled]="loading || (waitingForCode ? form.controls.code.invalid : form.controls.email.invalid || form.controls.password.invalid)"
+              class="btn-login">
+        {{ loading ? 'Vérification...' : (waitingForCode ? 'Valider le code' : 'Se connecter') }}
+      </button>
+      <button type="button" *ngIf="waitingForCode" (click)="restart()" class="btn-login"
+              style="margin-top:10px;background:#e5e7eb;color:#374151">
+        Revenir à la connexion
       </button>
     </form>
   </div>

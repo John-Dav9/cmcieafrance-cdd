@@ -1,8 +1,11 @@
 <div class="admin-panel">
 
   <div class="admin-header">
-    <h3>Modérateur</h3>
-    <button class="admin-close" (click)="close.emit()">✕</button>
+    <div>
+      <span class="admin-kicker">Espace de contrôle</span>
+      <h3>Régie de la réunion</h3>
+    </div>
+    <button class="admin-close" (click)="close.emit()" aria-label="Fermer la régie">✕</button>
   </div>
 
   <div class="admin-toast" *ngIf="toast" [class.admin-toast--error]="toast.type === 'error'">
@@ -11,11 +14,11 @@
 
   <!-- Tabs -->
   <div class="admin-tabs">
-    <button [class.active]="activeTab==='participants'" (click)="setTab('participants')">👥</button>
-    <button [class.active]="activeTab==='spiritual'"   (click)="setTab('spiritual')">✝</button>
-    <button [class.active]="activeTab==='poll'"        (click)="setTab('poll')">📊</button>
-    <button [class.active]="activeTab==='prayer'"      (click)="setTab('prayer')">🙏</button>
-    <button [class.active]="activeTab==='streaming'"   (click)="setTab('streaming')" [class.streaming-active]="isStreaming">📡</button>
+    <button [class.active]="activeTab==='participants'" (click)="setTab('participants')"><span>👥</span>Participants</button>
+    <button [class.active]="activeTab==='spiritual'"   (click)="setTab('spiritual')"><span>✝</span>Contenu</button>
+    <button [class.active]="activeTab==='poll'"        (click)="setTab('poll')"><span>▥</span>Sondage</button>
+    <button [class.active]="activeTab==='prayer'"      (click)="setTab('prayer')"><span>🙏</span>Prière</button>
+    <button [class.active]="activeTab==='streaming'"   (click)="setTab('streaming')" [class.streaming-active]="isStreaming"><span>●</span>Direct</button>
   </div>
 
   <div class="admin-body">
@@ -23,16 +26,36 @@
     <!-- ── Participants ── -->
     <ng-container *ngIf="activeTab==='participants'">
       <div class="admin-actions">
-        <button class="admin-btn" [class.admin-btn--active]="recording" (click)="toggleRecording()">
-          {{ recording ? '⏹ Arrêter l\'enregistrement' : '⏺ Enregistrer' }}
+        <button class="admin-btn" [class.admin-btn--active]="recording"
+                [disabled]="recordingPending" (click)="toggleRecording()">
+          <span>{{ recording ? '■' : '●' }}</span>
+          {{ recordingPending ? 'Commande en cours…' : (recording ? 'Arrêter l\'enregistrement' : 'Démarrer l\'enregistrement') }}
         </button>
-        <button class="admin-btn admin-btn--danger" (click)="endMeeting()">Terminer pour tous</button>
+        <button class="admin-btn admin-btn--danger" (click)="endMeeting()"><span>⌁</span>Terminer pour tous</button>
       </div>
 
       <div class="participants-header">
         <h4>Participants ({{ participants.length }})</h4>
         <button class="refresh-btn" (click)="loadParticipants()" title="Actualiser">↻</button>
       </div>
+
+      <section class="waiting-list" *ngIf="waitingParticipants.length">
+        <div class="waiting-list__head">
+          <span>En attente</span>
+          <strong>{{ waitingParticipants.length }}</strong>
+        </div>
+        <div class="waiting-item" *ngFor="let p of waitingParticipants">
+          <div class="participant-avatar">{{ p.displayName?.charAt(0) || '?' }}</div>
+          <div class="participant-info">
+            <span class="participant-name">{{ p.displayName }}</span>
+            <span class="waiting-copy">Demande d’accès</span>
+          </div>
+          <button class="waiting-action waiting-action--accept"
+                  [disabled]="isLoading('admit-'+p.id)" (click)="admitParticipant(p)">Admettre</button>
+          <button class="waiting-action waiting-action--reject"
+                  [disabled]="isLoading('reject-'+p.id)" (click)="rejectParticipant(p)">Refuser</button>
+        </div>
+      </section>
 
       <div class="participant-item" *ngFor="let p of participants">
         <div class="participant-avatar" [class.participant-avatar--admin]="p.wasAdmin">
@@ -43,11 +66,14 @@
           <span class="participant-badge" *ngIf="p.wasAdmin">Modérateur</span>
         </div>
         <div class="participant-actions">
-          <button class="btn-sm" title="Couper" [disabled]="isLoading('mute-'+p.id)" (click)="muteParticipant(p)">
-            {{ isLoading('mute-'+p.id) ? '…' : '🔇' }}
+          <button class="btn-sm" title="Couper le micro"
+                  [disabled]="!p.jitsiParticipantId || isLoading('mute-'+p.id)" (click)="muteParticipant(p)">
+            {{ isLoading('mute-'+p.id) ? '…' : '⌁' }}
           </button>
-          <button class="btn-sm" title="Promouvoir" [disabled]="p.wasAdmin" (click)="grantModerator(p)">⭐</button>
-          <button class="btn-sm btn-sm--danger" title="Exclure" [disabled]="isLoading('kick-'+p.id)" (click)="kickParticipant(p)">
+          <button class="btn-sm" title="Nommer modérateur"
+                  [disabled]="p.wasAdmin || !p.member?.id || !p.jitsiParticipantId" (click)="grantModerator(p)">◇</button>
+          <button class="btn-sm btn-sm--danger" title="Exclure"
+                  [disabled]="!p.jitsiParticipantId || isLoading('kick-'+p.id)" (click)="kickParticipant(p)">
             {{ isLoading('kick-'+p.id) ? '…' : '✕' }}
           </button>
         </div>
@@ -58,10 +84,10 @@
     <!-- ── Outils spirituels ── -->
     <ng-container *ngIf="activeTab==='spiritual'">
       <div class="spiritual-section">
-        <h4>📖 Verset biblique</h4>
+        <h4><span>01</span> Verset biblique</h4>
         <div class="search-row">
           <input class="admin-input" [(ngModel)]="bibleQuery" placeholder="Jean 3:16 / amour..." (keyup.enter)="searchBible()">
-          <button class="btn-primary" (click)="searchBible()">🔍</button>
+          <button class="btn-primary btn-primary--compact" (click)="searchBible()">Chercher</button>
         </div>
         <div class="bible-results" *ngIf="bibleResults.length">
           <div class="bible-result" *ngFor="let v of bibleResults">
@@ -73,14 +99,14 @@
       </div>
 
       <div class="spiritual-section">
-        <h4>🎵 Paroles de cantique</h4>
+        <h4><span>02</span> Paroles de cantique</h4>
         <input class="admin-input" [(ngModel)]="lyricsTitle" placeholder="Titre du cantique">
         <textarea class="admin-textarea" [(ngModel)]="lyricsText" placeholder="Paroles (une ligne par ligne)..." rows="5"></textarea>
         <button class="btn-primary" (click)="sendLyrics()">Diffuser les paroles ▶</button>
       </div>
 
       <div class="spiritual-section">
-        <h4>📢 Annonce</h4>
+        <h4><span>03</span> Annonce à l'écran</h4>
         <textarea class="admin-textarea" [(ngModel)]="announcementText" placeholder="Message à afficher à tous..." rows="3"></textarea>
         <div class="btn-row">
           <button class="btn-primary" (click)="sendAnnouncement()">Afficher ▶</button>
@@ -92,7 +118,7 @@
     <!-- ── Sondages ── -->
     <ng-container *ngIf="activeTab==='poll'">
       <div *ngIf="!activePoll">
-        <h4>📊 Nouveau sondage</h4>
+        <h4>Nouveau sondage</h4>
         <input class="admin-input" [(ngModel)]="pollQuestion" placeholder="Question du sondage...">
         <div class="poll-options">
           <div class="poll-option-row" *ngFor="let opt of pollOptions; let i = index">
@@ -109,7 +135,7 @@
       </div>
 
       <div *ngIf="activePoll">
-        <h4>📊 Sondage en cours</h4>
+        <h4>Sondage en cours</h4>
         <p class="poll-question">{{ activePoll.question }}</p>
         <div *ngIf="pollResults">
           <div class="poll-bar" *ngFor="let r of pollResults.results">
@@ -127,27 +153,32 @@
 
     <!-- ── Fil de prière ── -->
     <ng-container *ngIf="activeTab==='prayer'">
-      <p class="info-text">Les participants voient un bouton "Sujet de prière" dans la réunion. Les sujets reçus s'affichent ici en temps réel.</p>
+      <div class="empty-state">
+        <span class="empty-state__icon">🙏</span>
+        <h4>Fil de prière en direct</h4>
+        <p>Les sujets soumis par les participants apparaissent instantanément dans la salle. La régie peut les suivre depuis le panneau visible dans la réunion.</p>
+      </div>
     </ng-container>
 
     <!-- ── Streaming ── -->
     <ng-container *ngIf="activeTab==='streaming'">
       <div class="streaming-status" [class.active]="isStreaming">
-        {{ isStreaming ? '🔴 En diffusion' : '⚫ Hors diffusion' }}
+        <span></span>{{ isStreaming ? 'Diffusion en cours' : 'Aucune diffusion active' }}
       </div>
 
       <div *ngIf="!isStreaming">
         <h4>Destinations</h4>
         <div class="platform-toggle" [class.selected]="hasPlatform('youtube')" (click)="togglePlatform('youtube')">
-          <span>▶ YouTube</span>
+          <span class="platform-logo platform-logo--youtube">YT</span><span>YouTube Live</span>
         </div>
         <input *ngIf="hasPlatform('youtube')" class="admin-input" [(ngModel)]="streamYoutubeKey" placeholder="Clé de streaming YouTube">
 
         <div class="platform-toggle" [class.selected]="hasPlatform('facebook')" (click)="togglePlatform('facebook')">
-          <span>f Facebook Live</span>
+          <span class="platform-logo platform-logo--facebook">f</span><span>Facebook Live</span>
         </div>
         <input *ngIf="hasPlatform('facebook')" class="admin-input" [(ngModel)]="streamFacebookKey" placeholder="Clé de streaming Facebook">
 
+        <p class="empty">Une seule destination peut être diffusée à la fois par Jitsi.</p>
         <button class="btn-primary" (click)="startStreaming()">▶ Démarrer le streaming</button>
       </div>
       <div *ngIf="isStreaming">

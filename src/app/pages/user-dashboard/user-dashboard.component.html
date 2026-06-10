@@ -7,8 +7,10 @@
       <p class="dash-hero__sub">Suis ta progression, ton rang et tes badges dans les Marathons Bibliques.</p>
 
       <div *ngIf="!identified" class="id-card">
-        <p class="id-label">Entre ton adresse email d'inscription pour accéder à ton espace.</p>
-        <div class="id-row">
+        <p class="id-label">
+          {{ otpSent ? 'Saisis le code reçu pour confirmer ton identité.' : 'Connecte-toi avec ton adresse email membre.' }}
+        </p>
+        <div class="id-row" *ngIf="!otpSent">
           <input
             class="id-input"
             type="email"
@@ -18,6 +20,20 @@
           />
           <button class="btn-primary" [disabled]="loading" (click)="identify()">
             {{ loading ? 'Chargement…' : 'Accéder' }}
+          </button>
+        </div>
+        <div class="id-row" *ngIf="otpSent">
+          <input
+            class="id-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="4"
+            [(ngModel)]="otpCode"
+            placeholder="Code à 4 chiffres"
+            (keyup.enter)="verifyOtp()"
+          />
+          <button class="btn-primary" [disabled]="loading" (click)="verifyOtp()">
+            {{ loading ? 'Vérification…' : 'Se connecter' }}
           </button>
         </div>
         <p class="id-error" *ngIf="emailError">{{ emailError }}</p>
@@ -33,6 +49,17 @@
           <span class="id-email">{{ dashboard.email }}</span>
         </div>
         <button class="btn-logout" (click)="logout()">Se déconnecter</button>
+      </div>
+
+      <div class="push-card" *ngIf="identified && pushSupported">
+        <div>
+          <strong>Rappels de réunion</strong>
+          <span>Recevoir une notification sur cet appareil une heure avant chaque réunion.</span>
+          <small *ngIf="pushMessage">{{ pushMessage }}</small>
+        </div>
+        <button type="button" [disabled]="pushLoading" (click)="togglePush()">
+          {{ pushLoading ? 'Patientez…' : (pushSubscribed ? 'Désactiver' : 'Activer') }}
+        </button>
       </div>
     </div>
   </section>

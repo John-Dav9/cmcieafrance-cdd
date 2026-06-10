@@ -37,14 +37,6 @@ export class MemberAuthService {
     return this.http.post<any>(`${environment.apiBase}/auth/check-email`, { email });
   }
 
-  // ── NOUVEAU : Connexion directe sans OTP ─────────────────
-  // Pour les membres déjà en base de données
-  quickLogin(email: string): Observable<{ access_token: string; member: MemberUser }> {
-    return this.http.post<any>(`${environment.apiBase}/auth/quick-login`, { email }).pipe(
-      tap(res => this.setSession(res)),
-    );
-  }
-
   // ── Inscription rapide (nouveau membre) ───────────────────
   register(data: {
     email: string;

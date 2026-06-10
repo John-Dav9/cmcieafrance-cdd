@@ -56,6 +56,41 @@
       </div>
     </div>
 
+    <section class="calendar-section">
+      <div class="calendar-header">
+        <div>
+          <span class="calendar-kicker">Calendrier</span>
+          <h3>{{ calendarTitle }}</h3>
+        </div>
+        <div class="calendar-view-toggle">
+          <button [class.active]="calendarView === 'month'" (click)="setCalendarView('month')">Mois</button>
+          <button [class.active]="calendarView === 'week'" (click)="setCalendarView('week')">Semaine</button>
+        </div>
+      </div>
+      <div class="calendar-nav">
+        <button (click)="navigateCalendar(-1)" aria-label="Période précédente">‹</button>
+        <button class="calendar-today" (click)="goToToday()">Aujourd’hui</button>
+        <button (click)="navigateCalendar(1)" aria-label="Période suivante">›</button>
+      </div>
+
+      <div class="calendar-loading" *ngIf="calendarLoading">Chargement du calendrier…</div>
+      <div class="calendar-grid" [class.calendar-grid--week]="calendarView === 'week'" *ngIf="!calendarLoading">
+        <article class="calendar-day" *ngFor="let day of calendarDays"
+                 [class.outside]="!day.inCurrentMonth" [class.today]="isCurrentDay(day.date)">
+          <div class="calendar-day__head">
+            <span>{{ dayLabel(day) }}</span>
+            <strong>{{ day.date.getDate() }}</strong>
+          </div>
+          <button class="calendar-event" *ngFor="let meeting of day.meetings"
+                  (click)="isToday(meeting.startTime) && joinMeeting(meeting.id)"
+                  [class.calendar-event--live]="meeting.status === 'live'">
+            <span>{{ formatTime(meeting.startTime) }}</span>
+            {{ meeting.title }}
+          </button>
+        </article>
+      </div>
+    </section>
+
     <!-- ── Aucune réunion prévue ────────────────────────── -->
     <div class="empty-upcoming" *ngIf="upcoming.length === 0 && !current">
       <p>Aucune réunion programmée pour le moment.</p>
@@ -70,5 +105,23 @@
     (authSuccess)="onAuthSuccess()"
     (close)="onModalClose()">
   </app-join-modal>
+
+  <div class="waiting-overlay" *ngIf="waitingMeeting">
+    <section class="waiting-card" role="status" aria-live="polite">
+      <div class="waiting-card__mark" [class.waiting-card__mark--rejected]="waitingRejected">
+        {{ waitingRejected ? '×' : '⌛' }}
+      </div>
+      <span class="waiting-card__kicker">Salle d’attente</span>
+      <h2>{{ waitingMeeting.title }}</h2>
+      <ng-container *ngIf="!waitingRejected">
+        <p>Votre demande a été transmise à la régie. Vous entrerez automatiquement dès qu’un modérateur vous aura admis.</p>
+        <div class="waiting-progress"><span></span><span></span><span></span></div>
+      </ng-container>
+      <p *ngIf="waitingRejected">La régie n’a pas autorisé cette demande d’accès.</p>
+      <button type="button" (click)="cancelWaiting()">
+        {{ waitingRejected ? 'Fermer' : 'Annuler la demande' }}
+      </button>
+    </section>
+  </div>
 
 </div>

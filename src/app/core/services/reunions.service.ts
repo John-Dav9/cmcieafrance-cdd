@@ -11,6 +11,7 @@ export interface Meeting {
   endTime: string;
   isPublic: boolean;
   isRecurring: boolean;
+  lobbyEnabled: boolean;
   recurrenceRule?: string;
   jitsiRoomId: string;
   status: 'scheduled' | 'live' | 'ended' | 'cancelled';
@@ -24,8 +25,22 @@ export interface JoinResult {
   roomId: string;
   isModerator: boolean;
   reconnectToken: string;
+  participantId: string;
   meeting: { id: string; title: string; status: string };
 }
+
+export interface WaitingRoomResult {
+  waitingRoom: true;
+  participantId: string;
+  meeting: { id: string; title: string; status: string };
+}
+
+export interface RejectedAdmissionResult {
+  waitingRoom: false;
+  rejected: true;
+}
+
+export type JoinResponse = JoinResult | WaitingRoomResult | RejectedAdmissionResult;
 
 @Injectable({ providedIn: 'root' })
 export class ReunionsService {
@@ -35,12 +50,24 @@ export class ReunionsService {
     return this.http.get<Meeting[]>(`${environment.apiBase}/reunions`);
   }
 
+  getAllAdmin(): Observable<Meeting[]> {
+    return this.http.get<Meeting[]>(`${environment.apiBase}/reunions/admin/all`);
+  }
+
   getCurrent(): Observable<Meeting | null> {
     return this.http.get<Meeting | null>(`${environment.apiBase}/reunions/current`);
   }
 
   getUpcoming(): Observable<Meeting[]> {
     return this.http.get<Meeting[]>(`${environment.apiBase}/reunions/upcoming`);
+  }
+
+  getCalendar(from: Date, to: Date): Observable<Meeting[]> {
+    const params = new URLSearchParams({
+      from: from.toISOString(),
+      to: to.toISOString(),
+    });
+    return this.http.get<Meeting[]>(`${environment.apiBase}/reunions/calendar?${params}`);
   }
 
   getOne(id: string): Observable<Meeting> {
@@ -59,16 +86,54 @@ export class ReunionsService {
     return this.http.delete(`${environment.apiBase}/reunions/${id}`);
   }
 
-  join(id: string): Observable<JoinResult> {
-    return this.http.post<JoinResult>(`${environment.apiBase}/reunions/${id}/join`, {});
+  join(id: string): Observable<JoinResponse> {
+    return this.http.post<JoinResponse>(`${environment.apiBase}/reunions/${id}/join`, {});
+  }
+
+  getAdmissionStatus(id: string, participantId: string): Observable<JoinResponse> {
+    return this.http.post<JoinResponse>(
+      `${environment.apiBase}/reunions/${id}/admission/status`,
+      { participantId },
+    );
   }
 
   end(id: string): Observable<any> {
     return this.http.post(`${environment.apiBase}/reunions/${id}/end`, {});
   }
 
-  heartbeat(id: string): Observable<any> {
-    return this.http.post(`${environment.apiBase}/reunions/${id}/heartbeat`, {});
+  startRecording(id: string): Observable<{ status: string; message: string }> {
+    return this.http.post<{ status: string; message: string }>(
+      `${environment.apiBase}/reunions/${id}/record/start`,
+      {},
+    );
+  }
+
+  stopRecording(id: string): Observable<{ status: string; message: string }> {
+    return this.http.post<{ status: string; message: string }>(
+      `${environment.apiBase}/reunions/${id}/record/stop`,
+      {},
+    );
+  }
+
+  getRecordingStatus(id: string): Observable<{ status: string; error?: string }> {
+    return this.http.get<{ status: string; error?: string }>(
+      `${environment.apiBase}/reunions/${id}/record/status`,
+    );
+  }
+
+  heartbeat(id: string, participantId: string): Observable<any> {
+    return this.http.post(`${environment.apiBase}/reunions/${id}/heartbeat`, { participantId });
+  }
+
+  registerParticipantSession(
+    id: string,
+    participantId: string,
+    jitsiParticipantId: string,
+  ): Observable<{ registered: boolean }> {
+    return this.http.post<{ registered: boolean }>(
+      `${environment.apiBase}/reunions/${id}/participant-session`,
+      { participantId, jitsiParticipantId },
+    );
   }
 
   reconnect(id: string, token: string): Observable<any> {
@@ -77,6 +142,24 @@ export class ReunionsService {
 
   getParticipants(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiBase}/reunions/${id}/participants`);
+  }
+
+  getWaitingParticipants(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiBase}/reunions/${id}/waiting-participants`);
+  }
+
+  admitParticipant(id: string, participantId: string): Observable<{ admitted: boolean }> {
+    return this.http.post<{ admitted: boolean }>(
+      `${environment.apiBase}/reunions/${id}/admit/${participantId}`,
+      {},
+    );
+  }
+
+  rejectParticipant(id: string, participantId: string): Observable<{ rejected: boolean }> {
+    return this.http.post<{ rejected: boolean }>(
+      `${environment.apiBase}/reunions/${id}/reject/${participantId}`,
+      {},
+    );
   }
 
   sendReminders(id: string): Observable<{ message: string }> {

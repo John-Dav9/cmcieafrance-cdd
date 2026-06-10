@@ -9,6 +9,12 @@ export interface AuthUser {
   access_token: string;
 }
 
+export interface AdminLoginChallenge {
+  requires_2fa: true;
+  challenge: string;
+  email_hint: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly TOKEN_KEY = 'cmciea_token';
@@ -25,13 +31,22 @@ export class AuthService {
     }
   }
 
-  login(email: string, password: string): Observable<AuthUser> {
-    return this.http.post<AuthUser>(`${environment.apiBase}/auth/login`, { email, password }).pipe(
-      tap(user => {
-        localStorage.setItem(this.TOKEN_KEY, JSON.stringify(user));
-        this.currentUser$.next(user);
+  login(email: string, password: string): Observable<AuthUser | AdminLoginChallenge> {
+    return this.http.post<AuthUser | AdminLoginChallenge>(
+      `${environment.apiBase}/auth/login`,
+      { email, password },
+    ).pipe(
+      tap(result => {
+        if ('access_token' in result) this.setSession(result);
       }),
     );
+  }
+
+  verifyAdminLogin(challenge: string, code: string): Observable<AuthUser> {
+    return this.http.post<AuthUser>(
+      `${environment.apiBase}/auth/login/verify`,
+      { challenge, code },
+    ).pipe(tap(user => this.setSession(user)));
   }
 
   logout(): void {
@@ -65,5 +80,10 @@ export class AuthService {
 
   get user$(): Observable<AuthUser | null> {
     return this.currentUser$.asObservable();
+  }
+
+  private setSession(user: AuthUser) {
+    localStorage.setItem(this.TOKEN_KEY, JSON.stringify(user));
+    this.currentUser$.next(user);
   }
 }

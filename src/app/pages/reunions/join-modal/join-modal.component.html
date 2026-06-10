@@ -30,6 +30,47 @@
       </form>
     </ng-container>
 
+    <ng-container *ngIf="step === 'otp'">
+      <button class="modal-back" (click)="back()">← Modifier l’email</button>
+      <div class="modal-icon">🔐</div>
+      <h2 class="modal-title">Code de connexion</h2>
+      <p class="modal-subtitle">
+        Entrez le code reçu par SMS pour <strong>{{ email }}</strong>
+      </p>
+
+      <form (ngSubmit)="submitOtp()" class="modal-form">
+        <input
+          type="tel"
+          [(ngModel)]="code"
+          name="code"
+          placeholder="0000"
+          maxlength="6"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          class="modal-input modal-input--code"
+          required
+        />
+        <div class="error-msg" *ngIf="error">{{ error }}</div>
+        <button type="submit" class="btn-join-modal" [disabled]="loading || code.trim().length < 4">
+          {{ loading ? 'Connexion...' : 'Rejoindre la réunion' }}
+        </button>
+        <button type="button" class="modal-link" (click)="resendOtp()" [disabled]="loading">
+          Renvoyer le code
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="step === 'magic-link'">
+      <button class="modal-back" (click)="back()">← Modifier l’email</button>
+      <div class="modal-icon">✉</div>
+      <h2 class="modal-title">Consultez votre messagerie</h2>
+      <p class="modal-subtitle">
+        Un lien sécurisé a été envoyé à <strong>{{ email }}</strong>.
+        Cliquez dessus pour vous connecter. Il reste valable 15 minutes.
+      </p>
+      <button type="button" class="btn-join-modal" (click)="close.emit()">Fermer</button>
+    </ng-container>
+
     <!-- ── Étape 2 : Formulaire (nouveau membre) ─────────── -->
     <ng-container *ngIf="step === 'register'">
       <button class="modal-back" (click)="back()">← Retour</button>

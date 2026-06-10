@@ -329,3 +329,20 @@
   .coming-soon-grid { grid-template-columns: 1fr 1fr; }
   .dash-hero__title { font-size: 1.7rem; }
 }
+.push-card {
+  max-width: 760px; margin: 18px auto 0; padding: 16px 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.13);
+  border-radius: 14px;
+}
+.push-card div { display: flex; flex-direction: column; gap: 4px; }
+.push-card span { color: rgba(255,255,255,.72); font-size: 13px; }
+.push-card small { color: #f3c866; }
+.push-card button {
+  flex: 0 0 auto; padding: 9px 14px; border: 1px solid rgba(255,255,255,.18);
+  border-radius: 9px; color: #fff; background: rgba(255,255,255,.1); cursor: pointer;
+}
+.push-card button:disabled { opacity: .55; cursor: wait; }
+@media (max-width: 640px) {
+  .push-card { align-items: stretch; flex-direction: column; }
+}
