@@ -59,7 +59,8 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.currentUser$.value?.role === 'admin';
+    const role = this.currentUser$.value?.role;
+    return role === 'admin' || role === 'super_admin';
   }
 
   get user$(): Observable<AuthUser | null> {

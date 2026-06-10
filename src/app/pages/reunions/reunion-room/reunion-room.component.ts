@@ -141,10 +141,23 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       this.zone.run(() => {
         this.meeting.onJoined(api);
         this.startHeartbeat();
-        // Récupère le nombre de participants réels à la connexion
         try {
           this.participantCount = api.getNumberOfParticipants?.() ?? 1;
         } catch { this.participantCount = 1; }
+        // Apply config overrides post-join in case Jitsi ignored them at init
+        try {
+          const toolbarButtons = [
+            'microphone', 'camera', 'desktop', 'chat',
+            'hangup', 'videoquality',
+            ...(this.isAdmin ? ['mute-everyone'] : []),
+          ];
+          api.executeCommand('overwriteConfig', {
+            toolbarButtons,
+            hideConferenceSubject: true,
+            hideConferenceTimer: true,
+          });
+          api.executeCommand('subject', ' ');
+        } catch { /* Jitsi version may not support overwriteConfig */ }
       });
     });
 
@@ -177,6 +190,11 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
   }
 
   private getJitsiConfig() {
+    const toolbarButtons = [
+      'microphone', 'camera', 'desktop', 'chat',
+      'hangup', 'videoquality',
+      ...(this.isAdmin ? ['mute-everyone'] : []),
+    ];
     const base = {
       defaultLanguage: 'fr',
       prejoinPageEnabled: false,
@@ -186,6 +204,8 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       subject: this.jitsiData?.meeting?.title ?? '',
       hideConferenceSubject: true,
       hideConferenceTimer: true,
+      // Modern Jitsi: toolbar buttons in configOverwrite (interfaceConfigOverwrite.TOOLBAR_BUTTONS is deprecated)
+      toolbarButtons,
       theme: 'dark',
     };
     switch (this.quality) {
