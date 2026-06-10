@@ -42,7 +42,8 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const state = history.state;
-    this.jitsiData = state?.jitsiData ?? null;
+    // Fallback to service data when re-entering from floating mode
+    this.jitsiData = state?.jitsiData ?? this.meeting.currentMeetingData ?? null;
 
     if (!this.jitsiData) {
       this.router.navigate(['/reunions']);
@@ -103,7 +104,7 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       interfaceConfigOverwrite: {
         TOOLBAR_BUTTONS: [
           'microphone', 'camera', 'desktop', 'chat',
-          'tileview', 'fullscreen', 'hangup',
+          'hangup',
           'videoquality',
           ...(this.isAdmin ? ['mute-everyone'] : []),
         ],
@@ -183,6 +184,8 @@ export class ReunionRoomComponent implements OnInit, OnDestroy {
       disableDeepLinking: true,
       startWithAudioMuted: false,
       subject: this.jitsiData?.meeting?.title ?? '',
+      hideConferenceSubject: true,
+      hideConferenceTimer: true,
       theme: 'dark',
     };
     switch (this.quality) {
