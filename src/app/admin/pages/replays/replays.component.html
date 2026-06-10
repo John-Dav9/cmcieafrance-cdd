@@ -89,6 +89,9 @@
           <td>{{ r.createdAt | date:'dd/MM/yyyy' }}</td>
           <td class="actions">
             <button class="btn-edit" (click)="edit(r)">✎</button>
+            <button class="btn-summarize" title="Générer un résumé IA" [disabled]="summarizingId === r.id" (click)="summarize(r)">
+              {{ summarizingId === r.id ? '...' : '✦' }}
+            </button>
             <button class="btn-del" (click)="delete(r.id)">✕</button>
           </td>
         </tr>

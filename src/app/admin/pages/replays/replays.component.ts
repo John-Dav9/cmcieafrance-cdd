@@ -36,7 +36,7 @@ export class AdminReplaysComponent implements OnInit {
   load() {
     this.loading = true;
     this.api.getReplaysAdmin().subscribe({
-      next: (data) => { this.replays = data; this.loading = false; },
+      next: (data: any[]) => { this.replays = data; this.loading = false; },
       error: () => { this.loading = false; },
     });
   }
@@ -92,6 +92,22 @@ export class AdminReplaysComponent implements OnInit {
     if (!confirm('Supprimer ce replay ?')) return;
     this.api.deleteReplay(id).subscribe(() => {
       this.replays = this.replays.filter(r => r.id !== id);
+    });
+  }
+
+  summarizingId: string | null = null;
+
+  summarize(r: any) {
+    if (this.summarizingId) return;
+    this.summarizingId = r.id;
+    this.api.summarizeReplay(r.id).subscribe({
+      next: (res: any) => {
+        if (res?.description) r.description = res.description;
+        this.summarizingId = null;
+        this.successMsg = 'Résumé généré avec succès.';
+        setTimeout(() => (this.successMsg = ''), 4000);
+      },
+      error: () => { this.summarizingId = null; },
     });
   }
 

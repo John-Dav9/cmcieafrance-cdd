@@ -1,0 +1,142 @@
+.temoignages-page {
+  padding: 60px 0;
+  background: var(--bg-primary, #0d0d0d);
+  min-height: 100vh;
+  color: var(--text-primary, #fff);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.page-hero {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.page-hero h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--color-gold, #c9a84c);
+}
+
+.page-hero p {
+  color: var(--text-secondary, #aaa);
+  font-size: 1.1rem;
+}
+
+.temoignages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 60px;
+}
+
+.temoignage-card {
+  background: var(--bg-card, #1a1a1a);
+  border: 1px solid var(--border, #333);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.temoignage-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-gold, #c9a84c);
+  margin-bottom: 12px;
+}
+
+.temoignage-message {
+  color: var(--text-secondary, #ccc);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.temoignage-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #777;
+}
+
+.form-section {
+  border-top: 1px solid var(--border, #333);
+  padding-top: 48px;
+  margin-top: 24px;
+}
+
+.form-section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.form-intro {
+  color: #888;
+  margin-bottom: 28px;
+}
+
+.temoignage-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.field input,
+.field textarea {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--color-gold, #c9a84c);
+}
+
+.check-field label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #ccc;
+}
+
+.btn-submit {
+  background: var(--color-gold, #c9a84c);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: opacity 0.2s;
+}
+
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.success-msg { color: #4caf50; font-size: 0.9rem; }
+.error-msg { color: #f44336; font-size: 0.9rem; }
+.empty { text-align: center; color: #666; padding: 40px 0; }
+.loading { text-align: center; color: #888; padding: 40px 0; }

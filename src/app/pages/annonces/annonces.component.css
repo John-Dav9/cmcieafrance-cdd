@@ -1,0 +1,63 @@
+.annonces-page {
+  padding: 60px 0;
+  background: var(--bg-primary, #0d0d0d);
+  min-height: 100vh;
+  color: var(--text-primary, #fff);
+}
+
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.page-hero {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.page-hero h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--color-gold, #c9a84c);
+}
+
+.page-hero p {
+  color: var(--text-secondary, #aaa);
+}
+
+.annonces-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.annonce-card {
+  background: var(--bg-card, #1a1a1a);
+  border: 1px solid var(--border, #333);
+  border-left: 4px solid var(--color-gold, #c9a84c);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.annonce-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.contenu {
+  color: #ccc;
+  line-height: 1.7;
+  white-space: pre-line;
+  margin-bottom: 12px;
+}
+
+.date {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.empty { text-align: center; color: #666; padding: 40px 0; }
+.loading { text-align: center; color: #888; padding: 40px 0; }

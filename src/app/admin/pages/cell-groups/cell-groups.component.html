@@ -11,6 +11,7 @@
       <div class="group-header">
         <h3>{{ g.name }}</h3>
         <div class="group-actions">
+          <button title="Gérer les membres" (click)="openMembers(g)">👥</button>
           <button (click)="openEdit(g)">✏️</button>
           <button (click)="remove(g.id)">🗑️</button>
         </div>
@@ -25,7 +26,7 @@
     <div class="empty" *ngIf="groups.length === 0">Aucun groupe de cellule</div>
   </div>
 
-  <!-- Formulaire -->
+  <!-- Formulaire création/édition -->
   <div class="modal-backdrop" *ngIf="showForm" (click)="showForm = false">
     <div class="modal" (click)="$event.stopPropagation()">
       <h2>{{ editing ? 'Modifier le groupe' : 'Nouveau groupe' }}</h2>
@@ -51,6 +52,36 @@
       <div class="modal-actions">
         <button class="btn-secondary" (click)="showForm = false">Annuler</button>
         <button class="btn-primary" (click)="save()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel membres -->
+  <div class="modal-backdrop" *ngIf="showMembersPanel" (click)="showMembersPanel = false">
+    <div class="modal modal-members" (click)="$event.stopPropagation()">
+      <h2>Membres — {{ selectedGroup?.name }}</h2>
+
+      <div class="members-add">
+        <select [(ngModel)]="newMemberId">
+          <option value="">— Choisir un membre —</option>
+          <option *ngFor="let m of membres" [value]="m.id">
+            {{ m.prenom }} {{ m.nom }} ({{ m.email }})
+          </option>
+        </select>
+        <button class="btn-primary" (click)="addMember()" [disabled]="!newMemberId">Ajouter</button>
+      </div>
+      <p class="error-msg" *ngIf="memberError">{{ memberError }}</p>
+
+      <ul class="members-list" *ngIf="selectedGroup?.memberIds?.length; else noMembers">
+        <li *ngFor="let id of selectedGroup.memberIds">
+          <span>{{ getMemberName(id) }}</span>
+          <button class="btn-del-sm" (click)="removeMember(id)">✕</button>
+        </li>
+      </ul>
+      <ng-template #noMembers><p class="empty">Aucun membre dans ce groupe.</p></ng-template>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="showMembersPanel = false">Fermer</button>
       </div>
     </div>
   </div>

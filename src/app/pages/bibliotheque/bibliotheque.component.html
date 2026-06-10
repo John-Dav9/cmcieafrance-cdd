@@ -1,0 +1,50 @@
+<section class="biblio-page">
+  <div class="container">
+    <div class="page-hero">
+      <h1>Bibliothèque</h1>
+      <p>Ressources spirituelles et documents de la CMCIEA France disponibles en téléchargement.</p>
+    </div>
+
+    <div class="loading" *ngIf="loading">Chargement...</div>
+
+    <div class="livres-grid" *ngIf="!loading && livres.length > 0">
+      <div class="livre-card" *ngFor="let l of livres" (click)="open(l)">
+        <div class="livre-cover" *ngIf="l.coverUrl">
+          <img [src]="l.coverUrl" [alt]="l.titre" />
+        </div>
+        <div class="livre-cover livre-cover--placeholder" *ngIf="!l.coverUrl">
+          <span>📖</span>
+        </div>
+        <div class="livre-info">
+          <h3>{{ l.titre }}</h3>
+          <p class="auteur" *ngIf="l.auteur">{{ l.auteur }}</p>
+          <p class="description" *ngIf="l.description">{{ l.description }}</p>
+          <span class="categorie" *ngIf="l.categorie">{{ l.categorie }}</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="!loading && livres.length === 0">
+      Aucune ressource disponible pour l'instant.
+    </p>
+  </div>
+
+  <!-- Modale détail -->
+  <div class="modal-backdrop" *ngIf="selected" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="close()">✕</button>
+      <div class="modal-cover" *ngIf="selected.coverUrl">
+        <img [src]="selected.coverUrl" [alt]="selected.titre" />
+      </div>
+      <h2>{{ selected.titre }}</h2>
+      <p class="auteur" *ngIf="selected.auteur">{{ selected.auteur }}</p>
+      <p class="description" *ngIf="selected.description">{{ selected.description }}</p>
+      <div class="modal-actions">
+        <a *ngIf="selected.pdfUrl" [href]="selected.pdfUrl" target="_blank" rel="noopener" class="btn-download">
+          Télécharger
+        </a>
+        <button class="btn-secondary" (click)="close()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</section>

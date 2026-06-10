@@ -1,0 +1,22 @@
+<section class="annonces-page">
+  <div class="container">
+    <div class="page-hero">
+      <h1>Annonces</h1>
+      <p>Actualités et informations de la communauté CMCIEA France.</p>
+    </div>
+
+    <div class="loading" *ngIf="loading">Chargement...</div>
+
+    <div class="annonces-list" *ngIf="!loading && annonces.length > 0">
+      <div class="annonce-card" *ngFor="let a of annonces">
+        <h3>{{ a.titre }}</h3>
+        <p class="contenu">{{ a.contenu }}</p>
+        <span class="date">{{ a.createdAt | date:'dd MMMM yyyy' : '' : 'fr' }}</span>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="!loading && annonces.length === 0">
+      Aucune annonce pour le moment.
+    </p>
+  </div>
+</section>

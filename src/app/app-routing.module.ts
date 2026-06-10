@@ -114,6 +114,22 @@ const routes: Routes = [
     path: 'groupes-de-cellule',
     loadComponent: () => import('./pages/cell-groups-public/cell-groups-public.component').then(m => m.CellGroupsPublicComponent),
   },
+  {
+    path: 'replays',
+    loadComponent: () => import('./pages/replay/replay.component').then(m => m.ReplayComponent),
+  },
+  {
+    path: 'temoignages',
+    loadComponent: () => import('./pages/temoignages/temoignages.component').then(m => m.TemoignagesComponent),
+  },
+  {
+    path: 'bibliotheque',
+    loadComponent: () => import('./pages/bibliotheque/bibliotheque.component').then(m => m.BibliothequeComponent),
+  },
+  {
+    path: 'annonces',
+    loadComponent: () => import('./pages/annonces/annonces.component').then(m => m.AnnoncesComponent),
+  },
   { path: '**', redirectTo: '' },
 ];
 

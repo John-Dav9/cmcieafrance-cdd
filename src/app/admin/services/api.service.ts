@@ -165,6 +165,23 @@ export class ApiService {
     return this.withAuth((h) => this.http.delete(`${this.base}/replays/${id}`, { headers: h }));
   }
 
+  summarizeReplay(id: string) {
+    return this.withAuth((h) => this.http.post<any>(`${this.base}/replays/${id}/summarize`, {}, { headers: h }));
+  }
+
+  // Cell-groups membres
+  addMemberToGroup(groupId: string, memberId: string) {
+    return this.withAuth((h) => this.http.post(`${this.base}/cell-groups/${groupId}/members/${memberId}`, {}, { headers: h }));
+  }
+
+  removeMemberFromGroup(groupId: string, memberId: string) {
+    return this.withAuth((h) => this.http.delete(`${this.base}/cell-groups/${groupId}/members/${memberId}`, { headers: h }));
+  }
+
+  getCellGroupDetail(groupId: string) {
+    return this.withAuth((h) => this.http.get<any>(`${this.base}/cell-groups/${groupId}`, { headers: h }));
+  }
+
   // Statistiques
   getStatsOverview() {
     return this.withAuth((h) => this.http.get<any>(`${this.base}/stats/overview`, { headers: h }));
