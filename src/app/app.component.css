@@ -184,15 +184,17 @@
   &.jitsi-pip-active {
     display: block;
     position: fixed;
-    bottom: 120px;
+    bottom: 116px;
     right: 20px;
-    width: 280px;
-    height: 158px;
+    width: 320px;
+    height: 180px;
     z-index: 9997;
-    border-radius: 12px;
+    border-radius: 14px 14px 0 0;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    box-shadow: 0 12px 38px rgba(0, 0, 0, 0.48);
     border: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 0;
 
     iframe {
       width: 100% !important;
@@ -202,10 +204,10 @@
     }
 
     @media (max-width: 480px) {
-      width: 200px;
-      height: 113px;
-      bottom: 80px;
-      right: 12px;
+      width: min(300px, calc(100vw - 20px));
+      height: min(169px, calc((100vw - 20px) * 0.5625));
+      bottom: 106px;
+      right: 10px;
     }
   }
 }

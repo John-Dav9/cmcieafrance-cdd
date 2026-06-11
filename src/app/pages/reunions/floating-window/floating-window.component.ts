@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-floating-window',
@@ -8,7 +8,7 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@a
   templateUrl: './floating-window.component.html',
   styleUrls: ['./floating-window.component.scss'],
 })
-export class FloatingWindowComponent implements OnInit {
+export class FloatingWindowComponent {
   @Input() title = '';
   @Input() quality: 'high' | 'medium' | 'low' | 'critical' = 'high';
   @Input() set jitsiApi(api: any) {
@@ -18,61 +18,10 @@ export class FloatingWindowComponent implements OnInit {
   @Output() expand = new EventEmitter<void>();
   @Output() leave  = new EventEmitter<void>();
 
-  posX = 20;
-  posY = 20;
-  dragging = false;
-  private startX = 0;
-  private startY = 0;
-  private startPosX = 0;
-  private startPosY = 0;
   micOn = true;
   camOn = true;
 
   _jitsiApi: any = null;
-
-  ngOnInit() {
-    this.posX = window.innerWidth - 220;
-    this.posY = window.innerHeight - 160;
-  }
-
-  onMouseDown(e: MouseEvent) {
-    this.dragging = true;
-    this.startX = e.clientX;
-    this.startY = e.clientY;
-    this.startPosX = this.posX;
-    this.startPosY = this.posY;
-    e.preventDefault();
-  }
-
-  @HostListener('document:mousemove', ['$event'])
-  onMouseMove(e: MouseEvent) {
-    if (!this.dragging) return;
-    this.posX = Math.max(0, Math.min(window.innerWidth - 200, this.startPosX + (e.clientX - this.startX)));
-    this.posY = Math.max(0, Math.min(window.innerHeight - 120, this.startPosY + (e.clientY - this.startY)));
-  }
-
-  @HostListener('document:mouseup')
-  onMouseUp() { this.dragging = false; }
-
-  onTouchStart(e: TouchEvent) {
-    const t = e.touches[0];
-    this.dragging = true;
-    this.startX = t.clientX;
-    this.startY = t.clientY;
-    this.startPosX = this.posX;
-    this.startPosY = this.posY;
-  }
-
-  @HostListener('document:touchmove', ['$event'])
-  onTouchMove(e: TouchEvent) {
-    if (!this.dragging) return;
-    const t = e.touches[0];
-    this.posX = Math.max(0, Math.min(window.innerWidth - 200, this.startPosX + (t.clientX - this.startX)));
-    this.posY = Math.max(0, Math.min(window.innerHeight - 120, this.startPosY + (t.clientY - this.startY)));
-  }
-
-  @HostListener('document:touchend')
-  onTouchEnd() { this.dragging = false; }
 
   clickToggleMic() {
     this.micOn = !this.micOn;
