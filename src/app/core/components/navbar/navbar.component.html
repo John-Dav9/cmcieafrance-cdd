@@ -24,67 +24,54 @@
   </button>
 
   <nav id="nav-menu" class="navbar-links" [class.open]="isMenuOpen">
-    <a
-      routerLink="/premiere-visite"
-      routerLinkActive="active"
-      aria-label="Premiere visite"
-      (click)="closeMenu()"
-    >
+    <a routerLink="/premiere-visite" routerLinkActive="active" (click)="closeMenu()">
       Premiere visite
     </a>
-    <a
-      routerLink="/ressources/decouvrir"
-      routerLinkActive="active"
-      aria-label="Ressources"
-      (click)="closeMenu()"
-    >
-      Ressources
-    </a>
-    <a
-      routerLink="/marathon-biblique"
-      routerLinkActive="active"
-      aria-label="Programmmes"
-      (click)="closeMenu()"
-    >
+
+    <!-- Ressources dropdown -->
+    <div class="nav-dropdown" [class.open]="dropdownOpen === 'ressources'">
+      <button class="nav-dropdown-toggle" (click)="toggleDropdown('ressources')">
+        Ressources <span class="caret">▾</span>
+      </button>
+      <div class="nav-dropdown-menu">
+        <a routerLink="/ressources/decouvrir" (click)="closeMenu()">Découvrir</a>
+        <a routerLink="/bible" (click)="closeMenu()">Bible</a>
+        <a routerLink="/cantiques" (click)="closeMenu()">Cantiques</a>
+        <a routerLink="/bibliotheque" (click)="closeMenu()">Bibliothèque</a>
+        <a routerLink="/messages" (click)="closeMenu()">Messages</a>
+        <a routerLink="/replays" (click)="closeMenu()">Replays</a>
+      </div>
+    </div>
+
+    <a routerLink="/marathon-biblique" routerLinkActive="active" (click)="closeMenu()">
       Marathon Biblique
     </a>
-    <a
-      routerLink="/ministere-enfants"
-      routerLinkActive="active"
-      aria-label="Departement"
-      (click)="closeMenu()"
-    >
-      Departement
+
+    <a routerLink="/departements" routerLinkActive="active" (click)="closeMenu()">
+      Departements
     </a>
-    <a
-      routerLink="/reunions"
-      routerLinkActive="active"
-      class="reunions-link"
-      aria-label="Réunions en ligne"
-      (click)="closeMenu()"
-    >
+
+    <!-- Communauté dropdown -->
+    <div class="nav-dropdown" [class.open]="dropdownOpen === 'communaute'">
+      <button class="nav-dropdown-toggle" (click)="toggleDropdown('communaute')">
+        Communauté <span class="caret">▾</span>
+      </button>
+      <div class="nav-dropdown-menu">
+        <a routerLink="/groupes-de-cellule" (click)="closeMenu()">Groupes de cellule</a>
+        <a routerLink="/temoignages" (click)="closeMenu()">Témoignages</a>
+        <a routerLink="/annonces" (click)="closeMenu()">Annonces</a>
+        <a routerLink="/prieres" (click)="closeMenu()">Demandes de prière</a>
+      </div>
+    </div>
+
+    <a routerLink="/reunions" routerLinkActive="active" class="reunions-link" (click)="closeMenu()">
       📹 RÉUNIONS
     </a>
-    <!-- ? BOUTON ACTUALITES -->
-    <a
-      routerLink="/actualites"
-      routerLinkActive="active"
-      class="actualites"
-      aria-label="Actualites de CMCIEA France"
-      (click)="closeMenu()"
-    >
+    <a routerLink="/actualites" routerLinkActive="active" class="actualites" (click)="closeMenu()">
       🔔 ACTUALITES
     </a>
-    <a
-      routerLink="/mon-espace"
-      routerLinkActive="active"
-      class="mon-espace"
-      aria-label="Mon espace personnel"
-      (click)="closeMenu()"
-    >
+    <a routerLink="/mon-espace" routerLinkActive="active" class="mon-espace" (click)="closeMenu()">
       👤 Mon Espace
     </a>
   </nav>
 </header>
-
-

@@ -11,26 +11,27 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class NavbarComponent {
   private host = inject(ElementRef<HTMLElement>);
   isMenuOpen = false;
+  dropdownOpen: string | null = null;
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
+    this.dropdownOpen = null;
   }
 
   closeMenu(): void {
     this.isMenuOpen = false;
+    this.dropdownOpen = null;
+  }
+
+  toggleDropdown(name: string): void {
+    this.dropdownOpen = this.dropdownOpen === name ? null : name;
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.isMenuOpen) {
-      return;
-    }
-
     const target = event.target as Node | null;
-    if (target && this.host.nativeElement.contains(target)) {
-      return;
-    }
-
-    this.closeMenu();
+    if (target && this.host.nativeElement.contains(target)) return;
+    this.isMenuOpen = false;
+    this.dropdownOpen = null;
   }
 }

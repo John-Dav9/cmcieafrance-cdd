@@ -1,0 +1,180 @@
+.cantiques-page {
+  padding: 60px 0;
+  background: var(--bg-primary, #0d0d0d);
+  min-height: 100vh;
+  color: var(--text-primary, #fff);
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.page-hero {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.page-hero h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--color-gold, #c9a84c);
+}
+
+.page-hero p {
+  color: var(--text-secondary, #aaa);
+}
+
+.search-bar {
+  margin-bottom: 32px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--color-gold, #c9a84c);
+}
+
+.cantiques-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.cantique-card {
+  background: var(--bg-card, #1a1a1a);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+}
+
+.cantique-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  border-color: var(--color-gold, #c9a84c);
+}
+
+.cantique-number {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 0.75rem;
+  color: var(--color-gold, #c9a84c);
+  font-weight: 600;
+}
+
+.cantique-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+  padding-right: 36px;
+}
+
+.auteur {
+  font-size: 0.82rem;
+  color: var(--color-gold, #c9a84c);
+  margin-bottom: 8px;
+}
+
+.apercu {
+  font-size: 0.82rem;
+  color: #777;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.modal {
+  background: #1a1a1a;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.modal-number {
+  font-size: 0.8rem;
+  color: var(--color-gold, #c9a84c);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.modal h2 {
+  font-size: 1.4rem;
+  margin: 0 0 6px;
+  padding-right: 32px;
+}
+
+.modal-auteur {
+  color: var(--color-gold, #c9a84c);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.modal-source {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.modal-lyrics {
+  font-family: inherit;
+  white-space: pre-wrap;
+  line-height: 1.8;
+  font-size: 0.95rem;
+  color: #ddd;
+  border-top: 1px solid #333;
+  padding-top: 16px;
+  margin: 0;
+}
+
+.modal-rights {
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 16px;
+  font-style: italic;
+}
+
+.empty { text-align: center; color: #666; padding: 40px 0; }
+.loading { text-align: center; color: #888; padding: 40px 0; }

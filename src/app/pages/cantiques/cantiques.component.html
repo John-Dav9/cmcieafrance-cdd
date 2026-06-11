@@ -1,0 +1,46 @@
+<section class="cantiques-page">
+  <div class="container">
+    <div class="page-hero">
+      <h1>Cantiques</h1>
+      <p>Louons l'Éternel ! Retrouvez ici les paroles des cantiques de la communauté.</p>
+    </div>
+
+    <div class="search-bar">
+      <input
+        type="search"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch()"
+        placeholder="Rechercher un cantique par titre ou auteur..."
+        class="search-input"
+      />
+    </div>
+
+    <div class="loading" *ngIf="loading">Chargement...</div>
+
+    <div class="cantiques-grid" *ngIf="!loading && cantiques.length > 0">
+      <div class="cantique-card" *ngFor="let c of cantiques" (click)="open(c)">
+        <div class="cantique-number" *ngIf="c.number">#{{ c.number }}</div>
+        <h3>{{ c.title }}</h3>
+        <p class="auteur" *ngIf="c.author">{{ c.author }}</p>
+        <p class="apercu">{{ c.lyrics | slice:0:80 }}{{ c.lyrics?.length > 80 ? '...' : '' }}</p>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="!loading && cantiques.length === 0">
+      Aucun cantique trouvé.
+    </p>
+  </div>
+
+  <!-- Modal paroles -->
+  <div class="modal-backdrop" *ngIf="selected" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="close()">✕</button>
+      <div class="modal-number" *ngIf="selected.number">#{{ selected.number }}</div>
+      <h2>{{ selected.title }}</h2>
+      <p class="modal-auteur" *ngIf="selected.author">{{ selected.author }}</p>
+      <div class="modal-source" *ngIf="selected.source">Source : {{ selected.source }}</div>
+      <pre class="modal-lyrics">{{ selected.lyrics }}</pre>
+      <p class="modal-rights" *ngIf="selected.rightsNote">{{ selected.rightsNote }}</p>
+    </div>
+  </div>
+</section>

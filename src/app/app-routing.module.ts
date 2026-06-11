@@ -137,6 +137,10 @@ const routes: Routes = [
     path: 'annonces',
     loadComponent: () => import('./pages/annonces/annonces.component').then(m => m.AnnoncesComponent),
   },
+  {
+    path: 'cantiques',
+    loadComponent: () => import('./pages/cantiques/cantiques.component').then(m => m.CantiquesComponent),
+  },
   { path: '**', redirectTo: '' },
 ];
 
