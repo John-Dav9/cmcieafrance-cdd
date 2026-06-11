@@ -10,6 +10,10 @@ import {
   MeetingSocketService,
 } from '../../../core/services/meeting-socket.service';
 import { ReunionsService } from '../../../core/services/reunions.service';
+import {
+  SPIRITUAL_BACKGROUNDS,
+  SpiritualBackgroundId,
+} from '../spiritual-backgrounds';
 
 type AdminTab = 'participants' | 'spiritual' | 'poll' | 'prayer' | 'streaming';
 
@@ -48,6 +52,9 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   lyricsTitle = '';
   lyricsText = '';
   announcementText = '';
+  readonly spiritualBackgrounds = SPIRITUAL_BACKGROUNDS;
+  selectedBackground: SpiritualBackgroundId = 'ocean';
+  spiritualSending = false;
 
   // Sondage
   pollQuestion = '';
@@ -240,9 +247,16 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
     });
   }
 
-  sendVerse(v: { reference: string; text: string }) {
-    this.socket.showVerse(this.meetingId, v.reference, v.text);
-    this.showToast(`Verset "${v.reference}" diffusé`, 'success');
+  async sendVerse(v: { reference: string; text: string }) {
+    await this.sendSpiritual(
+      () => this.socket.showVerse(
+        this.meetingId,
+        v.reference,
+        v.text,
+        this.selectedBackground,
+      ),
+      `Verset "${v.reference}" diffusé`,
+    );
   }
 
   searchCantiques() {
@@ -263,23 +277,41 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
     this.showToast('Cantique chargé, prêt à être diffusé', 'success');
   }
 
-  sendLyrics() {
+  async sendLyrics() {
     if (!this.lyricsTitle.trim() || !this.lyricsText.trim()) return;
     const lines = this.lyricsText.split('\n').filter(l => l.trim());
-    this.socket.showLyrics(this.meetingId, this.lyricsTitle, lines);
-    this.showToast('Paroles diffusées', 'success');
-    this.lyricsTitle = ''; this.lyricsText = '';
+    const sent = await this.sendSpiritual(
+      () => this.socket.showLyrics(
+        this.meetingId,
+        this.lyricsTitle,
+        lines,
+        this.selectedBackground,
+      ),
+      'Paroles diffusées',
+    );
+    if (sent) {
+      this.lyricsTitle = '';
+      this.lyricsText = '';
+    }
   }
 
-  sendAnnouncement() {
+  async sendAnnouncement() {
     if (!this.announcementText.trim()) return;
-    this.socket.showAnnouncement(this.meetingId, this.announcementText);
-    this.showToast('Annonce envoyée', 'success');
-    this.announcementText = '';
+    const sent = await this.sendSpiritual(
+      () => this.socket.showAnnouncement(
+        this.meetingId,
+        this.announcementText,
+        this.selectedBackground,
+      ),
+      'Annonce envoyée',
+    );
+    if (sent) this.announcementText = '';
   }
 
   dismissSpiritualEvent() {
-    this.socket.dismissSpiritualEvent(this.meetingId);
+    this.socket.dismissSpiritualEvent(this.meetingId).catch(() => {
+      this.showToast('Impossible de masquer le contenu', 'error');
+    });
   }
 
   // ── Sondages ───────────────────────────────────────────────────────────────
@@ -368,6 +400,22 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
     clearTimeout(this.toastTimer);
     this.toast = { msg, type };
     this.toastTimer = setTimeout(() => this.toast = null, 3000);
+  }
+
+  private async sendSpiritual(action: () => Promise<any>, successMessage: string) {
+    if (this.spiritualSending) return false;
+    this.spiritualSending = true;
+    try {
+      const response = await action();
+      if (!response?.sent) throw new Error('Diffusion non confirmée');
+      this.showToast(successMessage, 'success');
+      return true;
+    } catch (error: any) {
+      this.showToast(error?.message ?? 'Diffusion impossible', 'error');
+      return false;
+    } finally {
+      this.spiritualSending = false;
+    }
   }
 
   isLoading(key: string) { return !!this.loadingActions[key]; }

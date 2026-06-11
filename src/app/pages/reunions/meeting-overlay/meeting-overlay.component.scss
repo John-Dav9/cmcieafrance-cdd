@@ -22,26 +22,48 @@ $muted:   rgba(255,255,255,0.6);
 // ── Événement spirituel ───────────────────────────────────────
 .spiritual-overlay {
   position: fixed;
-  bottom: 96px;
+  bottom: 108px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9996;
-  max-width: 520px;
+  z-index: 10001;
+  max-width: 860px;
   width: calc(100vw - 40px);
   animation: slideUp 0.3s ease;
-
-  &--verse .spiritual-content   { background: linear-gradient(135deg, rgba(#1D546C,0.97) 0%, rgba(#0d1117,0.97) 100%); border: 1px solid rgba($accent, 0.4); }
-  &--lyrics .spiritual-content  { background: rgba(#1a1f2e, 0.97); border: 1px solid rgba($accent, 0.25); }
-  &--announcement .spiritual-content { background: rgba(#2d1a00, 0.97); border: 1px solid rgba($accent, 0.5); }
+  pointer-events: none;
 }
 
 .spiritual-content {
-  border-radius: 14px;
-  padding: 20px 24px;
+  min-height: 190px;
+  padding: 28px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba($accent, 0.4);
+  border-radius: 20px;
   color: $white;
   position: relative;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  background: rgba(13,17,23,.9);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.58);
+  pointer-events: auto;
+  isolation: isolate;
+
+  &::before {
+    content: ""; position: absolute; inset: 0; z-index: -2;
+    background: inherit;
+  }
+  &::after {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(90deg, rgba(4,8,13,.76), rgba(4,8,13,.38), rgba(4,8,13,.7));
+  }
 }
+
+.background-ocean .spiritual-content { background: linear-gradient(145deg, #68b9cf, #185f7f 58%, #082f49); }
+.background-dawn .spiritual-content { background: linear-gradient(145deg, #f6c177, #b65d66 52%, #46335d); }
+.background-midnight .spiritual-content { background: radial-gradient(circle at 70% 15%, #526585, #111827 48%, #05070c); }
+.background-forest .spiritual-content { background: linear-gradient(145deg, #658568, #234a3a 52%, #102a25); }
+.background-parchment .spiritual-content { background: linear-gradient(145deg, #e5cf9d, #a57d45 55%, #5d4024); }
+.background-royal .spiritual-content { background: linear-gradient(145deg, #59429a, #2c235e 52%, #16132e); }
 
 .dismiss-btn {
   position: absolute;
@@ -57,18 +79,18 @@ $muted:   rgba(255,255,255,0.6);
 }
 
 // Verset
-.verse-icon { font-size: 28px; text-align: center; margin-bottom: 8px; color: $accent; }
-.verse-reference { font-size: 14px; font-weight: 700; color: $accent; text-align: center; margin-bottom: 10px; }
-.verse-text { font-size: 15px; line-height: 1.7; text-align: center; font-style: italic; color: rgba($white,0.92); }
+.verse-icon { font-size: 30px; text-align: center; margin-bottom: 8px; color: #f6c76d; }
+.verse-reference { font-size: 16px; font-weight: 800; color: #f6c76d; text-align: center; margin-bottom: 12px; }
+.verse-text { font-size: clamp(18px, 2vw, 27px); line-height: 1.55; text-align: center; font-family: Georgia, serif; color: $white; }
 
 // Cantique
-.lyrics-title { font-size: 14px; font-weight: 700; color: $accent; margin-bottom: 12px; text-align: center; }
+.lyrics-title { font-size: 16px; font-weight: 800; color: #f6c76d; margin-bottom: 14px; text-align: center; }
 .lyrics-lines { text-align: center; }
-.lyrics-lines p { font-size: 16px; line-height: 1.9; margin: 0; color: $white; }
+.lyrics-lines p { font-size: clamp(17px, 1.8vw, 24px); line-height: 1.65; margin: 0; color: $white; }
 
 // Annonce
 .announcement-icon { font-size: 24px; text-align: center; margin-bottom: 8px; }
-.announcement-text { font-size: 15px; line-height: 1.6; text-align: center; color: $white; font-weight: 500; }
+.announcement-text { font-size: clamp(18px, 2vw, 27px); line-height: 1.55; text-align: center; color: $white; font-weight: 650; }
 
 // ── Sondage ───────────────────────────────────────────────────
 .poll-overlay {
@@ -238,10 +260,10 @@ $muted:   rgba(255,255,255,0.6);
 @media (max-width: 900px) {
   .streaming-banner { top: 64px; border-radius: 0 0 10px 10px; }
   .spiritual-overlay {
-    bottom: 88px;
+    bottom: 86px;
     width: calc(100vw - 20px);
   }
-  .spiritual-content { padding: 17px 18px; border-radius: 14px; }
+  .spiritual-content { min-height: 150px; padding: 20px 26px; border-radius: 16px; }
   .verse-text, .lyrics-lines p { font-size: 14px; line-height: 1.6; }
   .poll-overlay {
     top: auto; right: 10px; bottom: 88px;

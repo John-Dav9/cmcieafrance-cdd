@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 import { MeetingSocketService, PollEvent, PollResult, PrayerReceived, SpiritualEvent } from '../../../core/services/meeting-socket.service';
+import { SPIRITUAL_BACKGROUNDS } from '../spiritual-backgrounds';
 
 @Component({
   selector: 'app-meeting-overlay',
@@ -103,5 +104,11 @@ export class MeetingOverlayComponent implements OnInit, OnDestroy {
 
   lyricsLines(content: string): string[] {
     return content.split('\n').filter(l => l.trim());
+  }
+
+  get backgroundClass() {
+    return SPIRITUAL_BACKGROUNDS.find(
+      background => background.id === this.spiritualEvent?.backgroundId,
+    )?.className ?? 'background-ocean';
   }
 }

@@ -4,7 +4,9 @@
 </div>
 
 <!-- ══ ÉVÉNEMENT SPIRITUEL (verset / cantique / annonce) ════ -->
-<div class="spiritual-overlay" *ngIf="spiritualEvent" [class]="'spiritual-overlay--' + spiritualEvent.type">
+<div class="spiritual-overlay"
+     *ngIf="spiritualEvent"
+     [ngClass]="['spiritual-overlay--' + spiritualEvent.type, backgroundClass]">
 
   <!-- Verset biblique -->
   <div *ngIf="spiritualEvent.type === 'verse'" class="spiritual-content verse">

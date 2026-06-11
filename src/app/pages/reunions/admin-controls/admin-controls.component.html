@@ -83,6 +83,20 @@
 
     <!-- ── Outils spirituels ── -->
     <ng-container *ngIf="activeTab==='spiritual'">
+      <div class="spiritual-section background-library">
+        <h4><span>00</span> Fond de diffusion</h4>
+        <div class="background-grid">
+          <button *ngFor="let background of spiritualBackgrounds"
+                  type="button"
+                  class="background-choice"
+                  [class.is-selected]="selectedBackground === background.id"
+                  [ngClass]="background.className"
+                  (click)="selectedBackground = background.id">
+            <span>{{ background.label }}</span>
+          </button>
+        </div>
+      </div>
+
       <div class="spiritual-section">
         <h4><span>01</span> Verset biblique</h4>
         <div class="search-row">
@@ -93,7 +107,7 @@
           <div class="bible-result" *ngFor="let v of bibleResults">
             <div class="bible-ref">{{ v.reference }}</div>
             <div class="bible-text">{{ v.text }}</div>
-            <button class="btn-send" (click)="sendVerse(v)">Diffuser ▶</button>
+            <button class="btn-send" [disabled]="spiritualSending" (click)="sendVerse(v)">Diffuser ▶</button>
           </div>
         </div>
       </div>
@@ -120,14 +134,14 @@
         </div>
         <input class="admin-input" [(ngModel)]="lyricsTitle" placeholder="Titre du cantique">
         <textarea class="admin-textarea" [(ngModel)]="lyricsText" placeholder="Paroles (une ligne par ligne)..." rows="5"></textarea>
-        <button class="btn-primary" (click)="sendLyrics()">Diffuser les paroles ▶</button>
+        <button class="btn-primary" [disabled]="spiritualSending" (click)="sendLyrics()">Diffuser les paroles ▶</button>
       </div>
 
       <div class="spiritual-section">
         <h4><span>03</span> Annonce à l'écran</h4>
         <textarea class="admin-textarea" [(ngModel)]="announcementText" placeholder="Message à afficher à tous..." rows="3"></textarea>
         <div class="btn-row">
-          <button class="btn-primary" (click)="sendAnnouncement()">Afficher ▶</button>
+          <button class="btn-primary" [disabled]="spiritualSending" (click)="sendAnnouncement()">Afficher ▶</button>
           <button class="btn-secondary" (click)="dismissSpiritualEvent()">Masquer</button>
         </div>
       </div>

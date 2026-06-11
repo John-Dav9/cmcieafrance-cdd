@@ -10,6 +10,7 @@ export interface SpiritualEvent {
   title?: string;
   content: string;
   reference?: string;
+  backgroundId?: string;
 }
 
 export interface PollEvent {
@@ -37,9 +38,10 @@ export type MediaStatus = 'idle' | 'starting' | 'active' | 'stopping' | 'failed'
 @Injectable({ providedIn: 'root' })
 export class MeetingSocketService implements OnDestroy {
   private socket: Socket | null = null;
+  private joinedMeetingId: string | null = null;
 
   participantCount$ = new BehaviorSubject<number>(0);
-  spiritualEvent$   = new Subject<SpiritualEvent>();
+  spiritualEvent$   = new BehaviorSubject<SpiritualEvent | null>(null);
   spiritualDismiss$ = new Subject<void>();
   pollStarted$      = new Subject<PollEvent>();
   pollResults$      = new Subject<PollResult>();
@@ -72,7 +74,9 @@ export class MeetingSocketService implements OnDestroy {
     });
 
     this.socket.on('connect', () => {
-      this.socket!.emit('join-meeting', { meetingId });
+      this.socket!.emit('join-meeting', { meetingId }, (response: { joined?: boolean }) => {
+        if (response?.joined) this.joinedMeetingId = meetingId;
+      });
     });
 
     this.socket.on('participant-count', (d: { count: number }) => {
@@ -84,6 +88,7 @@ export class MeetingSocketService implements OnDestroy {
     });
 
     this.socket.on('spiritual-dismissed', () => {
+      this.spiritualEvent$.next(null);
       this.spiritualDismiss$.next();
     });
 
@@ -120,6 +125,7 @@ export class MeetingSocketService implements OnDestroy {
     });
 
     this.socket.on('meeting-ended', () => {
+      this.spiritualEvent$.next(null);
       this.meetingEnded$.next();
     });
   }
@@ -128,24 +134,25 @@ export class MeetingSocketService implements OnDestroy {
     this.socket?.emit('leave-meeting', { meetingId });
     this.socket?.disconnect();
     this.socket = null;
+    this.joinedMeetingId = null;
   }
 
   // ── Émissions admin ────────────────────────────────────────────────────────
 
-  showVerse(meetingId: string, reference: string, content: string) {
-    this.socket?.emit('show-verse', { meetingId, reference, content });
+  showVerse(meetingId: string, reference: string, content: string, backgroundId: string) {
+    return this.emitWithAck('show-verse', { meetingId, reference, content, backgroundId });
   }
 
-  showLyrics(meetingId: string, title: string, lines: string[]) {
-    this.socket?.emit('show-lyrics', { meetingId, title, lines });
+  showLyrics(meetingId: string, title: string, lines: string[], backgroundId: string) {
+    return this.emitWithAck('show-lyrics', { meetingId, title, lines, backgroundId });
   }
 
-  showAnnouncement(meetingId: string, message: string) {
-    this.socket?.emit('show-announcement', { meetingId, message });
+  showAnnouncement(meetingId: string, message: string, backgroundId: string) {
+    return this.emitWithAck('show-announcement', { meetingId, message, backgroundId });
   }
 
   dismissSpiritualEvent(meetingId: string) {
-    this.socket?.emit('dismiss-spiritual', { meetingId });
+    return this.emitWithAck('dismiss-spiritual', { meetingId });
   }
 
   sendPrayerRequest(meetingId: string, author: string, text: string) {
@@ -178,6 +185,19 @@ export class MeetingSocketService implements OnDestroy {
     error?: string,
   ) {
     this.socket?.emit('media-status', { meetingId, mode, status, error });
+  }
+
+  private emitWithAck<T = any>(event: string, payload: { meetingId: string; [key: string]: any }) {
+    return new Promise<T>((resolve, reject) => {
+      if (!this.socket?.connected || this.joinedMeetingId !== payload.meetingId) {
+        reject(new Error('La régie n’est pas connectée à la réunion.'));
+        return;
+      }
+      this.socket.timeout(5000).emit(event, payload, (error: Error | null, response: T) => {
+        if (error) reject(new Error('Le serveur n’a pas confirmé la diffusion.'));
+        else resolve(response);
+      });
+    });
   }
 
   ngOnDestroy() {

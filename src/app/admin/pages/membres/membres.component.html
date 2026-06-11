@@ -9,6 +9,7 @@
   </div>
 
   <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
+  <p class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</p>
   <p class="role-help" *ngIf="canManageRoles">
     En tant qu’administrateur principal, vous pouvez promouvoir un membre comme administrateur
     ou lui retirer ce rôle. La modification est permanente jusqu’à votre prochaine décision.
@@ -49,8 +50,9 @@
           <td>{{ m.city || '—' }}</td>
           <td>
             <select *ngIf="canManageRoles; else roleBadge"
-                    [ngModel]="m.role"
+                    [(ngModel)]="roleDrafts[m.id]"
                     (ngModelChange)="changeRole(m, $event)"
+                    [disabled]="isPending('role-'+m.id)"
                     class="role-select">
               <option *ngFor="let r of roles" [value]="r">{{ roleLabel(r) }}</option>
             </select>
@@ -65,7 +67,13 @@
           </td>
           <td><span class="badge badge-gray">{{ m.source || '—' }}</span></td>
           <td class="actions">
-            <button class="btn-del" *ngIf="m.isActive" (click)="deactivate(m)" title="Désactiver">✕</button>
+            <button class="btn-del"
+                    *ngIf="m.isActive"
+                    [disabled]="isPending('deactivate-'+m.id)"
+                    (click)="deactivate(m)"
+                    title="Désactiver">
+              {{ isPending('deactivate-'+m.id) ? '…' : '✕' }}
+            </button>
           </td>
         </tr>
       </tbody>

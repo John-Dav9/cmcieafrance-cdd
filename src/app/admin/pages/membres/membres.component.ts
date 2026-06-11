@@ -4,6 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../../core/services/auth.service';
 
+type MemberRole = 'super_admin' | 'admin' | 'member' | 'visitor';
+type EditableMemberRole = Exclude<MemberRole, 'super_admin'>;
+
+interface MemberRecord {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string | null;
+  city?: string | null;
+  role: MemberRole;
+  isActive: boolean;
+  source?: string | null;
+}
+
 @Component({
   selector: 'app-admin-membres',
   standalone: true,
@@ -15,15 +30,18 @@ export class AdminMembresComponent implements OnInit {
   private api = inject(ApiService);
   private auth = inject(AuthService);
 
-  membres: any[] = [];
-  filtered: any[] = [];
+  membres: MemberRecord[] = [];
+  filtered: MemberRecord[] = [];
   loading = true;
   merging = false;
   search = '';
   filterRole = '';
   successMsg = '';
+  errorMsg = '';
+  pendingActions = new Set<string>();
+  roleDrafts: Record<string, EditableMemberRole> = {};
 
-  readonly roles = ['member', 'admin', 'visitor'];
+  readonly roles: EditableMemberRole[] = ['member', 'admin', 'visitor'];
 
   get canManageRoles(): boolean {
     return this.auth.isSuperAdmin();
@@ -34,8 +52,24 @@ export class AdminMembresComponent implements OnInit {
   load() {
     this.loading = true;
     this.api.getMembres().subscribe({
-      next: (data) => { this.membres = data; this.applyFilter(); this.loading = false; },
-      error: () => { this.loading = false; },
+      next: (data) => {
+        this.membres = data as MemberRecord[];
+        this.roleDrafts = this.membres.reduce<Record<string, EditableMemberRole>>(
+          (drafts, member) => {
+            if (member.role !== 'super_admin') {
+              drafts[member.id] = member.role;
+            }
+            return drafts;
+          },
+          {},
+        );
+        this.applyFilter();
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+        this.flash('Chargement des membres impossible.', 'error');
+      },
     });
   }
 
@@ -52,22 +86,46 @@ export class AdminMembresComponent implements OnInit {
     });
   }
 
-  changeRole(membre: any, role: string) {
+  changeRole(membre: MemberRecord, role: EditableMemberRole) {
     if (!this.canManageRoles || role === membre.role) return;
     const action = role === 'admin'
       ? `promouvoir ${membre.firstName} ${membre.lastName} comme administrateur`
       : `attribuer le rôle « ${this.roleLabel(role)} » à ${membre.firstName} ${membre.lastName}`;
-    if (!confirm(`Confirmer : ${action} ?`)) return;
+    if (!confirm(`Confirmer : ${action} ?`)) {
+      this.roleDrafts[membre.id] = membre.role as EditableMemberRole;
+      return;
+    }
+    const key = `role-${membre.id}`;
+    this.pendingActions.add(key);
     this.api.updateMembreRole(membre.id, role).subscribe({
-      next: () => { membre.role = role; this.flash('Rôle mis à jour.'); },
-      error: () => this.flash('La modification du rôle a échoué.'),
+      next: () => {
+        membre.role = role;
+        this.roleDrafts[membre.id] = role;
+        this.pendingActions.delete(key);
+        this.flash('Rôle mis à jour.', 'success');
+      },
+      error: () => {
+        this.roleDrafts[membre.id] = membre.role as EditableMemberRole;
+        this.pendingActions.delete(key);
+        this.flash('La modification du rôle a échoué.', 'error');
+      },
     });
   }
 
-  deactivate(membre: any) {
+  deactivate(membre: MemberRecord) {
     if (!confirm(`Désactiver le compte de ${membre.firstName} ${membre.lastName} ?`)) return;
+    const key = `deactivate-${membre.id}`;
+    this.pendingActions.add(key);
     this.api.desactiverMembre(membre.id).subscribe({
-      next: () => { membre.isActive = false; this.flash('Membre désactivé.'); },
+      next: () => {
+        membre.isActive = false;
+        this.pendingActions.delete(key);
+        this.flash('Membre désactivé.', 'success');
+      },
+      error: () => {
+        this.pendingActions.delete(key);
+        this.flash('La désactivation a échoué.', 'error');
+      },
     });
   }
 
@@ -77,16 +135,27 @@ export class AdminMembresComponent implements OnInit {
     this.api.mergeBases().subscribe({
       next: (res: any) => {
         this.merging = false;
-        this.flash(res.message);
+        this.flash(res.message, 'success');
         this.load();
       },
-      error: () => { this.merging = false; },
+      error: () => {
+        this.merging = false;
+        this.flash('La fusion des bases a échoué.', 'error');
+      },
     });
   }
 
-  private flash(msg: string) {
-    this.successMsg = msg;
-    setTimeout(() => (this.successMsg = ''), 3000);
+  isPending(key: string) {
+    return this.pendingActions.has(key);
+  }
+
+  private flash(msg: string, type: 'success' | 'error') {
+    this.successMsg = type === 'success' ? msg : '';
+    this.errorMsg = type === 'error' ? msg : '';
+    setTimeout(() => {
+      this.successMsg = '';
+      this.errorMsg = '';
+    }, 3000);
   }
 
   roleLabel(role: string): string {
