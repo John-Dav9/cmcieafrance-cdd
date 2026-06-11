@@ -112,6 +112,12 @@ $danger: #e5484d;
 .participant-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
 .participant-badge { color: $accent; font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .participant-actions { display: flex; gap: 5px; }
+.volume-control {
+  width: 72px; display: flex; align-items: center; gap: 4px;
+  color: $muted; font-size: 9px;
+  input { width: 48px; accent-color: $accent; cursor: pointer; }
+  input:disabled { opacity: .35; cursor: not-allowed; }
+}
 .btn-sm {
   width: 30px; height: 30px; display: grid; place-items: center;
   border: 1px solid $border; border-radius: 8px; background: rgba(255,255,255,.05);
@@ -157,6 +163,7 @@ $danger: #e5484d;
   grid-template-columns: repeat(3, 1fr);
   gap: 7px;
 }
+.background-item { min-width: 0; }
 .background-choice {
   position: relative; min-height: 58px; padding: 8px; overflow: hidden;
   display: flex; align-items: flex-end; border: 1px solid rgba(255,255,255,.1);
@@ -164,6 +171,20 @@ $danger: #e5484d;
   box-shadow: inset 0 -24px 26px rgba(0,0,0,.35);
   span { position: relative; z-index: 1; font-size: 9px; font-weight: 750; }
   &.is-selected { border-color: $accent; box-shadow: inset 0 -24px 26px rgba(0,0,0,.3), 0 0 0 2px rgba(232,168,56,.18); }
+  &.is-disabled { opacity: .35; filter: grayscale(1); cursor: not-allowed; }
+}
+.background-actions { display: flex; gap: 4px; margin-top: 4px; }
+.background-actions button {
+  flex: 1; padding: 5px 3px; border: 1px solid rgba(255,255,255,.12);
+  border-radius: 6px; background: rgba(255,255,255,.04); color: #aeb5bf;
+  font-size: 9px; cursor: pointer;
+}
+.background-actions button.danger { color: #f59a9f; }
+.background-upload {
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid $border;
+}
+.background-file {
+  width: 100%; margin: 0 0 9px; color: $muted; font-size: 10px;
 }
 .background-ocean { background: linear-gradient(145deg, #68b9cf, #185f7f 58%, #082f49); }
 .background-dawn { background: linear-gradient(145deg, #f6c177, #b65d66 52%, #46335d); }

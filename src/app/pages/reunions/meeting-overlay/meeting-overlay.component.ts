@@ -5,6 +5,10 @@ import { Subscription } from 'rxjs';
 import { MemberAuthService } from '../../../core/services/member-auth.service';
 import { MeetingSocketService, PollEvent, PollResult, PrayerReceived, SpiritualEvent } from '../../../core/services/meeting-socket.service';
 import { SPIRITUAL_BACKGROUNDS } from '../spiritual-backgrounds';
+import {
+  MeetingBackground,
+  MeetingBackgroundsService,
+} from '../../../core/services/meeting-backgrounds.service';
 
 @Component({
   selector: 'app-meeting-overlay',
@@ -33,15 +37,20 @@ export class MeetingOverlayComponent implements OnInit, OnDestroy {
 
   // Streaming banner
   streamingActive = false;
+  backgrounds: MeetingBackground[] = [];
 
   private subs: Subscription[] = [];
 
   constructor(
     private socket: MeetingSocketService,
     private memberAuth: MemberAuthService,
+    private backgroundsService: MeetingBackgroundsService,
   ) {}
 
   ngOnInit() {
+    this.backgroundsService.list().subscribe({
+      next: backgrounds => this.backgrounds = backgrounds,
+    });
     this.subs.push(
       this.socket.spiritualEvent$.subscribe(e => { this.spiritualEvent = e; }),
       this.socket.spiritualDismiss$.subscribe(() => { this.spiritualEvent = null; }),
@@ -110,5 +119,19 @@ export class MeetingOverlayComponent implements OnInit, OnDestroy {
     return SPIRITUAL_BACKGROUNDS.find(
       background => background.id === this.spiritualEvent?.backgroundId,
     )?.className ?? 'background-ocean';
+  }
+
+  get backgroundStyle() {
+    const selected = this.backgrounds.find(
+      background => background.slug === this.spiritualEvent?.backgroundId,
+    );
+    if (!selected) return {};
+    const image = selected.imageUrl ? `url("${selected.imageUrl}")` : '';
+    const backgroundImage = [selected.gradient, image].filter(Boolean).join(', ');
+    return {
+      '--dynamic-spiritual-background': backgroundImage || undefined,
+      '--spiritual-text-color': selected.textColor,
+      '--spiritual-overlay-color': selected.overlayColor,
+    };
   }
 }

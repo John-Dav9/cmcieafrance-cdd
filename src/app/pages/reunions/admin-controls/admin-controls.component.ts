@@ -11,9 +11,12 @@ import {
 } from '../../../core/services/meeting-socket.service';
 import { ReunionsService } from '../../../core/services/reunions.service';
 import {
-  SPIRITUAL_BACKGROUNDS,
   SpiritualBackgroundId,
 } from '../spiritual-backgrounds';
+import {
+  MeetingBackground,
+  MeetingBackgroundsService,
+} from '../../../core/services/meeting-backgrounds.service';
 
 type AdminTab = 'participants' | 'spiritual' | 'poll' | 'prayer' | 'streaming';
 
@@ -37,6 +40,7 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   recordingPending = false;
   toast: { msg: string; type: 'success' | 'error' } | null = null;
   loadingActions: Record<string, boolean> = {};
+  participantVolumes: Record<string, number> = {};
 
   // Spirituel
   bibleResults: { reference: string; text: string }[] = [];
@@ -52,8 +56,11 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   lyricsTitle = '';
   lyricsText = '';
   announcementText = '';
-  readonly spiritualBackgrounds = SPIRITUAL_BACKGROUNDS;
-  selectedBackground: SpiritualBackgroundId = 'ocean';
+  spiritualBackgrounds: MeetingBackground[] = [];
+  selectedBackground: SpiritualBackgroundId | string = 'ocean';
+  newBackgroundLabel = '';
+  newBackgroundFile: File | null = null;
+  backgroundUploading = false;
   spiritualSending = false;
 
   // Sondage
@@ -83,9 +90,11 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
     private reunionsService: ReunionsService,
     private socket: MeetingSocketService,
     private http: HttpClient,
+    private backgroundsService: MeetingBackgroundsService,
   ) {}
 
   ngOnInit() {
+    this.loadBackgrounds();
     this.loadParticipants();
     this.refresh$ = interval(10000).subscribe(() => this.loadParticipants());
 
@@ -135,6 +144,68 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   }
 
   setTab(tab: AdminTab) { this.activeTab = tab; }
+
+  loadBackgrounds() {
+    this.backgroundsService.listAdmin().subscribe({
+      next: backgrounds => {
+        this.spiritualBackgrounds = backgrounds;
+        if (
+          backgrounds.length &&
+          !backgrounds.some(background => background.slug === this.selectedBackground)
+        ) {
+          this.selectedBackground = backgrounds[0].slug;
+        }
+      },
+      error: () => this.showToast('Bibliothèque de fonds indisponible', 'error'),
+    });
+  }
+
+  chooseBackgroundFile(event: Event) {
+    this.newBackgroundFile = (event.target as HTMLInputElement).files?.[0] ?? null;
+  }
+
+  uploadBackground() {
+    const label = this.newBackgroundLabel.trim();
+    if (!label || !this.newBackgroundFile) return;
+    this.backgroundUploading = true;
+    this.backgroundsService.create(label, this.newBackgroundFile).subscribe({
+      next: background => {
+        this.backgroundUploading = false;
+        this.newBackgroundLabel = '';
+        this.newBackgroundFile = null;
+        this.selectedBackground = background.slug;
+        this.loadBackgrounds();
+        this.showToast('Fond ajouté à la bibliothèque', 'success');
+      },
+      error: err => {
+        this.backgroundUploading = false;
+        this.showToast(err?.error?.message ?? 'Ajout du fond impossible', 'error');
+      },
+    });
+  }
+
+  toggleBackground(background: MeetingBackground) {
+    this.backgroundsService.update(background.id, { isActive: !background.isActive }).subscribe({
+      next: updated => {
+        background.isActive = updated.isActive;
+        this.showToast(updated.isActive ? 'Fond activé' : 'Fond désactivé', 'success');
+      },
+      error: () => this.showToast('Modification impossible', 'error'),
+    });
+  }
+
+  removeBackground(background: MeetingBackground) {
+    this.backgroundsService.remove(background.id).subscribe({
+      next: () => {
+        this.spiritualBackgrounds = this.spiritualBackgrounds.filter(item => item.id !== background.id);
+        if (this.selectedBackground === background.slug) {
+          this.selectedBackground = this.spiritualBackgrounds.find(item => item.isActive)?.slug ?? 'ocean';
+        }
+        this.showToast('Fond supprimé', 'success');
+      },
+      error: () => this.showToast('Suppression impossible', 'error'),
+    });
+  }
 
   // ── Participants ───────────────────────────────────────────────────────────
 
@@ -188,6 +259,21 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
       next: () => { this.showToast(`${p.displayName} coupé`, 'success'); delete this.loadingActions[key]; },
       error: () => { this.showToast(`${p.displayName} coupé (local)`, 'success'); delete this.loadingActions[key]; },
     });
+  }
+
+  setParticipantVolume(p: any, value: number | string) {
+    if (!p.jitsiParticipantId || !this.jitsiApi) return;
+    const volume = Math.max(0, Math.min(100, Number(value)));
+    this.participantVolumes[p.id] = volume;
+    try {
+      this.jitsiApi.executeCommand('setParticipantVolume', p.jitsiParticipantId, volume);
+    } catch {
+      this.showToast('Réglage du volume non pris en charge par cette version de Jitsi', 'error');
+    }
+  }
+
+  participantVolume(p: any) {
+    return this.participantVolumes[p.id] ?? 100;
   }
 
   kickParticipant(p: any) {

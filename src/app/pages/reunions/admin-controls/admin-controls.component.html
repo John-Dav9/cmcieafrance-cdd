@@ -66,6 +66,13 @@
           <span class="participant-badge" *ngIf="p.wasAdmin">Modérateur</span>
         </div>
         <div class="participant-actions">
+          <label class="volume-control" [title]="'Volume local de ' + p.displayName">
+            <span>🔊</span>
+            <input type="range" min="0" max="100" step="5"
+                   [value]="participantVolume(p)"
+                   [disabled]="!p.jitsiParticipantId"
+                   (input)="setParticipantVolume(p, $any($event.target).value)">
+          </label>
           <button class="btn-sm" title="Couper le micro"
                   [disabled]="!p.jitsiParticipantId || isLoading('mute-'+p.id)" (click)="muteParticipant(p)">
             {{ isLoading('mute-'+p.id) ? '…' : '⌁' }}
@@ -86,13 +93,31 @@
       <div class="spiritual-section background-library">
         <h4><span>00</span> Fond de diffusion</h4>
         <div class="background-grid">
-          <button *ngFor="let background of spiritualBackgrounds"
-                  type="button"
-                  class="background-choice"
-                  [class.is-selected]="selectedBackground === background.id"
-                  [ngClass]="background.className"
-                  (click)="selectedBackground = background.id">
-            <span>{{ background.label }}</span>
+          <div class="background-item" *ngFor="let background of spiritualBackgrounds">
+            <button type="button"
+                    class="background-choice"
+                    [class.is-selected]="selectedBackground === background.slug"
+                    [class.is-disabled]="!background.isActive"
+                    [style.background-image]="background.gradient || (background.imageUrl ? 'url(' + background.imageUrl + ')' : '')"
+                    (click)="background.isActive && (selectedBackground = background.slug)">
+              <span>{{ background.label }}</span>
+            </button>
+            <div class="background-actions">
+              <button type="button" (click)="toggleBackground(background)">
+                {{ background.isActive ? 'Désactiver' : 'Activer' }}
+              </button>
+              <button *ngIf="background.imageUrl" type="button" class="danger"
+                      (click)="removeBackground(background)">Supprimer</button>
+            </div>
+          </div>
+        </div>
+        <div class="background-upload">
+          <input class="admin-input" [(ngModel)]="newBackgroundLabel" placeholder="Nom du nouveau fond">
+          <input class="background-file" type="file" accept="image/*" (change)="chooseBackgroundFile($event)">
+          <button class="btn-secondary"
+                  [disabled]="backgroundUploading || !newBackgroundLabel.trim() || !newBackgroundFile"
+                  (click)="uploadBackground()">
+            {{ backgroundUploading ? 'Envoi…' : 'Ajouter une image' }}
           </button>
         </div>
       </div>

@@ -116,6 +116,29 @@
     </div>
 
     <div class="invite-panel" *ngIf="inviteMeetingId === m.id">
+      <div class="simple-access">
+        <strong>Accès simple sans OTP</strong>
+        <p>La personne ouvre le lien, écrit son nom et rejoint uniquement cette réunion.</p>
+        <div class="invite-row">
+          <input [(ngModel)]="simpleAccessLabel" placeholder="Nom du groupe ou destinataire">
+          <input type="number" min="1" max="2160" [(ngModel)]="simpleAccessHours" title="Validité en heures">
+          <input type="number" min="1" max="1000" [(ngModel)]="simpleAccessMaxUses" placeholder="Utilisations">
+          <button class="btn-primary" [disabled]="inviteLoading" (click)="createSimpleAccess(m.id)">
+            Créer et copier
+          </button>
+        </div>
+        <div class="invite-result" *ngIf="simpleAccessLink">
+          <input [value]="simpleAccessLink" readonly (click)="$any($event.target).select()">
+        </div>
+        <div class="invite-list" *ngIf="simpleAccessLinks[m.id]?.length">
+          <div *ngFor="let link of simpleAccessLinks[m.id]">
+            <span>{{ link.label }} · {{ link.useCount }} utilisation(s) · {{ link.revokedAt ? 'Révoqué' : 'Actif' }}</span>
+            <button class="btn-sm btn-sm--danger" *ngIf="!link.revokedAt"
+                    (click)="revokeSimpleAccess(m.id, link.id)">Révoquer</button>
+          </div>
+        </div>
+      </div>
+      <hr>
       <div>
         <strong>Accès simplifié pour un responsable</strong>
         <p>Le responsable clique sur le lien reçu et entre directement dans cette réunion avec la régie.</p>
@@ -248,6 +271,9 @@
   flex: 1; min-width: 0; padding: 10px; border: 1px solid #ccd6dc; border-radius: 8px; background: white;
 }
 .invite-panel small { display: block; margin-top: 10px; color: #77818b; }
+.invite-panel hr { margin: 18px 0; border: 0; border-top: 1px solid #d9e2e7; }
+.simple-access > strong { color: #1D546C; }
+.invite-row input { min-width: 0; padding: 10px; border: 1px solid #ccd6dc; border-radius: 8px; background: white; }
 .invite-list { margin-top: 12px; display: grid; gap: 6px; }
 .invite-list > div {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;

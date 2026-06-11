@@ -11,6 +11,7 @@ export interface MemberUser {
   role: string;
   access_token: string;
   meetingModeratorFor?: string;
+  meetingAccessFor?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -22,7 +23,12 @@ export class MemberAuthService {
 
   private loadMember(): MemberUser | null {
     try {
-      const raw = localStorage.getItem(this.TOKEN_KEY);
+      const legacy = localStorage.getItem(this.TOKEN_KEY);
+      if (legacy) {
+        sessionStorage.setItem(this.TOKEN_KEY, legacy);
+        localStorage.removeItem(this.TOKEN_KEY);
+      }
+      const raw = sessionStorage.getItem(this.TOKEN_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -67,6 +73,13 @@ export class MemberAuthService {
     })));
   }
 
+  acceptMeetingAccess(token: string, displayName: string) {
+    return this.http.post<any>(
+      `${environment.apiBase}/meeting-access/accept/token`,
+      { token, displayName },
+    ).pipe(tap(res => this.setSession(res)));
+  }
+
   // ── Anciens endpoints (conservés pour compatibilité) ──────
   sendOtp(email: string): Observable<{ method: string; message: string }> {
     return this.http.post<any>(`${environment.apiBase}/auth/send-otp`, { email });
@@ -87,11 +100,12 @@ export class MemberAuthService {
   // ── Session ───────────────────────────────────────────────
   private setSession(res: { access_token: string; member: MemberUser }) {
     const user: MemberUser = { ...res.member, access_token: res.access_token };
-    localStorage.setItem(this.TOKEN_KEY, JSON.stringify(user));
+    sessionStorage.setItem(this.TOKEN_KEY, JSON.stringify(user));
     this.currentMember$.next(user);
   }
 
   logout(): void {
+    sessionStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.TOKEN_KEY);
     this.currentMember$.next(null);
   }

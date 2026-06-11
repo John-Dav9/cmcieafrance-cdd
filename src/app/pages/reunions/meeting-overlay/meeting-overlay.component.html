@@ -6,6 +6,7 @@
 <!-- ══ ÉVÉNEMENT SPIRITUEL (verset / cantique / annonce) ════ -->
 <div class="spiritual-overlay"
      *ngIf="spiritualEvent"
+     [ngStyle]="backgroundStyle"
      [ngClass]="['spiritual-overlay--' + spiritualEvent.type, backgroundClass]">
 
   <!-- Verset biblique -->

@@ -38,6 +38,10 @@ export class AdminCantiquesComponent implements OnInit {
   loading = true;
   saving = false;
   message = '';
+  importItems: any[] = [];
+  importFileName = '';
+  rightsConfirmation = '';
+  importing = false;
 
   ngOnInit() {
     this.load();
@@ -99,5 +103,39 @@ export class AdminCantiquesComponent implements OnInit {
 
   reset() {
     this.form = { ...EMPTY_FORM };
+  }
+
+  async chooseImportFile(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.importFileName = file.name;
+    this.importItems = [];
+    try {
+      const parsed = JSON.parse(await file.text());
+      const items = Array.isArray(parsed) ? parsed : parsed?.items;
+      if (!Array.isArray(items)) throw new Error('Format invalide');
+      this.importItems = items;
+      this.message = `${items.length} cantique(s) prêt(s) à importer.`;
+    } catch {
+      this.message = 'Fichier JSON invalide. Utilisez un tableau de cantiques.';
+    }
+  }
+
+  importCatalog() {
+    if (!this.importItems.length || !this.rightsConfirmation.trim()) return;
+    this.importing = true;
+    this.api.importCantiques(this.importItems, this.rightsConfirmation).subscribe({
+      next: result => {
+        this.importing = false;
+        this.message = `${result.total} cantique(s) importé(s) : ${result.created} créé(s), ${result.updated} mis à jour.`;
+        this.importItems = [];
+        this.importFileName = '';
+        this.load();
+      },
+      error: err => {
+        this.importing = false;
+        this.message = err?.error?.message ?? 'Import impossible.';
+      },
+    });
   }
 }

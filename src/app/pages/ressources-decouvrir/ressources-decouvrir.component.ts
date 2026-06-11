@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-ressources-decouvrir',
   templateUrl: './ressources-decouvrir.component.html',
   styleUrls: ['./ressources-decouvrir.component.css'],

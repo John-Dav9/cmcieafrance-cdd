@@ -3,6 +3,7 @@ import { PagesService } from '../../core/services/pages.service';
 import { PageContentService } from '../../core/services/page-content.service';
 
 @Component({
+  standalone: false,
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css'],

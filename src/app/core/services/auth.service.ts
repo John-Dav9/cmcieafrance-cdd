@@ -25,7 +25,12 @@ export class AuthService {
 
   private loadUser(): AuthUser | null {
     try {
-      const raw = localStorage.getItem(this.TOKEN_KEY);
+      const legacy = localStorage.getItem(this.TOKEN_KEY);
+      if (legacy) {
+        sessionStorage.setItem(this.TOKEN_KEY, legacy);
+        localStorage.removeItem(this.TOKEN_KEY);
+      }
+      const raw = sessionStorage.getItem(this.TOKEN_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -51,6 +56,7 @@ export class AuthService {
   }
 
   logout(): void {
+    sessionStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.TOKEN_KEY);
     this.currentUser$.next(null);
   }
@@ -96,7 +102,7 @@ export class AuthService {
   }
 
   private setSession(user: AuthUser) {
-    localStorage.setItem(this.TOKEN_KEY, JSON.stringify(user));
+    sessionStorage.setItem(this.TOKEN_KEY, JSON.stringify(user));
     this.currentUser$.next(user);
   }
 }

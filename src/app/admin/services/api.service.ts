@@ -224,6 +224,13 @@ export class ApiService {
     return this.withAuth((h) => this.http.delete(`${this.base}/cantiques/${id}`, { headers: h }));
   }
 
+  importCantiques(items: any[], rightsConfirmation: string) {
+    return this.http.post<any>(`${this.base}/cantiques/import`, {
+      items,
+      rightsConfirmation,
+    });
+  }
+
   // Paramètres communauté
   getSettings() {
     return this.withAuth((h) => this.http.get<any>(`${this.base}/membres/settings`, { headers: h }));

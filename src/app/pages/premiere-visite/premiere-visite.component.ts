@@ -4,6 +4,7 @@ import { PageContentService } from '../../core/services/page-content.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
+  standalone: false,
   selector: 'app-premiere-visite',
   templateUrl: './premiere-visite.component.html',
   styleUrls: ['./premiere-visite.component.css'],

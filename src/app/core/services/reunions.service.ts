@@ -195,4 +195,21 @@ export class ReunionsService {
       `${environment.apiBase}/reunions/${id}/invitations/${inviteId}`,
     );
   }
+
+  createSimpleAccessLink(
+    id: string,
+    data: { label?: string; validHours?: number; maxUses?: number },
+  ): Observable<any> {
+    return this.http.post(`${environment.apiBase}/meeting-access/${id}`, data);
+  }
+
+  getSimpleAccessLinks(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiBase}/meeting-access/${id}`);
+  }
+
+  revokeSimpleAccessLink(id: string, linkId: string): Observable<{ revoked: boolean }> {
+    return this.http.delete<{ revoked: boolean }>(
+      `${environment.apiBase}/meeting-access/${id}/${linkId}`,
+    );
+  }
 }

@@ -65,6 +65,21 @@ $muted:   rgba(255,255,255,0.6);
 .background-parchment .spiritual-content { background: linear-gradient(145deg, #e5cf9d, #a57d45 55%, #5d4024); }
 .background-royal .spiritual-content { background: linear-gradient(145deg, #59429a, #2c235e 52%, #16132e); }
 
+.spiritual-overlay[style*="--dynamic-spiritual-background"] .spiritual-content {
+  color: var(--spiritual-text-color, #fff);
+  background-image: var(--dynamic-spiritual-background);
+  background-size: cover;
+  background-position: center;
+  &::after {
+    background: linear-gradient(
+      90deg,
+      var(--spiritual-overlay-color, rgba(4,8,13,.76)),
+      rgba(4,8,13,.28),
+      var(--spiritual-overlay-color, rgba(4,8,13,.7))
+    );
+  }
+}
+
 .dismiss-btn {
   position: absolute;
   top: 10px; right: 12px;

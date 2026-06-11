@@ -4,6 +4,7 @@ import { ContactRequest, ContactService } from '../../core/services/contact.serv
 import { PageContentService } from '../../core/services/page-content.service';
 
 @Component({
+  standalone: false,
   selector: 'app-church-life',
   templateUrl: './church-life.component.html',
   styleUrls: ['./church-life.component.css'],

@@ -30,6 +30,11 @@ export class ReunionsAdminComponent implements OnInit {
   inviteLoading = false;
   inviteCopied = false;
   meetingInvites: Record<string, any[]> = {};
+  simpleAccessLinks: Record<string, any[]> = {};
+  simpleAccessLabel = 'Invités';
+  simpleAccessHours = 168;
+  simpleAccessMaxUses: number | null = null;
+  simpleAccessLink = '';
 
   form = {
     title: '',
@@ -55,6 +60,39 @@ export class ReunionsAdminComponent implements OnInit {
     this.inviteLink = '';
     this.inviteCopied = false;
     if (this.inviteMeetingId) this.loadInvites(meetingId);
+    if (this.inviteMeetingId) this.loadSimpleAccessLinks(meetingId);
+  }
+
+  loadSimpleAccessLinks(meetingId: string) {
+    this.reunionsService.getSimpleAccessLinks(meetingId).subscribe({
+      next: links => this.simpleAccessLinks[meetingId] = links,
+    });
+  }
+
+  createSimpleAccess(meetingId: string) {
+    this.inviteLoading = true;
+    this.reunionsService.createSimpleAccessLink(meetingId, {
+      label: this.simpleAccessLabel,
+      validHours: this.simpleAccessHours,
+      maxUses: this.simpleAccessMaxUses || undefined,
+    }).subscribe({
+      next: result => {
+        this.simpleAccessLink = `${window.location.origin}/reunions/invitation?access=${encodeURIComponent(result.token)}`;
+        this.inviteLoading = false;
+        navigator.clipboard?.writeText(this.simpleAccessLink).catch(() => undefined);
+        this.loadSimpleAccessLinks(meetingId);
+      },
+      error: err => {
+        this.error = err?.error?.message ?? 'Impossible de créer le lien simplifié.';
+        this.inviteLoading = false;
+      },
+    });
+  }
+
+  revokeSimpleAccess(meetingId: string, linkId: string) {
+    this.reunionsService.revokeSimpleAccessLink(meetingId, linkId).subscribe({
+      next: () => this.loadSimpleAccessLinks(meetingId),
+    });
   }
 
   loadInvites(meetingId: string) {
