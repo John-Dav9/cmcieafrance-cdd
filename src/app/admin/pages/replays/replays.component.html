@@ -75,6 +75,7 @@
         <tr *ngFor="let r of replays">
           <td>
             <strong>{{ r.title }}</strong>
+            <span class="badge-jibri" *ngIf="r.storagePath">Auto</span>
             <div class="tags" *ngIf="r.tags?.length">
               <span class="tag" *ngFor="let t of r.tags">{{ t }}</span>
             </div>
@@ -88,6 +89,7 @@
           </td>
           <td>{{ r.createdAt | date:'dd/MM/yyyy' }}</td>
           <td class="actions">
+            <a *ngIf="r.videoUrl" [href]="r.videoUrl" target="_blank" class="btn-dl" title="Télécharger l'enregistrement">⬇</a>
             <button class="btn-edit" (click)="edit(r)">✎</button>
             <button class="btn-summarize" title="Générer un résumé IA" [disabled]="summarizingId === r.id" (click)="summarize(r)">
               {{ summarizingId === r.id ? '...' : '✦' }}

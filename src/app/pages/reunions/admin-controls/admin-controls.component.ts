@@ -38,6 +38,8 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
   waitingParticipants: any[] = [];
   recording = false;
   recordingPending = false;
+  recordingSeconds = 0;
+  private recordingTimer$: Subscription | null = null;
   toast: { msg: string; type: 'success' | 'error' } | null = null;
   loadingActions: Record<string, boolean> = {};
   participantVolumes: Record<string, number> = {};
@@ -110,8 +112,17 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
     this.socketSubscriptions.add(this.socket.recordingStatus$.subscribe(s => {
       this.recordingPending = s.status === 'starting' || s.status === 'stopping';
       this.recording = s.status === 'active' || s.status === 'starting';
-      if (s.status === 'active') this.showToast('Enregistrement confirmé par Jitsi', 'success');
-      if (s.status === 'failed') this.showToast(s.error || 'Échec de l’enregistrement', 'error');
+      if (s.status === 'active') {
+        this.recordingSeconds = 0;
+        this.recordingTimer$?.unsubscribe();
+        this.recordingTimer$ = interval(1000).subscribe(() => this.recordingSeconds++);
+        this.showToast("Enregistrement confirmé par Jitsi", 'success');
+      } else if (s.status !== 'starting') {
+        this.recordingTimer$?.unsubscribe();
+        this.recordingTimer$ = null;
+        if (s.status === 'idle') this.recordingSeconds = 0;
+      }
+      if (s.status === 'failed') this.showToast(s.error || "Échec de l'enregistrement", 'error');
     }));
     this.socketSubscriptions.add(this.socket.streamingStatus$.subscribe(s => {
       this.isStreaming = s.status === 'active' || s.status === 'starting';
@@ -138,9 +149,19 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.refresh$?.unsubscribe();
+    this.recordingTimer$?.unsubscribe();
     this.socketSubscriptions.unsubscribe();
     this.jitsiApi?.removeListener?.('recordingStatusChanged', this.recordingStatusHandler);
     clearTimeout(this.toastTimer);
+  }
+
+  get recordingElapsed(): string {
+    const h = Math.floor(this.recordingSeconds / 3600);
+    const m = Math.floor((this.recordingSeconds % 3600) / 60);
+    const s = this.recordingSeconds % 60;
+    return h > 0
+      ? `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+      : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   }
 
   setTab(tab: AdminTab) { this.activeTab = tab; }
@@ -314,7 +335,7 @@ export class AdminControlsComponent implements OnInit, OnDestroy {
       next: res => this.showToast(res.message, 'success'),
       error: err => {
         this.recordingPending = false;
-        this.showToast(err?.error?.message ?? 'Commande d’enregistrement impossible', 'error');
+        this.showToast(err?.error?.message ?? "Commande d'enregistrement impossible", 'error');
       },
     });
   }

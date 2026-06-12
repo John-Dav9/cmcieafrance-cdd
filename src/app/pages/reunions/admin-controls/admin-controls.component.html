@@ -30,6 +30,7 @@
                 [disabled]="recordingPending" (click)="toggleRecording()">
           <span>{{ recording ? '■' : '●' }}</span>
           {{ recordingPending ? 'Commande en cours…' : (recording ? 'Arrêter l\'enregistrement' : 'Démarrer l\'enregistrement') }}
+          <span *ngIf="recording" class="rec-timer">{{ recordingElapsed }}</span>
         </button>
         <button class="admin-btn admin-btn--danger" (click)="endMeeting()"><span>⌁</span>Terminer pour tous</button>
       </div>
