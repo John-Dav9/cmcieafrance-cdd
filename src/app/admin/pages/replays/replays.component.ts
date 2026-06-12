@@ -95,6 +95,27 @@ export class AdminReplaysComponent implements OnInit {
     });
   }
 
+  downloadingId: string | null = null;
+
+  downloadFile(r: any) {
+    if (this.downloadingId) return;
+    this.downloadingId = r.id;
+    this.api.downloadReplay(r.id).subscribe({
+      next: (blob: any) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (r.title || 'enregistrement') + '.mp4';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.downloadingId = null;
+      },
+      error: () => { this.downloadingId = null; },
+    });
+  }
+
   summarizingId: string | null = null;
 
   summarize(r: any) {

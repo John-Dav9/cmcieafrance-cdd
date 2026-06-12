@@ -169,6 +169,10 @@ export class ApiService {
     return this.withAuth((h) => this.http.post<any>(`${this.base}/replays/${id}/summarize`, {}, { headers: h }));
   }
 
+  downloadReplay(id: string) {
+    return this.withAuth((h) => this.http.get(`${this.base}/replays/${id}/download`, { headers: h, responseType: 'blob' }));
+  }
+
   // Cell-groups membres
   addMemberToGroup(groupId: string, memberId: string) {
     return this.withAuth((h) => this.http.post(`${this.base}/cell-groups/${groupId}/members/${memberId}`, {}, { headers: h }));

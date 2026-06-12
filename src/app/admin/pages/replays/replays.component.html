@@ -89,7 +89,10 @@
           </td>
           <td>{{ r.createdAt | date:'dd/MM/yyyy' }}</td>
           <td class="actions">
-            <a *ngIf="r.videoUrl" [href]="r.videoUrl" target="_blank" class="btn-dl" title="Télécharger l'enregistrement">⬇</a>
+            <button *ngIf="r.storagePath" class="btn-dl" [disabled]="downloadingId === r.id"
+                    (click)="downloadFile(r)" title="Télécharger l'enregistrement">
+              {{ downloadingId === r.id ? '…' : '⬇' }}
+            </button>
             <button class="btn-edit" (click)="edit(r)">✎</button>
             <button class="btn-summarize" title="Générer un résumé IA" [disabled]="summarizingId === r.id" (click)="summarize(r)">
               {{ summarizingId === r.id ? '...' : '✦' }}

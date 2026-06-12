@@ -17,51 +17,76 @@ $danger: #e5484d;
 .meeting-header {
   position: absolute;
   inset: 0 0 auto;
-  min-height: 72px;
-  padding: 12px 18px;
+  min-height: 68px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  background: linear-gradient(180deg, rgba(10, 12, 16, .96), rgba(10, 12, 16, .82));
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(6,8,12,.98) 0%, rgba(10,12,18,.88) 100%);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  backdrop-filter: blur(28px);
   pointer-events: auto;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(232,168,56,.7) 40%, rgba(232,168,56,.7) 60%, transparent 100%);
+  }
 }
 
 .meeting-identity, .meeting-status, .meeting-eyebrow, .status-chip,
 .header-action, .meeting-dock, .dock-control { display: flex; align-items: center; }
-.meeting-identity { gap: 12px; min-width: 0; }
+.meeting-identity { gap: 14px; min-width: 0; }
 .meeting-brand {
-  width: 42px; height: 42px; border-radius: 13px;
+  width: 44px; height: 44px; border-radius: 50%;
   display: grid; place-items: center; flex: 0 0 auto;
-  color: #17120a; background: linear-gradient(145deg, #f5c15d, $accent);
-  font-family: Georgia, serif; font-weight: 800; font-size: 21px;
-  box-shadow: 0 8px 24px rgba(232,168,56,.18);
+  color: #1a1000; background: linear-gradient(145deg, #fad06a, #d4870c);
+  font-family: Georgia, serif; font-weight: 800; font-size: 20px;
+  box-shadow: 0 0 0 1px rgba(232,168,56,.22), 0 6px 22px rgba(232,168,56,.26);
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -5px; border-radius: 50%;
+    border: 1px solid rgba(232,168,56,.18);
+  }
 }
-.meeting-copy { min-width: 0; }
+.meeting-copy { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .meeting-copy h1 {
-  margin: 2px 0 0; font-size: 16px; line-height: 1.2; font-weight: 650;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 360px;
+  margin: 0; font-size: 15px; line-height: 1.25; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 340px;
+  letter-spacing: -.01em;
+}
+.meeting-org {
+  font-size: 9px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(232,168,56,.55);
 }
 .meeting-eyebrow {
-  gap: 7px; color: $muted; font-size: 10px; font-weight: 700;
-  letter-spacing: .11em; text-transform: uppercase;
+  gap: 6px; color: rgba(170,176,187,.8); font-size: 9px; font-weight: 800;
+  letter-spacing: .13em; text-transform: uppercase;
 }
-.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #38c172; box-shadow: 0 0 0 4px rgba(56,193,114,.12); }
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #3fd17d;
+  animation: livePulse 2.2s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(63,209,125,.55); }
+  50%       { box-shadow: 0 0 0 5px rgba(63,209,125,0); }
+}
 .meeting-status { gap: 8px; flex: 0 0 auto; }
 .status-chip, .header-action {
-  height: 38px; gap: 8px; padding: 0 12px; border-radius: 11px;
-  border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.065);
-  color: #e7e9ed; font-size: 12px; font-weight: 600;
+  height: 34px; gap: 7px; padding: 0 13px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.055);
+  color: #d8dce6; font-size: 11px; font-weight: 600;
 }
 .status-chip svg, .header-action svg, .dock-control svg {
-  width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8;
+  width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8;
   stroke-linecap: round; stroke-linejoin: round;
 }
 .header-action { cursor: pointer; pointer-events: auto; transition: .18s ease; }
-.header-action:hover, .header-action.is-active { background: rgba(232,168,56,.13); border-color: rgba(232,168,56,.35); color: #f2c66f; }
-.header-action--admin { color: #f2c66f; }
+.header-action:hover, .header-action.is-active { background: rgba(232,168,56,.14); border-color: rgba(232,168,56,.32); color: #f5c84a; }
+.header-action--admin { color: #f5c84a; border-color: rgba(232,168,56,.2); }
 .quality-bars { display: flex; align-items: end; gap: 2px; height: 13px; }
 .quality-bars i { width: 3px; border-radius: 2px; background: #3fd17d; }
 .quality-bars i:nth-child(1){height:5px}.quality-bars i:nth-child(2){height:9px}.quality-bars i:nth-child(3){height:13px}
@@ -71,7 +96,7 @@ $danger: #e5484d;
 .status-chip--critical .quality-bars i { background: rgba(255,255,255,.2); }
 
 .meeting-stage-frame {
-  position: absolute; inset: 72px 0 86px;
+  position: absolute; inset: 68px 0 86px;
   border: 1px solid rgba(255,255,255,.06);
   box-shadow: inset 0 0 90px rgba(0,0,0,.12);
   transition: right .25s ease;
